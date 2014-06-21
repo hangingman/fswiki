@@ -117,7 +117,7 @@ sub _parse_line {
 	elsif ($source =~ /\[([^\[]+?)\|(.+?)\]/) {
 		my $label = $1;
 		my $url   = $2;
-		my $enc   = "euc";
+		my $enc   = "utf8";
 		$self->add_inter_wiki($url,$label,$enc);
 
 	}
