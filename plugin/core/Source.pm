@@ -43,7 +43,7 @@ sub do_action {
 		print "Content-Type: text/plain;charset=Shift_JIS\n\n";
 		&Jcode::convert(\$source,"sjis");
 	} else {
-		print "Content-Type: text/plain;charset=EUC-JP\n";
+		print "Content-Type: text/plain;charset=UTF-8\n";
 		if($ENV{"HTTP_USER_AGENT"} =~ /MSIE/){
 			print Util::make_content_disposition("source.txt", "attachment");
 		} else {

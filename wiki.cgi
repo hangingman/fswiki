@@ -299,7 +299,7 @@ eval {
 	if($is_handyphone){
 		print "Content-Type: text/html;charset=Shift_JIS\n";
 	} else {
-		print "Content-Type: text/html;charset=EUC-JP\n";
+		print "Content-Type: text/html;charset=UTF-8\n";
 	}
 	print "Pragma: no-cache\n";
 	print "Cache-Control: no-cache\n\n";

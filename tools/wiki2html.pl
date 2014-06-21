@@ -98,7 +98,7 @@ my $buf = "<html>\n".
           "<head>\n".
           "  <title>".Util::escapeHTML($title)."</title>\n";
 if($output eq 'euc'){
-	$buf .= "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=EUC-JP\">\n";
+	$buf .= "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 } else {
 	$buf .= "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=Shift_JIS\">\n";
 }
