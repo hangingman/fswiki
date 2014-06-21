@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ############################################################
 #
-# Wiki¥Õ¥©¡¼¥Ş¥Ã¥È¤«¤éHTML¤òÀ¸À®¤¹¤ë¥¹¥¯¥ê¥×¥È
+# Wikiãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‹ã‚‰HTMLã‚’ç”Ÿæˆã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 #
 ############################################################
 use lib "$ENV{'FSWIKI_HOME'}/lib";
@@ -11,25 +11,25 @@ use Jcode;
 use Cwd;
 
 #===========================================================
-# °ú¿ô¤¬Â­¤ê¤Ê¤¤
+# å¼•æ•°ãŒè¶³ã‚Šãªã„
 #===========================================================
 if($#ARGV==-1){
-	die "wiki2html.pl filename [-title=title] [-output=sjis|euc]\n";
+	die "wiki2html.pl filename [-title=title] [-output=sjis|utf8]\n";
 }
 
 #===========================================================
-# ÊÑ¿ô¤Î½àÈ÷
+# å¤‰æ•°ã®æº–å‚™
 #===========================================================
 my $from    = "";
 my $title   = "";
 my $css     = "";
-my $output  = "euc";
+my $output  = "utf8";
 my $count   = 0;
 my $current = cwd();
 chdir($ENV{'FSWIKI_HOME'});
 
 #===========================================================
-# ¥³¥Ş¥ó¥É¥é¥¤¥ó¥ª¥×¥·¥ç¥ó¤Î²òÀÏ
+# ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®è§£æ
 #===========================================================
 foreach(@ARGV){
 	if($count==0){
@@ -73,14 +73,14 @@ if($farm){
 }
 
 #===========================================================
-# Wiki¥½¡¼¥¹¤ò¼èÆÀ
+# Wikiã‚½ãƒ¼ã‚¹ã‚’å–å¾—
 #===========================================================
 my $source = "";
 if(index($from,"http://")==0 || index($from,"https://")==0){
-	# HTTP·ĞÍ³¤Ç¥½¡¼¥¹¤ò¼èÆÀ
+	# HTTPçµŒç”±ã§ã‚½ãƒ¼ã‚¹ã‚’å–å¾—
 	$source = &Util::get_response($wiki,$from);
 } else {
-	# ¥í¡¼¥«¥ë¥Õ¥¡¥¤¥ë¤«¤é¥½¡¼¥¹¤ò¼èÆÀ
+	# ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚½ãƒ¼ã‚¹ã‚’å–å¾—
 	chdir($current);
 	open(DATA,$from) or die "File Open Error :$from\n";
 	while(<DATA>){
@@ -89,15 +89,15 @@ if(index($from,"http://")==0 || index($from,"https://")==0){
 	close(DATA);
 	chdir($ENV{'FSWIKI_HOME'});
 }
-&Jcode::convert(\$source,"euc");
+&Jcode::convert(\$source,"utf8");
 
 #===========================================================
-# HTMLÀ¸À®
+# HTMLç”Ÿæˆ
 #===========================================================
 my $buf = "<html>\n".
           "<head>\n".
           "  <title>".Util::escapeHTML($title)."</title>\n";
-if($output eq 'euc'){
+if($output eq 'utf8'){
 	$buf .= "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n";
 } else {
 	$buf .= "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=Shift_JIS\">\n";
@@ -125,7 +125,7 @@ sub process_wiki {
 	my $mainflg = shift;
 	
 	if($self->{parse_times} >= 50){
-		return $self->error("Wiki::process_wiki¤Î¸Æ¤Ó½Ğ¤·²ó¿ô¤¬¾å¸Â¤ò±Û¤¨¤Ş¤·¤¿¡£");
+		return $self->error("Wiki::process_wikiã®å‘¼ã³å‡ºã—å›æ•°ãŒä¸Šé™ã‚’è¶Šãˆã¾ã—ãŸã€‚");
 	}
 	
 	$self->{parse_times}++;
@@ -156,7 +156,7 @@ sub wiki_anchor {
 }
 
 #===========================================================
-# CGI.pm¤Î¥â¥Ã¥¯¥ª¥Ö¥¸¥§¥¯¥È
+# CGI.pmã®ãƒ¢ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 #===========================================================
 package CGI;
 

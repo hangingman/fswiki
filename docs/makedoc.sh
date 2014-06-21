@@ -1,4 +1,4 @@
 #!/bin/sh
-# HTML¥Õ¥¡¥¤¥ë¤ËÊÑ´¹
+# HTMLãƒ•ã‚¡ã‚¤ãƒ«ã«å¤‰æ›
 perl ../tools/wiki2html.pl "http://fswiki.org/wiki.pl/docs?action=SOURCE&page=readme" -css=default.css -title=README > readme.html
 perl ../tools/wiki2html.pl "http://fswiki.org/wiki.pl/docs?action=SOURCE&page=changes" -css=default.css -title=CHANGES > changes.html
