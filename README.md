@@ -7,13 +7,16 @@ FreeStyleWiki private modified repository
 setup
 =====
 
-Here, automated script
+automated script
 https://gist.github.com/Hiroyuki-Nagata/7b7df9ddcb25c43078e1
 
 Change root and exec scirpt.
 
 ```:
-# wget https://gist.githubusercontent.com/Hiroyuki-Nagata/7b7df9ddcb25c43078e1/raw/***/gistfile1.sh
+# git clone https://gist.github.com/7b7df9ddcb25c43078e1.git
+# cd 7b7df9ddcb25c43078e1
 # chmod +x ./gistfile1.sh
 # ./gistfile1.sh
 ```
+
+Here, you can see FreeStyleWiki page at http://hostname/fswiki/wiki.cgi
