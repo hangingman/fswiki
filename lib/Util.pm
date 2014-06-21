@@ -100,7 +100,6 @@ sub make_filename {
 #===============================================================================
 sub escapeHTML {
 	my($retstr) = shift;
-	$retstr = Jcode->new($retstr)->euc;
 
 	my %table = (
 		'&' => '&amp;',
@@ -111,7 +110,6 @@ sub escapeHTML {
 	$retstr =~ s/([&\"<>])/$table{$1}/go;
 	$retstr =~ s/&amp;#([0-9]{1,5});/&#$1;/go;
 	$retstr =~ s/&#(0*(0|9|10|13|38|60|62));/&amp;#$1;/g;
-#	$retstr =~ s/&amp;([a-zA-Z0-9]{2,8});/&$1;/go;
 	return $retstr;
 }
 

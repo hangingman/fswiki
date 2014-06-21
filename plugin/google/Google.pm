@@ -125,7 +125,7 @@ EOD
 <!-- Google  -->
 <div class="plugin_google" align="$align">
 <form method=GET action="http://www.google.co.jp/search" $target>
-<a href="http://www.google.co.jp/"><IMG SRC="http://www.google.com/logos/Logo_${logo}.gif" border="0" ALT="Google" align="absmiddle"></a> <INPUT type=submit name=btnG VALUE="検索"><input type=hidden name=hl value="ja"><input type=hidden name=ie value="EUC-JP"><br>
+<a href="http://www.google.co.jp/"><IMG SRC="http://www.google.com/logos/Logo_${logo}.gif" border="0" ALT="Google" align="absmiddle"></a> <INPUT type=submit name=btnG VALUE="検索"><input type=hidden name=hl value="ja"><input type=hidden name=ie value="UTF-8"><br>
 <INPUT TYPE=text name=q size=${size} maxlength=255 value="">${siteoption}
 </form>
 </div>
@@ -156,7 +156,7 @@ border="0" ALT="Google" align="absmiddle"></A>
 <td  style="border: none" align=center>
 <INPUT TYPE=text name=q size=${size} maxlength=255 value="">
 <input type=hidden name=hl value="ja">
-<input type=hidden name=ie value="EUC-JP">
+<input type=hidden name=ie value="UTF-8">
 <INPUT type=submit name=btnG VALUE="Google検索">${siteoption}
 </td></tr></TABLE>
 </FORM>

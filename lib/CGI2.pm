@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# パラメータを常にEUC変換するCGIクラス
+# パラメータを常にUTF-8変換するCGIクラス
 #
 ###############################################################################
 package CGI2;
@@ -80,7 +80,7 @@ sub param {
 	my $name  = shift;
 	my $value = shift;
 	
-	# 必ずEUCへの変換を行う
+	# 必ずUTF-8への変換を行う
 	if(Util::handyphone()){
 		if(defined($name)) {
 			#my @array = map {&Jcode::convert(\$_, "euc")} $self->CGI::param($name,$value);
@@ -88,7 +88,7 @@ sub param {
 			my @values = $self->CGI::param($name,$value);
 			my @array = ();
 			foreach my $value (@values){
-				&Jcode::convert(\$value,"euc");
+				&Jcode::convert(\$value,"utf8");
 				push(@array,$value);
 			}
 			if($#array==0){

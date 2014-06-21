@@ -212,7 +212,7 @@ EOD
 	# RSSをファイルに書き出す
 	open(RSS,">$file") or die "RSSファイルの作成に失敗しました。";
 	binmode(RSS);
-	print RSS jcode($xml, 'euc')->utf8;
+	print RSS $xml;
 	close(RSS);
 }
 

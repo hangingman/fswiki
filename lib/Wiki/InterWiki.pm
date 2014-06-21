@@ -103,7 +103,7 @@ sub _parse_line {
 	    || $source =~ /\[([^\[]+?)\|((\/|\.\/|\.\.\/)+[a-zA-Z0-9\.,%~^_+\-%\/\?\(\)!\$&=:;\*#\@']*)\]/) {
 		my $label = $1;
 		my $url   = $2;
-		my $enc   = "euc";
+		my $enc   = "utf8";
 		$self->add_inter_wiki($url,$label,$enc);
 	}
 	# 任意のURLリンク
