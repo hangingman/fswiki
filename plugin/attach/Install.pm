@@ -1,6 +1,6 @@
 ############################################################
 #
-# Wiki¥Ú¡¼¥¸¤Ë¥Õ¥¡¥¤¥ë¤òÅºÉÕ¤¹¤ë¤¿¤á¤Î¥×¥é¥°¥¤¥ó¤òÄó¶¡¤·¤Þ¤¹¡£
+# Wikiãƒšãƒ¼ã‚¸ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ·»ä»˜ã™ã‚‹ãŸã‚ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’æä¾›ã—ã¾ã™ã€‚
 #
 ############################################################
 package plugin::attach::Install;
@@ -22,8 +22,8 @@ sub install {
 	$wiki->add_paragraph_plugin("attach","plugin::attach::Attach","HTML");
 	$wiki->add_editform_plugin("plugin::attach::AttachForm",50);
 	
-	$wiki->add_admin_menu("MIME¥¿¥¤¥×",$wiki->create_url({ action=>"ADMINMIME" }),990,
-						  "MIME¥¿¥¤¥×¤ÎÄÉ²Ã¡¢ºï½ü¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("MIMEã‚¿ã‚¤ãƒ—",$wiki->create_url({ action=>"ADMINMIME" }),990,
+						  "MIMEã‚¿ã‚¤ãƒ—ã®è¿½åŠ ã€å‰Šé™¤ã‚’è¡Œã„ã¾ã™ã€‚");
 	
 	$wiki->add_admin_handler("ADMINMIME","plugin::attach::AdminMIMEHandler");
 }

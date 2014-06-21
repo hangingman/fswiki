@@ -1,26 +1,26 @@
 #!/usr/bin/perl
 ###############################################################################
 #
-# FreeStyleWiki ¥Õ¥í¥ó¥È¥¨¥ó¥ÉCGI¥¹¥¯¥ê¥×¥È
+# FreeStyleWiki ãƒ•ãƒ­ãƒ³ãƒˆã‚¨ãƒ³ãƒ‰CGIã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 #
 ###############################################################################
 BEGIN {
 	if(exists $ENV{MOD_PERL}){
-		# ¥«¥ì¥ó¥È¥Ç¥£¥ì¥¯¥È¥ê¤ÎÊÑ¹¹
+		# ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®å¤‰æ›´
 		chdir($ENV{FSWIKI_HOME});
 	}
 }
-# ModPerl::Registry(Prefork)¤Ç¤Ï¼Â¹Ô»ş¤ËÊÑ¹¹¤µ¤ì¤Æ¤¤¤ë²ÄÇ½À­¤¬¤¢¤ë
+# ModPerl::Registry(Prefork)ã§ã¯å®Ÿè¡Œæ™‚ã«å¤‰æ›´ã•ã‚Œã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹
 if(exists $ENV{MOD_PERL}){
 	chdir($ENV{FSWIKI_HOME});
 }
 
 #==============================================================================
-# ¥â¥¸¥å¡¼¥ë¤Î¥¤¥ó¥¯¥ë¡¼¥É
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #==============================================================================
 use Cwd;
 use lib './lib';
-# ModPerl::Registry(Prefork)¤Ç¤Ï@INC¤¬½é´ü²½¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¤¬¤¢¤ë
+# ModPerl::Registry(Prefork)ã§ã¯@INCãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ã‚‹å ´åˆãŒã‚ã‚‹
 unshift @INC, './lib' if(exists $ENV{MOD_PERL});
 use strict;
 #use CGI::Carp qw(fatalsToBrowser);
@@ -30,7 +30,7 @@ use Util;
 use Jcode;
 use HTML::Template;
 
-# ¤³¤ì¤ò¤ä¤é¤Ê¤¤¤ÈApache::Registory¤ÇÆ°¤«¤Ê¤¤
+# ã“ã‚Œã‚’ã‚„ã‚‰ãªã„ã¨Apache::Registoryã§å‹•ã‹ãªã„
 if(exists $ENV{MOD_PERL}){
 	eval("use Digest::Perl::MD5;");
 	eval("use plugin::core::Diff;");
@@ -39,28 +39,28 @@ if(exists $ENV{MOD_PERL}){
 }
 
 #==============================================================================
-# CGI¤ÈWiki¤Î¥¤¥ó¥¹¥¿¥ó¥¹²½
+# CGIã¨Wikiã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
 #==============================================================================
 my $wiki = Wiki->new('setup.dat');
 my $cgi = $wiki->get_CGI();
 
 Util::override_die();
 eval {
-	# SessionÍÑ¥Ç¥£¥ì¥¯¥È¥ê¤ÏFarm¤Ç¤â¶¦ÄÌ¤Ë»ÈÍÑ¤¹¤ë
+	# Sessionç”¨ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯Farmã§ã‚‚å…±é€šã«ä½¿ç”¨ã™ã‚‹
 	$wiki->config('session_dir',$wiki->config('log_dir'));
 	
 	#==============================================================================
-	# Farm¤È¤·¤ÆÆ°ºî¤¹¤ë¾ì¹ç
+	# Farmã¨ã—ã¦å‹•ä½œã™ã‚‹å ´åˆ
 	#==============================================================================
 	my $path_info  = $cgi->path_info();
 	my $path_count = 0;
 	if(length($path_info) > 0){
-		# Farm¤¬¤¢¤ë¤«³ÎÇ§¤¹¤ë
+		# FarmãŒã‚ã‚‹ã‹ç¢ºèªã™ã‚‹
 		unless($path_info =~ m<^(/[A-Za-z0-9]+)*/?$> and -d $wiki->config('data_dir').$path_info){
-			CORE::die("Wiki¤¬Â¸ºß¤·¤Ş¤»¤ó¡£");
+			CORE::die("WikiãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚");
 		}
 		
-		# PATH_INFO¤ÎºÇ¸å¤¬/¤À¤Ã¤¿¤é/¤Ê¤·¤ÎURL¤ËÅ¾Á÷¤¹¤ë
+		# PATH_INFOã®æœ€å¾ŒãŒ/ã ã£ãŸã‚‰/ãªã—ã®URLã«è»¢é€ã™ã‚‹
 		if($path_info =~ m|/$|) {
 			$path_info =~ s|/$||;
 			$wiki->redirectURL($cgi->url().$path_info);
@@ -82,13 +82,13 @@ eval {
 	}
 
 	#==============================================================================
-	# ÀßÄê¤òÈ¿±Ç¡Ê¤â¤¦¤Á¤ç¤Ã¤È¥¹¥Ş¡¼¥È¤Ë¤ä¤ê¤¿¤¤¤Í¡Ë
+	# è¨­å®šã‚’åæ˜ ï¼ˆã‚‚ã†ã¡ã‚‡ã£ã¨ã‚¹ãƒãƒ¼ãƒˆã«ã‚„ã‚ŠãŸã„ã­ï¼‰
 	#==============================================================================
 	my $config = &Util::load_config_hash($wiki,$wiki->config('config_file'));
 	foreach my $key (keys(%$config)){
 		$wiki->config($key,$config->{$key});
 	}
-	# ¸ÄÊÌ¤ËÀßÄê¤¬É¬Í×¤Ê¤â¤Î¤À¤±¾å½ñ¤­
+	# å€‹åˆ¥ã«è¨­å®šãŒå¿…è¦ãªã‚‚ã®ã ã‘ä¸Šæ›¸ã
 	$wiki->config('css',
 		$wiki->config('theme_uri')."/".$config->{theme}."/".$config->{theme}.".css");
 	$wiki->config('site_tmpl',
@@ -99,12 +99,12 @@ eval {
 		$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}."_smartphone.tmpl");
 
 	#==============================================================================
-	# ¥¿¥¤¥à¥¢¥¦¥È¤·¤Æ¤¤¤ë¥»¥Ã¥·¥ç¥ó¤òÇË´ş
+	# ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã—ã¦ã„ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’ç ´æ£„
 	#==============================================================================
 	$cgi->remove_session($wiki);
 
 	#==============================================================================
-	# ¥æ¡¼¥¶¾ğÊó¤ÎÆÉ¤ß¹ş¤ß
+	# ãƒ¦ãƒ¼ã‚¶æƒ…å ±ã®èª­ã¿è¾¼ã¿
 	#==============================================================================
 	my $users = &Util::load_config_hash($wiki,$wiki->config('userdat_file'));
 	foreach my $id (keys(%$users)){
@@ -113,27 +113,27 @@ eval {
 	}
 
 	#==============================================================================
-	# ¥×¥é¥°¥¤¥ó¤Î¥¤¥ó¥¹¥È¡¼¥ë¤È½é´ü²½
+	# ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã¨åˆæœŸåŒ–
 	#==============================================================================
 	my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
 	my $plugin_error = '';
 	foreach(sort(@plugins)){
 		$plugin_error .= $wiki->install_plugin($_);
 	}
-	# ¥×¥é¥°¥¤¥ó¤´¤È¤Î½é´ü²½½èÍı¤òµ¯Æ°
+	# ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã”ã¨ã®åˆæœŸåŒ–å‡¦ç†ã‚’èµ·å‹•
 	$wiki->do_hook("initialize");
 
 	#==============================================================================
-	# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¤Î¸Æ¤Ó½Ğ¤·
+	# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ã®å‘¼ã³å‡ºã—
 	#==============================================================================
 	my $action  = $cgi->param("action");
 	my $content = $wiki->call_handler($action);
 
-	# ¥×¥é¥°¥¤¥ó¤Î¥¤¥ó¥¹¥È¡¼¥ë¤Ë¼ºÇÔ¤·¤¿¾ì¹ç
+	# ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã«å¤±æ•—ã—ãŸå ´åˆ
 	$content = $plugin_error . $content if $plugin_error ne '';
 
 	#==============================================================================
-	# ¥ì¥¹¥İ¥ó¥¹
+	# ãƒ¬ã‚¹ãƒãƒ³ã‚¹
 	#==============================================================================
 	my $output        = "";
 	my $is_handyphone = &Util::handyphone();
@@ -148,13 +148,13 @@ eval {
 		$template_name = 'site_tmpl';
 	}
 
-	# ¥È¥Ã¥×¥Ú¡¼¥¸¤«¤É¤¦¤«¤òÈ½Äê
+	# ãƒˆãƒƒãƒ—ãƒšãƒ¼ã‚¸ã‹ã©ã†ã‹ã‚’åˆ¤å®š
 	my $top  = 0;
 	if($cgi->param("page") eq $wiki->config("frontpage")){
 		$top = 1;
 	}
 
-	# ¥Ú¡¼¥¸¤Î¥¿¥¤¥È¥ë¤ò·èÄê
+	# ãƒšãƒ¼ã‚¸ã®ã‚¿ã‚¤ãƒˆãƒ«ã‚’æ±ºå®š
 	my $title = "";
 	if($cgi->param('action') eq "" && $wiki->page_exists($cgi->param('page')) && $wiki->is_installed('search')){
 		$title = "<a href=\"".$wiki->create_url({action=>"SEARCH",word=>$wiki->get_title()})."\">".
@@ -164,12 +164,12 @@ eval {
 	}
 
 	#------------------------------------------------------------------------------
-	# ¥Ø¥Ã¥À¤ÎÀ¸À®
+	# ãƒ˜ãƒƒãƒ€ã®ç”Ÿæˆ
 	#------------------------------------------------------------------------------
 	my $header_tmpl = HTML::Template->new(filename => $wiki->config('tmpl_dir')."/header.tmpl",
 	                                      die_on_bad_params => 0,
 	                                      case_sensitive    => 1);
-	# ¥á¥Ë¥å¡¼¤ò¼èÆÀ
+	# ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å–å¾—
 	my @menu = ();
 	foreach(sort {$b->{weight}<=>$a->{weight}} @{$wiki->{menu}}){
 		if($_->{href} ne ""){
@@ -181,13 +181,13 @@ eval {
 	my $header = $header_tmpl->output();
 
 	#------------------------------------------------------------------------------
-	# ¥Õ¥Ã¥¿¤ÎÀ¸À®
+	# ãƒ•ãƒƒã‚¿ã®ç”Ÿæˆ
 	#------------------------------------------------------------------------------
 	my $footer_tmpl = HTML::Template->new(filename => $wiki->config('tmpl_dir')."/footer.tmpl",
 	                                      die_on_bad_params => 0,
 	                                      case_sensitive    => 1);
 
-	# ¥³¥Ô¡¼¥é¥¤¥È¤òÉ½¼¨¤¹¤ë¤«¤É¤¦¤«
+	# ã‚³ãƒ”ãƒ¼ãƒ©ã‚¤ãƒˆã‚’è¡¨ç¤ºã™ã‚‹ã‹ã©ã†ã‹
 	my $admin_name = $wiki->config('admin_name');
 	my $admin_mail = $wiki->config('admin_mail_pub');
 	my $out_copyright  = 1;
@@ -208,26 +208,26 @@ eval {
 	my $footer = $footer_tmpl->output();
 
 	#------------------------------------------------------------------------------
-	# ¥µ¥¤¥È¥Æ¥ó¥×¥ì¡¼¥È¤Î½èÍı
+	# ã‚µã‚¤ãƒˆãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®å‡¦ç†
 	#------------------------------------------------------------------------------
-	# ¥Æ¥ó¥×¥ì¡¼¥È¤ÎÆÉ¤ß¹ş¤ß
+	# ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®èª­ã¿è¾¼ã¿
 	my $template = HTML::Template->new(filename => $wiki->config($template_name),
 	                                   die_on_bad_params => 0,
 	                                   case_sensitive    => 1);
 
-	# »²¾È¸¢¸Â¤¬¤¢¤ë¤«¤É¤¦¤«
+	# å‚ç…§æ¨©é™ãŒã‚ã‚‹ã‹ã©ã†ã‹
 	my $can_show = 0;
 	if($action ne '' || ($action eq '' && $wiki->can_show($cgi->param('page')))){
 		$can_show = 1;
 	}
 
-	# head¥¿¥°Æâ¤ËÉ½¼¨¤¹¤ë¾ğÊó¤òºîÀ®
+	# headã‚¿ã‚°å†…ã«è¡¨ç¤ºã™ã‚‹æƒ…å ±ã‚’ä½œæˆ
 	my $head_info = "";
 	foreach (@{$wiki->{'head_info'}}){
 		$head_info .= $_."\n";
 	}
 
-	# ¥Æ¥ó¥×¥ì¡¼¥È¤Ë¥Ñ¥é¥á¡¼¥¿¤ò¥»¥Ã¥È
+	# ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã«ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆ
 	$template->param(SITE_TITLE  => &Util::escapeHTML($wiki->get_title()." - ".$wiki->config('site_title')),
 	                 MENU        => $header,
 	                 TITLE       => $title,
@@ -246,30 +246,30 @@ eval {
 	);
 
 	if ($is_handyphone) {
-		# ·ÈÂÓÅÅÏÃÍÑ½èÍı
+		# æºå¸¯é›»è©±ç”¨å‡¦ç†
 		$output = $template->output;
 		&Jcode::convert(\$output,"sjis");
 	} else {
-		# ¥Ñ¥½¥³¥óÍÑ½èÍı
+		# ãƒ‘ã‚½ã‚³ãƒ³ç”¨å‡¦ç†
 		my $usercss = &Util::load_config_text($wiki,$wiki->config('usercss_file'));
 		
 		if($config->{'theme'} eq ''){
-			# ¥Æ¡¼¥Ş¤¬»ÈÍÑ¤µ¤ì¤Æ¤ª¤é¤º¡¢³°ÉôCSS¤¬»ØÄê¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¤Ï¤½¤ì¤ò»ÈÍÑ
+			# ãƒ†ãƒ¼ãƒãŒä½¿ç”¨ã•ã‚Œã¦ãŠã‚‰ãšã€å¤–éƒ¨CSSãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ãã‚Œã‚’ä½¿ç”¨
 			if($config->{'outer_css'} ne ''){
 				$wiki->config('css',$config->{'outer_css'});
-			# ¥Æ¡¼¥Ş¤â³°ÉôCSS¤â»ØÄê¤µ¤ì¤Æ¤¤¤Ê¤¤¾ì¹ç¤Ï¥¹¥¿¥¤¥ë¥·¡¼¥È¤ò»ÈÍÑ¤·¤Ê¤¤
+			# ãƒ†ãƒ¼ãƒã‚‚å¤–éƒ¨CSSã‚‚æŒ‡å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¹ã‚¿ã‚¤ãƒ«ã‚·ãƒ¼ãƒˆã‚’ä½¿ç”¨ã—ãªã„
 			} else {
 				$wiki->config('css','');
 			}
 		}
-		# ¥Ñ¥é¥á¡¼¥¿¤ò¥»¥Ã¥È
+		# ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆ
 		$template->param(HAVE_USER_CSS => $usercss ne "",
 		                 THEME_CSS     => $wiki->config('css'),
 		                 USER_CSS      => &Util::escapeHTML($usercss),
 		                 THEME_URI     => $wiki->config('theme_uri'));
 		
-		# ¥Ú¡¼¥¸Ì¾¤òEXIST_PAGE_¥Ú¡¼¥¸Ì¾¤È¤¤¤¦¥Ñ¥é¥á¡¼¥¿¤Ë¥»¥Ã¥È
-		# ¤¿¤À¤·¡¢¥¹¥é¥Ã¥·¥å¤ò´Ş¤à¥Ú¡¼¥¸Ì¾¤Ï¥»¥Ã¥È¤·¤Ê¤¤
+		# ãƒšãƒ¼ã‚¸åã‚’EXIST_PAGE_ãƒšãƒ¼ã‚¸åã¨ã„ã†ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã«ã‚»ãƒƒãƒˆ
+		# ãŸã ã—ã€ã‚¹ãƒ©ãƒƒã‚·ãƒ¥ã‚’å«ã‚€ãƒšãƒ¼ã‚¸åã¯ã‚»ãƒƒãƒˆã—ãªã„
 		my @pagelist = $wiki->get_page_list();
 		foreach my $page (@pagelist){
 			if(index($page,"/")==-1 && $wiki->can_show($page)){
@@ -279,9 +279,9 @@ eval {
 		
 		$output = $template->output;
 		
-		# ¥¤¥ó¥¯¥ë¡¼¥ÉÌ¿Îá
-		# <!--FSWIKI_INCLUDE PAGE="¥Ú¡¼¥¸Ì¾"-->
-		# ¥Ú¡¼¥¸Ì¾¤ÇWikiName¤ò»ØÄê¤¹¤ë¡£
+		# ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰å‘½ä»¤
+		# <!--FSWIKI_INCLUDE PAGE="ãƒšãƒ¼ã‚¸å"-->
+		# ãƒšãƒ¼ã‚¸åã§WikiNameã‚’æŒ‡å®šã™ã‚‹ã€‚
 		my $fswiki_include_tag = '<!--\s*FSWIKI_INCLUDE\s+PAGE\s*=\s*"([^"]*)"\s*-->';
 		while($output =~ /$fswiki_include_tag/o){
 			if($wiki->page_exists($1) && $wiki->can_show($1)){
@@ -293,9 +293,9 @@ eval {
 	}
 	
 	#------------------------------------------------------------------------------
-	# ½ĞÎÏ½èÍı
+	# å‡ºåŠ›å‡¦ç†
 	#------------------------------------------------------------------------------
-	# ¥Ø¥Ã¥À¤Î½ĞÎÏ
+	# ãƒ˜ãƒƒãƒ€ã®å‡ºåŠ›
 	if($is_handyphone){
 		print "Content-Type: text/html;charset=Shift_JIS\n";
 	} else {
@@ -304,7 +304,7 @@ eval {
 	print "Pragma: no-cache\n";
 	print "Cache-Control: no-cache\n\n";
 	 
-	# HTML¤Î½ĞÎÏ
+	# HTMLã®å‡ºåŠ›
 	print $output;
 };
 

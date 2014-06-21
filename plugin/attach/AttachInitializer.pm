@@ -1,14 +1,14 @@
 ############################################################
 #
-# attach¥×¥é¥°¥¤¥ó¤Î½é´ü²½¤ª¤è¤ÓWikiFarm¤Ë¤è¤ëWikiºï½ü»þ
-# ¤Î½èÍý¤ò¹Ô¤¦¥Õ¥Ã¥¯¥×¥é¥°¥¤¥ó
+# attachãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®åˆæœŸåŒ–ãŠã‚ˆã³WikiFarmã«ã‚ˆã‚‹Wikiå‰Šé™¤æ™‚
+# ã®å‡¦ç†ã‚’è¡Œã†ãƒ•ãƒƒã‚¯ãƒ—ãƒ©ã‚°ã‚¤ãƒ³
 #
 ############################################################
 package plugin::attach::AttachInitializer;
 use strict;
 use File::Path;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -16,23 +16,23 @@ sub new {
 	return bless $self,$class;
 }
 #===========================================================
-# attach¥×¥é¥°¥¤¥ó¤Î½é´ü²½
+# attachãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®åˆæœŸåŒ–
 #===========================================================
 sub hook {
 	my $self = shift;
 	my $wiki = shift;
 	my $name = shift;
 	
-	# remove_wiki¥Õ¥Ã¥¯
+	# remove_wikiãƒ•ãƒƒã‚¯
 	if($name eq "remove_wiki"){
 		my $path = $wiki->get_CGI()->param("path");
 		if(-e $wiki->config('attach_dir').$path){
 			rmtree($wiki->config('attach_dir').$path);
 		}
 		
-	# initialize¥Õ¥Ã¥¯
+	# initializeãƒ•ãƒƒã‚¯
 	} elsif($name eq "initialize"){
-		# Farm¤ÇÆ°ºî¤·¤Æ¤¤¤ë¾ì¹ç¤Ï¥°¥í¡¼¥Ð¥ëÊÑ¿ô¤ò¾å½ñ¤­
+		# Farmã§å‹•ä½œã—ã¦ã„ã‚‹å ´åˆã¯ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã‚’ä¸Šæ›¸ã
 		my $path_info = $wiki->get_CGI()->path_info();
 		if(length($path_info)>0){
 			$wiki->config('attach_dir',$wiki->config('attach_dir').$path_info);

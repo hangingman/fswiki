@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# <p>FSWiki�ʳ���ʸˡ���Խ���Ԥ����˳ƥե����ޥå��Ѥ�Help�ڡ�����ɽ�����뤿��Υץ饰����Ǥ���</p>
+# <p>FSWiki以外の文法で編集を行う場合に各フォーマット用のHelpページを表示するためのプラグインです。</p>
 #
 ###############################################################################
 package plugin::core::FormatHelp;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -14,7 +14,7 @@ sub new {
 	return bless $self,$class;
 }
 #==============================================================================
-# �Խ��ե����ޥåȤ˱������إ�פ���Ϥ��ޤ���
+# 編集フォーマットに応じたヘルプを出力します。
 #==============================================================================
 sub paragraph {
 	my $self   = shift;
@@ -22,7 +22,7 @@ sub paragraph {
 	my $cgi    = $wiki->get_CGI();
 	my $format = $wiki->get_edit_format();
 
-	# Farm�ξ��γ��ؤ����
+	# Farmの場合の階層を取得
 	my $page  = "Help/$format";
 	my $depth = split(/\//,$cgi->path_info());
 	if($depth!=0){
@@ -35,10 +35,10 @@ sub paragraph {
 		}
 	}
 
-	# includeƱ�ͤ�΢���ǽ���
+	# include同様の裏技で処理
 	my $source = $wiki->get_page($page);
 	if($source eq ""){
-		return &Util::paragraph_error("�ڡ�����¸�ߤ��ޤ���","WIKI");
+		return &Util::paragraph_error("ページが存在しません。","WIKI");
 	} else {
 		my $pagetmp = $cgi->param("page");
 		$cgi->param("page",$page);

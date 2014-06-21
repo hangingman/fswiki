@@ -1,11 +1,11 @@
 ###############################################################################
 #
-# <p>bugtrack¥×¥é¥°¥¤¥ó¤ÇÅê¹Æ¤µ¤ì¤¿¥Ğ¥°¤Î°ìÍ÷¤òÉ½¼¨¤·¤Ş¤¹¡£</p>
+# <p>bugtrackãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã§æŠ•ç¨¿ã•ã‚ŒãŸãƒã‚°ã®ä¸€è¦§ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚</p>
 # <p>
-#   Âè2°ú¿ô¤Ëform¤òÍ¿¤¨¤ë¤È¾õÂÖÊÑ¹¹ÍÑ¤Î¥Õ¥©¡¼¥à¤¬¤¢¤é¤ï¤ì¤Ş¤¹¡£
+#   ç¬¬2å¼•æ•°ã«formã‚’ä¸ãˆã‚‹ã¨çŠ¶æ…‹å¤‰æ›´ç”¨ã®ãƒ•ã‚©ãƒ¼ãƒ ãŒã‚ã‚‰ã‚ã‚Œã¾ã™ã€‚
 # </p>
 # <pre>
-# {{buglist ¥×¥í¥¸¥§¥¯¥ÈÌ¾[,form]}}
+# {{buglist ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå[,form]}}
 # </pre>
 #
 ###############################################################################
@@ -13,7 +13,7 @@ package plugin::bugtrack::BugList;
 use strict;
 use plugin::bugtrack::BugState;
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -22,7 +22,7 @@ sub new {
 }
 
 #==============================================================================
-# ¥¤¥ó¥é¥¤¥ó¥á¥½¥Ã¥É
+# ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub paragraph {
 	my $self    = shift;
@@ -31,10 +31,10 @@ sub paragraph {
 	my $form    = shift;
 
 	if($project eq ""){
-		return &Util::paragraph_error("¥×¥í¥¸¥§¥¯¥ÈÌ¾¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+		return &Util::paragraph_error("ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆåãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 	}
 
-	# form°Ê³°¤ÎÊ¸»úÎó¤ÏÌµ»ë
+	# formä»¥å¤–ã®æ–‡å­—åˆ—ã¯ç„¡è¦–
 	if($form ne "form"){
 	    $form = 0;
 	}
@@ -61,15 +61,15 @@ sub paragraph {
 				if($first==0 && $_ =~ /^!!!(.*)/){
 					$subject = $1;
 					$first = 1;
-				} elsif($_ =~ /^\*¥«¥Æ¥´¥ê¡§\s*(.*)/){
+				} elsif($_ =~ /^\*ã‚«ãƒ†ã‚´ãƒªï¼š\s*(.*)/){
 					$category = $1;
-				} elsif($_ =~ /^\*Í¥ÀèÅÙ¡§\s*(.*)/){
+				} elsif($_ =~ /^\*å„ªå…ˆåº¦ï¼š\s*(.*)/){
 					$priority = $1;
-				} elsif($_ =~ /^\*¾õÂÖ¡§\s*(.*)/){
+				} elsif($_ =~ /^\*çŠ¶æ…‹ï¼š\s*(.*)/){
 					$status = $1;
-				} elsif($_ =~ /^\*Åê¹Æ¼Ô¡§\s*(.*)/){
+				} elsif($_ =~ /^\*æŠ•ç¨¿è€…ï¼š\s*(.*)/){
 					$name = $1;
-				} elsif($_ =~ /^\*Æü»ş¡§\s*(.*)/){
+				} elsif($_ =~ /^\*æ—¥æ™‚ï¼š\s*(.*)/){
 					$date = $1;
 				}
 			}
@@ -89,7 +89,7 @@ sub paragraph {
 	
 	my $buf = "";
 	
-	# ¥µ¥Ş¥ê¤òºîÀ®
+	# ã‚µãƒãƒªã‚’ä½œæˆ
 	my $bug_teian    = 0;
 	my $bug_chakushu = 0;
 	my $bug_kanryo   = 0;
@@ -97,46 +97,46 @@ sub paragraph {
 	my $bug_horyu    = 0;
 	my $bug_kyakka   = 0;
 	
-	$bug_teian    = @{$bugs->{"Äó°Æ"}}       if(defined($bugs->{"Äó°Æ"}));
-	$bug_chakushu = @{$bugs->{"Ãå¼ê"}}       if(defined($bugs->{"Ãå¼ê"}));
-	$bug_kanryo   = @{$bugs->{"´°Î»"}}       if(defined($bugs->{"´°Î»"}));
-	$bug_released = @{$bugs->{"¥ê¥ê¡¼¥¹ºÑ"}} if(defined($bugs->{"¥ê¥ê¡¼¥¹ºÑ"}));
-	$bug_horyu    = @{$bugs->{"ÊİÎ±"}}       if(defined($bugs->{"ÊİÎ±"}));
-	$bug_kyakka   = @{$bugs->{"µÑ²¼"}}       if(defined($bugs->{"µÑ²¼"}));
+	$bug_teian    = @{$bugs->{"ææ¡ˆ"}}       if(defined($bugs->{"ææ¡ˆ"}));
+	$bug_chakushu = @{$bugs->{"ç€æ‰‹"}}       if(defined($bugs->{"ç€æ‰‹"}));
+	$bug_kanryo   = @{$bugs->{"å®Œäº†"}}       if(defined($bugs->{"å®Œäº†"}));
+	$bug_released = @{$bugs->{"ãƒªãƒªãƒ¼ã‚¹æ¸ˆ"}} if(defined($bugs->{"ãƒªãƒªãƒ¼ã‚¹æ¸ˆ"}));
+	$bug_horyu    = @{$bugs->{"ä¿ç•™"}}       if(defined($bugs->{"ä¿ç•™"}));
+	$bug_kyakka   = @{$bugs->{"å´ä¸‹"}}       if(defined($bugs->{"å´ä¸‹"}));
 	my $bug_count = $bug_teian + $bug_chakushu + $bug_kanryo + $bug_released + $bug_horyu + $bug_kyakka;
 	
-	$buf .= "<p>Äó°Æ¡§$bug_teian / Ãå¼ê¡§$bug_chakushu / ´°Î»¡§$bug_kanryo / ¥ê¥ê¡¼¥¹ºÑ¡§$bug_released ".
-	        "/ ÊİÎ±¡§$bug_horyu / µÑ²¼¡§$bug_kyakka / ¹ç·×¡§$bug_count</p>\n";
+	$buf .= "<p>ææ¡ˆï¼š$bug_teian / ç€æ‰‹ï¼š$bug_chakushu / å®Œäº†ï¼š$bug_kanryo / ãƒªãƒªãƒ¼ã‚¹æ¸ˆï¼š$bug_released ".
+	        "/ ä¿ç•™ï¼š$bug_horyu / å´ä¸‹ï¼š$bug_kyakka / åˆè¨ˆï¼š$bug_count</p>\n";
 	
-	# °ìÍ÷¤òºîÀ®
+	# ä¸€è¦§ã‚’ä½œæˆ
 	$buf .= "<table border>\n".
 	        "  <tr>\n".
 	        "    <th><br></th>\n".
-	        "    <th>¥«¥Æ¥´¥ê</th>\n".
-	        "    <th>Í¥ÀèÅÙ</th>\n".
-	        "    <th>¾õÂÖ</th>\n".
-	        "    <th>Åê¹Æ¼Ô</th>\n".
-	        "    <th>¥µ¥Ş¥ê</th>\n".
+	        "    <th>ã‚«ãƒ†ã‚´ãƒª</th>\n".
+	        "    <th>å„ªå…ˆåº¦</th>\n".
+	        "    <th>çŠ¶æ…‹</th>\n".
+	        "    <th>æŠ•ç¨¿è€…</th>\n".
+	        "    <th>ã‚µãƒãƒª</th>\n".
 	        "  </tr>\n";
 	
 	my $tmp = $buf;
 	
-	$buf .= make_row(@{$bugs->{"Äó°Æ"}}       ,"#FFDDDD",$wiki);
-	$buf .= make_row(@{$bugs->{"Ãå¼ê"}}       ,"#FFFFDD",$wiki);
-	$buf .= make_row(@{$bugs->{"´°Î»"}}       ,"#DDFFDD",$wiki);
-	$buf .= make_row(@{$bugs->{"¥ê¥ê¡¼¥¹ºÑ"}} ,"#DDDDFF",$wiki);
-	$buf .= make_row(@{$bugs->{"ÊİÎ±"}}       ,"#DDDDDD",$wiki);
-	$buf .= make_row(@{$bugs->{"µÑ²¼"}}       ,"#FFFFFF",$wiki);
+	$buf .= make_row(@{$bugs->{"ææ¡ˆ"}}       ,"#FFDDDD",$wiki);
+	$buf .= make_row(@{$bugs->{"ç€æ‰‹"}}       ,"#FFFFDD",$wiki);
+	$buf .= make_row(@{$bugs->{"å®Œäº†"}}       ,"#DDFFDD",$wiki);
+	$buf .= make_row(@{$bugs->{"ãƒªãƒªãƒ¼ã‚¹æ¸ˆ"}} ,"#DDDDFF",$wiki);
+	$buf .= make_row(@{$bugs->{"ä¿ç•™"}}       ,"#DDDDDD",$wiki);
+	$buf .= make_row(@{$bugs->{"å´ä¸‹"}}       ,"#FFFFFF",$wiki);
 	
 	if($buf eq $tmp){
-		$buf .= "  <tr><td colspan=\"6\" align=\"center\">¥Ğ¥°¥ì¥İ¡¼¥È¤Ï¤¢¤ê¤Ş¤»¤ó</td></tr>\n";
+		$buf .= "  <tr><td colspan=\"6\" align=\"center\">ãƒã‚°ãƒ¬ãƒãƒ¼ãƒˆã¯ã‚ã‚Šã¾ã›ã‚“</td></tr>\n";
 	}
 	
 	return $buf .= "</table>\n";
 }
 
 #==============================================================================
-# £±¹ÔÊ¬¤Î¥Ç¡¼¥¿¤ò½ĞÎÏ¤¹¤ëÆâÉôÍÑ´Ø¿ô
+# ï¼‘è¡Œåˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡ºåŠ›ã™ã‚‹å†…éƒ¨ç”¨é–¢æ•°
 #==============================================================================
 sub make_row {
 	my $wiki  = pop;
@@ -154,7 +154,7 @@ sub make_row {
 		        "    <td>".&Util::escapeHTML($_->{subject})."</td>\n".
 		        "  </tr>\n";
 
-		# ¥Õ¥©¡¼¥à¤òÉ½¼¨¤¹¤ë
+		# ãƒ•ã‚©ãƒ¼ãƒ ã‚’è¡¨ç¤ºã™ã‚‹
 		if($_->{form}){
 		    my $page = $wiki->get_CGI->param("page");
 		    my $source = $_->{page};
@@ -166,7 +166,7 @@ sub make_row {
 }
 
 #==============================================================================
-# ¥½¡¼¥È´Ø¿ô
+# ã‚½ãƒ¼ãƒˆé–¢æ•°
 #==============================================================================
 #sub by_count {
 #	my $a_count = $a->{count};

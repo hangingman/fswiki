@@ -1,11 +1,11 @@
 ###############################################################################
 # <p>
-# FSWiki�ǥե���ȤΥ��ȥ졼���ץ饰����
+# FSWikiデフォルトのストレージプラグイン。
 # </p>
 # <p>
-# setup.dat��backup=1�⤷����backup�ǥ��쥯�ƥ��֤��ά�������ϣ�����Τߡ�
-# backup=2�ʾ�⤷����0����ꤷ����������Хå����åפ��б����ޤ���
-# backup=0����ꤷ������̵���¤˥Хå����åפ�Ԥ��ޤ���
+# setup.datのbackup=1もしくはbackupディレクティブを省略した場合は１世代のみ、
+# backup=2以上もしくは0を指定した場合は世代バックアップに対応します。
+# backup=0を指定した場合は無制限にバックアップを行います。
 # </p>
 ###############################################################################
 package Wiki::DefaultStorage;
@@ -13,15 +13,15 @@ use File::Copy;
 use strict;
 use vars qw($MODTIME_FILE $PAGE_LIST_FILE);
 
-# �ڡ����κǽ�����������Ͽ����ե�����
+# ページの最終更新日時を記録するファイル
 $MODTIME_FILE = "modtime.dat";
 
-# �ڡ��������Υ���ǥå������Ǽ����ե�����
+# ページ一覧のインデックスを格納するファイル
 $PAGE_LIST_FILE = "pagelist.cache";
 
 #==============================================================================
 # <p>
-# ���󥹥ȥ饯��
+# コンストラクタ
 # </p>
 #==============================================================================
 sub new {
@@ -43,7 +43,7 @@ sub new {
 
 #==============================================================================
 # <p>
-# �ڡ��������
+# ページを取得
 # </p>
 #==============================================================================
 sub get_page {
@@ -72,7 +72,7 @@ sub get_page {
 
 #==============================================================================
 # <p>
-# �ڡ�������¸
+# ページを保存
 # </p>
 #==============================================================================
 sub save_page {
@@ -84,7 +84,7 @@ sub save_page {
 	
 	$content = '' if($content =~ /^[\r\n]+$/s); # added for opera
 	
-	# �ڡ���̾�ȥڡ������Ƥ�����
+	# ページ名とページ内容の補正
 	$page = Util::trim($page);
 	$content =~ s/\r\n/\n/g;
 	$content =~ s/\r/\n/g;
@@ -94,7 +94,7 @@ sub save_page {
 	
 	Util::file_lock($wikifile,1);
 	
-	# �Хå����å�
+	# バックアップ
 	my $BACKUP = $self->get_page($page);
 	if($BACKUP ne '' && $BACKUP eq $content){
 		Util::file_unlock($wikifile);
@@ -116,7 +116,7 @@ sub save_page {
 		print DATA $BACKUP;
 		close(DATA);
 	} else {
-		# backup���ʤ����ϡ�page_level��ǥե�����ͤ����ꤹ�롣
+		# backupがない場合は、page_levelをデフォルト値に設定する。
 		$flag = 'create';
 		my $login = $wiki->get_login_info();
 		my $level = 0;
@@ -133,7 +133,7 @@ sub save_page {
 		$wiki->set_page_level($page, $level);
 	}
 
-	# ����������Ͽ�ե����뤬�ʤ����Ϻ���
+	# 更新日時記録ファイルがない場合は作成
 	unless(-e $wiki->config('config_dir')."/".$MODTIME_FILE){
 		my @list = $self->get_page_list();
 		my $hash = {};
@@ -142,25 +142,25 @@ sub save_page {
 		}
 		&Util::save_config_hash($wiki,$MODTIME_FILE,$hash);
 	}
-	# �񤭹���
+	# 書き込む
 	if($content eq ""){
 		$self->_create_page_list_file($page, 'remove');
 		unlink($wikifile);
 		$wiki->set_page_level($page);
-		# ������������
+		# 更新日時を削除
 		my $modtime = &Util::load_config_hash($wiki,$MODTIME_FILE);
 		delete $modtime->{$page};
 		&Util::save_config_hash($wiki,$MODTIME_FILE,$modtime);
-		# ������ϥХå����åץե������Ĥ�
+		# 削除時はバックアップファイルを残す
 		#unlink(&Util::make_filename($wiki->config('backup_dir'),&Util::url_encode($page),"bak"));
 	} else {
 		$self->_create_page_list_file($page, $flag);
-		# ��񤭤���
+		# 上書きする
 		open(DATA,">$tmpfile") or die $!;
 		binmode(DATA);
 		print DATA $content;
 		close(DATA);		
-		# sage�Ǥʤ����Ϲ��������򹹿�
+		# sageでない場合は更新日時を更新
 		if($sage != 1){
 			my $modtime = &Util::load_config_hash($wiki,$MODTIME_FILE);
 			$modtime->{$page} = time();
@@ -170,16 +170,16 @@ sub save_page {
 	
 	rename($tmpfile, $wikifile);
 	Util::file_unlock($wikifile);
-	delete $self->{exists_cache}->{":$page"}; # page_exists() �Υ���å���򥯥ꥢ��
+	delete $self->{exists_cache}->{":$page"}; # page_exists() のキャッシュをクリア。
 	
 	return 1;
 }
 
 #------------------------------------------------------------------------------
 # <p>
-# �ڡ��������Υ���ǥå����ե������������������ޤ���
-# �������˥ڡ���̾�����������'create'��'update'��'remove'�Τ����줫����ꤷ�ޤ���
-# ����ǥå����ե����뤬¸�ߤ��ʤ����ϰ����˴ؤ�餺����ǥå����ե�����κ�����Ԥ��ޤ���
+# ページ一覧のインデックスファイルを作成、更新します。
+# 第一引数にページ名、第二引数に'create'、'update'、'remove'のいずれかを指定します。
+# インデックスファイルが存在しない場合は引数に関わらずインデックスファイルの作成を行います。
 # </p>
 #------------------------------------------------------------------------------
 sub _create_page_list_file {
@@ -209,7 +209,7 @@ sub _create_page_list_file {
 		$names =~ s/(^|\n)\Q$page\E\n/$1/;
 		Util::save_config_text(undef, $file, $names);
 	} elsif($flag eq 'update'){
-		# �ڡ����ι������ϲ��⤷�ʤ�
+		# ページの更新時は何もしない
 	} elsif($flag eq 'create') {
 		open(DATA, ">>$file");
 		print DATA "$page\n";
@@ -219,7 +219,7 @@ sub _create_page_list_file {
 
 #------------------------------------------------------------------------------
 # <p>
-# �Хå����åץե��������Ϳ���������ֹ���������ץ饤�١��ȥ᥽�å�
+# バックアップファイルに付与する世代番号を取得するプライベートメソッド
 # </p>
 #------------------------------------------------------------------------------
 sub _get_backup_number {
@@ -240,7 +240,7 @@ sub _get_backup_number {
 
 #------------------------------------------------------------------------------
 # <p>
-# ��¸�������Ķ����ʬ��������ץ饤�١��ȥ᥽�å�
+# 保存世代数を超えた分を削除するプライベートメソッド
 # </p>
 #------------------------------------------------------------------------------
 sub _rename_old_history {
@@ -248,7 +248,7 @@ sub _rename_old_history {
 	my $page  = shift;
 	my $wiki  = $self->{wiki};
 	
-	# ̵���¤ξ��ϲ��⤷�ʤ�
+	# 無制限の場合は何もしない
 	if($self->{backup}==0){
 		return;
 	}
@@ -277,7 +277,7 @@ sub _rename_old_history {
 
 #==============================================================================
 # <p>
-# �ڡ����ΰ����������
+# ページの一覧を取得。
 # </p>
 #==============================================================================
 sub get_page_list {
@@ -288,7 +288,7 @@ sub get_page_list {
 	my $permit = "all";
 	my $max    = 0;
 	
-	# ��������
+	# 引数を解釈
 	if(defined($args)){
 		if(defined($args->{-sort})){
 			$sort = $args->{-sort};
@@ -301,14 +301,14 @@ sub get_page_list {
 		}
 	}
 	
-	# �ڡ����ΰ��������
+	# ページの一覧を取得
 	my $file  = $wiki->config('log_dir')."/".$PAGE_LIST_FILE;
 	$self->_create_page_list_file(undef, 'update') unless(-e $file);
 	my $names = Util::load_config_text(undef, $file);
 	my @list  = ();
 	foreach my $name (split(/\n/,$names)){
 		my $flag = 0;
-		# ���ȸ��Τ���ڡ����Τ�
+		# 参照権のあるページのみ
 		if($permit eq "show"){
 			if($wiki->can_show($name)){
 				$flag = 1;
@@ -319,32 +319,32 @@ sub get_page_list {
 				$flag = 1;
 			}
 			
-		# ���ƤΥڡ���
+		# 全てのページ
 		} elsif($permit eq "all"){
 			$flag = 1;
 		
-		# ����ʳ��ξ��ϥ��顼
+		# それ以外の場合はエラー
 		} else {
-			die "permit���ץ����λ��꤬�����Ǥ���";
+			die "permitオプションの指定が不正です。";
 		}
 		if($flag == 1){
 			push(@list,$name);
 		}
 	}
 	
-	# ̾���ǥ�����
+	# 名前でソート
 	if($sort eq "name"){
 		@list = sort { $a cmp $b } @list;
 		
-	# ���������ʿ����ˤ˥�����
+	# 更新日時（新着順）にソート
 	} elsif($sort eq "last_modified"){
 		@list =  map  { $_->[0] }
 		         sort { $b->[1] <=> $a->[1] }
 		         map  { [$_, $wiki->get_last_modified2($_)] } @list;
 	
-	# ����ʳ��ξ��ϥ��顼
+	# それ以外の場合はエラー
 	} else {
-		die "sort���ץ����λ��꤬�����Ǥ���";
+		die "sortオプションの指定が不正です。";
 	}
 	
 	return $max == 0 ? @list : splice(@list, 0, $max);
@@ -352,7 +352,7 @@ sub get_page_list {
 
 #==============================================================================
 # <p>
-# �ڡ����κǽ���������������ʪ��Ū��
+# ページの最終更新時刻を取得（物理的）
 # </p>
 #==============================================================================
 sub get_last_modified {
@@ -365,7 +365,7 @@ sub get_last_modified {
 
 #==============================================================================
 # <p>
-# �ڡ����κǽ�������������������Ū��
+# ページの最終更新時刻を取得（論理的）
 # </p>
 #==============================================================================
 sub get_last_modified2 {
@@ -387,7 +387,7 @@ sub get_last_modified2 {
 
 #===============================================================================
 # <p>
-# �ڡ�����¸�ߤ��뤫�ɤ���Ĵ�٤�
+# ページが存在するかどうか調べる
 # </p>
 #===============================================================================
 sub page_exists {
@@ -412,9 +412,9 @@ sub page_exists {
 
 #==============================================================================
 # <p>
-# �Хå����åץ����פ����(single|all)��
-# setup.dat���������Ƥˤ�äơ�������Τߤξ���single��
-# ����Хå����åפ�ԤäƤ������all���ֵѤ��ޤ���
+# バックアップタイプを取得(single|all)。
+# setup.datの設定内容によって、１世代のみの場合はsingle、
+# 世代バックアップを行っている場合はallを返却します。
 # </p>
 #==============================================================================
 sub backup_type {
@@ -429,7 +429,7 @@ sub backup_type {
 
 #==============================================================================
 # <p>
-# �Хå����åץե�����������ޤ���
+# バックアップファイルを削除します。
 # </p>
 #==============================================================================
 sub delete_backup_files {
@@ -445,8 +445,8 @@ sub delete_backup_files {
 
 #==============================================================================
 # <p>
-# ����Хå����åפ�ԤäƤ�����˥Хå����å׻���ΰ�����������ޤ���
-# ������ΤߥХå����åפ������ư��Ƥ������undef���֤��ޤ���
+# 世代バックアップを行っている場合にバックアップ時刻の一覧を取得します。
+# １世代のみバックアップの設定で動作している場合はundefを返します。
 # </p>
 #==============================================================================
 sub get_backup_list {
@@ -480,8 +480,8 @@ sub get_backup_list {
 
 #==============================================================================
 # <p>
-# �Хå����åפ�������ޤ���
-# backup_type=all�ξ����������������(0��)����ꤷ�ޤ���
+# バックアップを取得します。
+# backup_type=allの場合は第二引数で世代(0〜)を指定します。
 # </p>
 #==============================================================================
 sub get_backup {
@@ -492,13 +492,13 @@ sub get_backup {
 	my $filename = "";
 	
 	if($self->{backup}!=1){
-		# ����Хå����åפ���������꤬�ʤ����Ϻǿ��ΥХå����åפ����
+		# 世代バックアップかつ世代指定がない場合は最新のバックアップを取得
 		if(!defined($gen) || $gen eq ""){
 			my @list = $self->get_backup_list($page);
 			$gen = $#list;
 		}
 		$filename = &Util::make_filename($self->{wiki}->config('backup_dir'),&Util::url_encode($page),($gen+1).".bak");
-		Util::debug("�Хå����åץե�����̾:$filename");
+		Util::debug("バックアップファイル名:$filename");
 	} else {
 		$filename = &Util::make_filename($self->{wiki}->config('backup_dir'),&Util::url_encode($page),"bak");
 	}
@@ -516,7 +516,7 @@ sub get_backup {
 
 #==============================================================================
 # <p>
-# �ڡ�������뤷�ޤ�
+# ページを凍結します
 # </p>
 #==============================================================================
 sub freeze_page {
@@ -532,14 +532,14 @@ sub freeze_page {
 		close(DATA);
 		Util::file_unlock($freeze_file);
 		
-		# ������쥯�Ȥ�������פ����ɡ�
+		# リダイレクトすれば不要だけど…
 		push(@{$self->{freeze_list}},$pagename);
 	}
 }
 
 #==============================================================================
 # <p>
-# �ڡ��������������ޤ�
+# ページの凍結を解除します
 # </p>
 #==============================================================================
 sub un_freeze_page {
@@ -562,14 +562,14 @@ sub un_freeze_page {
 		print DATA $buf;
 		close(DATA);
 		
-		# ������쥯�Ȥ�������פ����ɡ�
+		# リダイレクトすれば不要だけど…
 		@{$self->{freeze_list}} = grep(!/^\Q$pagename\E$/,@{$self->{freeze_list}});
 	}
 }
 
 #==============================================================================
 # <p>
-# ���ꥹ�Ȥ����
+# 凍結リストを取得
 # </p>
 #==============================================================================
 sub get_freeze_list {
@@ -607,7 +607,7 @@ sub get_freeze_list {
 
 #==============================================================================
 # <p>
-# �������Ϥ����ڡ���������椫�ɤ�������٤ޤ�
+# 引数で渡したページが凍結中かどうかしらべます
 # </p>
 #==============================================================================
 sub is_freeze {
@@ -626,7 +626,7 @@ sub is_freeze {
 
 #==============================================================================
 # <p>
-# �ڡ����λ��ȥ�٥�����ꤷ�ޤ���
+# ページの参照レベルを設定します。
 # </p>
 #==============================================================================
 sub set_page_level {
@@ -646,7 +646,7 @@ sub set_page_level {
 
 #==============================================================================
 # <p>
-# �ڡ����λ��ȥ�٥��������ޤ���
+# ページの参照レベルを取得します。
 # </p>
 #==============================================================================
 sub get_page_level {
@@ -659,7 +659,7 @@ sub get_page_level {
 	}
 	
 	unless(defined($self->{"$path:show_level"})){
-		# config_dir�򺹤��ؤ��Ƽ¹�
+		# config_dirを差し替えて実行
 		my $configdir = $self->{wiki}->config('config_dir');
 		if($path ne ""){
 			$self->{wiki}->config('config_dir',"$configdir/$path");
@@ -667,7 +667,7 @@ sub get_page_level {
 		
 		$self->{"$path:show_level"} = &Util::load_config_hash($self->{wiki},"showlevel.log");
 		
-		# config_dir�򸵤��᤹
+		# config_dirを元に戻す
 		$self->{wiki}->config('config_dir',$configdir);
 	}
 	
@@ -685,7 +685,7 @@ sub get_page_level {
 
 #==============================================================================
 # <p>
-# ��λ���˸ƤӽФ���ޤ������󥹥����ѿ��λ��Ȥ�������ޤ���
+# 終了時に呼び出されます。インスタンス変数の参照を解放します。
 # </p>
 #==============================================================================
 sub finalize {

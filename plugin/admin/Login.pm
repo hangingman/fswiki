@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# ´ÉÍı¼Ô¥í¥°¥¤¥ó
+# ç®¡ç†è€…ãƒ­ã‚°ã‚¤ãƒ³
 #
 ###############################################################################
 package plugin::admin::Login;
 use strict;
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,13 +15,13 @@ sub new {
 }
 
 #==============================================================================
-# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©
 #==============================================================================
 sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	
-	$wiki->set_title("´ÉÍı");
+	$wiki->set_title("ç®¡ç†");
 	my $cgi = $wiki->get_CGI;
 	
 	if($cgi->param("logout") ne ""){
@@ -31,7 +31,7 @@ sub do_action {
 	if(defined($wiki->get_login_info())){
 		return $self->admin_form($wiki,$wiki->get_login_info());
 	} else {
-		# ¥í¥°¥¤¥ó¤ÎÈ½Äê
+		# ãƒ­ã‚°ã‚¤ãƒ³ã®åˆ¤å®š
 		my $id   = $cgi->param("id");
 		my $pass = $cgi->param("pass");
 		my $page = $cgi->param("page");
@@ -50,7 +50,7 @@ sub do_action {
 					$wiki->redirectURL($wiki->create_url({action=>"LOGIN"}));
 				}
 			} else {
-				return $wiki->error("ID¤â¤·¤¯¤Ï¥Ñ¥¹¥ï¡¼¥É¤¬°ã¤¤¤Ş¤¹¡£");
+				return $wiki->error("IDã‚‚ã—ãã¯ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãŒé•ã„ã¾ã™ã€‚");
 			}
 		}
 	}
@@ -58,15 +58,15 @@ sub do_action {
 }
 
 #==============================================================================
-# ´ÉÍı²èÌÌ¥Õ¥©¡¼¥à
+# ç®¡ç†ç”»é¢ãƒ•ã‚©ãƒ¼ãƒ 
 #==============================================================================
 sub admin_form {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $login = shift;
-	my $buf = "<h2>¥í¥°¥¤¥óÃæ</h2>\n";
+	my $buf = "<h2>ãƒ­ã‚°ã‚¤ãƒ³ä¸­</h2>\n";
 	
-	# ´ÉÍı¼Ô¥æ¡¼¥¶¤Î¾ì¹ç
+	# ç®¡ç†è€…ãƒ¦ãƒ¼ã‚¶ã®å ´åˆ
 	if($login->{type}==0){
 		$buf .="<ul>\n";
 		foreach($wiki->get_admin_menu){
@@ -76,7 +76,7 @@ sub admin_form {
 		}
 		$buf .= "</ul>\n";
 		
-	# °ìÈÌ¥æ¡¼¥¶¤Î¾ì¹ç
+	# ä¸€èˆ¬ãƒ¦ãƒ¼ã‚¶ã®å ´åˆ
 	} else {
 		$buf .="<ul>\n";
 		foreach($wiki->get_admin_menu){
@@ -90,7 +90,7 @@ sub admin_form {
 	}
 	
 	$buf .= "<form action=\"".$wiki->create_url()."\" method=\"POST\">".
-	        "  <input type=\"submit\" name=\"logout\" value=\"¥í¥°¥¢¥¦¥È\">".
+	        "  <input type=\"submit\" name=\"logout\" value=\"ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ\">".
 	        "  <input type=\"hidden\" name=\"action\" value=\"LOGIN\">".
 	        "</form>\n";
 	
@@ -98,19 +98,19 @@ sub admin_form {
 }
 
 #==============================================================================
-# ¥í¥°¥¢¥¦¥È½èÍı
+# ãƒ­ã‚°ã‚¢ã‚¦ãƒˆå‡¦ç†
 #==============================================================================
 sub logout {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
 	
-	# CGI::Session¤ÎÇË´ş
+	# CGI::Sessionã®ç ´æ£„
 	my $session = $cgi->get_session($wiki);
 	$session->delete();
 	$session->flush();
 	
-	# Cookie¤ÎÇË´ş
+	# Cookieã®ç ´æ£„
 	my $path   = &Util::cookie_path($wiki);
 	my $cookie = CGI::Cookie->new(-name=>'CGISESSID',-value=>'',-expires=>-1,-path=>$path);
 	print "Set-Cookie: ".$cookie->as_string()."\n";
@@ -119,7 +119,7 @@ sub logout {
 }
 
 #==============================================================================
-# ¥í¥°¥¤¥ó²èÌÌ
+# ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢
 #==============================================================================
 sub default {
 	my $self = shift;

@@ -1,39 +1,39 @@
 ##############################################################
 #
-# <p>ToDo�ꥹ�Ȥ�ɽ�����ޤ���</p>
+# <p>ToDoリストを表示します。</p>
 # <p>
-#   �ޤ�Ŭ���ʥڡ�����ToDo�򵭽Ҥ��ޤ���ToDo�ε��Ҥϰʲ��Τ褦�ʴ����Ǥ���
+#   まず適当なページにToDoを記述します。ToDoの記述は以下のような感じです。
 # </p>
 # <pre>
-# * 22(ͥ����) �ȥ���åȥڡ��ѡ����㤦(��ư)
+# * 22(優先度) トイレットペーパーを買う(行動)
 # </pre>
 # <p>
-#   ͥ���٤ȹ�ư�δ֤϶�����İʾ�����Ƥ���������
-#   �ץ饰����λȤ����ϰʲ��Τ褦�ˤʤ�ޤ���
+#   優先度と行動の間は空白を一つ以上空けてください。
+#   プラグインの使い方は以下のようになります。
 # </p>
 # <pre>
-# {{todolist ToDo(ToDo�򵭽Ҥ����ڡ���),5(ɽ������������ά��)}}
+# {{todolist ToDo(ToDoを記述したページ),5(表示する件数、省略可)}}
 # </pre>
 # <p>
-#   ͥ���٤ι⤤��˾夫��ɽ������ޤ���
-#   always���ץ�����Ĥ���ȥ����å��ܥå����ȴ�λ�ܥ���ɽ�����졢
-#   ToDo����λ����������å��ܥå����˥����å�������ơִ�λ�פ򲡤���
-#   ToDo�򵭽Ҥ����ڡ����Ǥ�
+#   優先度の高い順に上から表示されます。
+#   alwaysオプションをつけるとチェックボックスと完了ボタンが表示され、
+#   ToDoが完了したらチェックボックスにチェックを入れて「完了」を押すと
+#   ToDoを記述したページでは
 # </p>
 # <pre>
-# * �� 22 �ȥ���åȥڡ��ѡ����㤦
+# * 済 22 トイレットペーパーを買う
 # </pre>
 # <p>
-#   �Τ褦���ѹ�����todolist���鳰����ޤ���
-#   �ʤ���always���ץ�����Ĥ��Ƥ��ʤ����Ǥ⡢
-#   �����ԤȤ��ƥ������󤹤��Ʊ�ͤΥե����बɽ������ޤ���
+#   のように変更されtodolistから外されます。
+#   なお、alwaysオプションをつけていない場合でも、
+#   管理者としてログインすれば同様のフォームが表示されます。
 # </p>
 #
 ##############################################################
 package plugin::todo::ToDoList;
 use strict;
 #=============================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #=============================================================
 sub new{
 	my $class = shift;
@@ -42,7 +42,7 @@ sub new{
 }
 
 #=============================================================
-# �ѥ饰��ե᥽�å�
+# パラグラフメソッド
 #=============================================================
 sub paragraph {
 	my $self   = shift;
@@ -59,19 +59,19 @@ sub paragraph {
 	my @todolist=();
 	
 	if($source eq ""){
-		return &Util::paragraph_error("�ڡ�������ꤷ�Ƥ���������");
+		return &Util::paragraph_error("ページを指定してください。");
 	}
 	unless($wiki->page_exists($source)){
-		return &Util::paragraph_error("$source��¸�ߤ��ޤ���");
+		return &Util::paragraph_error("$sourceが存在しません。");
 	}
 	unless($wiki->can_show($source)){
-		return &Util::paragraph_error("�ڡ����λ��ȸ�������ޤ���");
+		return &Util::paragraph_error("ページの参照権がありません。");
 	}
 	
 	my $content = $wiki->get_page($source);
 	my @lines = split(/\n/,$content);
 	
-	# �񼰤���todo�����
+	# 書式からtodoを抽出
 	foreach(@lines){
 		if($_ =~ /^\*\s*(\d+)\s+(.*)/){
 			my $priority = $1;
@@ -81,12 +81,12 @@ sub paragraph {
 		}
 	}
 	
-	# ͥ���̤ǥ�����
+	# 優先順位でソート
 	@todolist = sort {
 		return $b->{priority} <=> $a->{priority};
 	} @todolist;
 	
-	# �ꥹ��ɽ�� + ��λ�ե�����
+	# リスト表示 + 完了フォーム
 	my $login = $wiki->get_login_info();
 	if($option eq "always" || defined($login)){
 		$buf .= "<div class=\"todo\">"
@@ -116,7 +116,7 @@ sub paragraph {
 	
 	$buf .= "</ol>";
 	if($option eq "always" || defined($login)){
-		$buf .= "<input type=\"submit\" value=\"��λ\"></form></div>";
+		$buf .= "<input type=\"submit\" value=\"完了\"></form></div>";
 	}
 	return $buf;
 }

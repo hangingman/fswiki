@@ -1,6 +1,6 @@
 ############################################################
 #
-# ¥í¥°¥¤¥óµ¡Ç½¡¢´ÉÍý²èÌÌ¤òÄó¶¡¤·¤Þ¤¹¡£
+# ãƒ­ã‚°ã‚¤ãƒ³æ©Ÿèƒ½ã€ç®¡ç†ç”»é¢ã‚’æä¾›ã—ã¾ã™ã€‚
 #
 ############################################################
 package plugin::admin::Install;
@@ -13,42 +13,42 @@ sub install {
 	my $page = $wiki->get_CGI()->param('page');
 	
 	if(defined($login)){
-		$wiki->add_menu("´ÉÍý",$wiki->create_url({action=>"LOGIN"}),0);
+		$wiki->add_menu("ç®¡ç†",$wiki->create_url({action=>"LOGIN"}),0);
 	} else {
 		if($page){
-			$wiki->add_menu("¥í¥°¥¤¥ó",$wiki->create_url({action=>"LOGIN", page=>$page}),0);
+			$wiki->add_menu("ãƒ­ã‚°ã‚¤ãƒ³",$wiki->create_url({action=>"LOGIN", page=>$page}),0);
 		} else {
-			$wiki->add_menu("¥í¥°¥¤¥ó",$wiki->create_url({action=>"LOGIN"}),0);
+			$wiki->add_menu("ãƒ­ã‚°ã‚¤ãƒ³",$wiki->create_url({action=>"LOGIN"}),0);
 		}
 	}
 	$wiki->add_handler("LOGIN","plugin::admin::Login");
 	
-	$wiki->add_admin_menu("´Ä¶­ÀßÄê"         ,$wiki->create_url({action=>"ADMINCONFIG"}),999,
-						  "FSWikiÁ´ÂÎ¤ÎÆ°ºî¤Ë´Ø¤¹¤ëÀßÄê¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ç’°å¢ƒè¨­å®š"         ,$wiki->create_url({action=>"ADMINCONFIG"}),999,
+						  "FSWikiå…¨ä½“ã®å‹•ä½œã«é–¢ã™ã‚‹è¨­å®šã‚’è¡Œã„ã¾ã™ã€‚");
 	
-	$wiki->add_admin_menu("¥¹¥¿¥¤¥ëÀßÄê"     ,$wiki->create_url({action=>"ADMINSTYLE"}) ,998,
-						  "¸«±É¤¨¤Ë´Ø¤¹¤ëÀßÄê¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ã‚¹ã‚¿ã‚¤ãƒ«è¨­å®š"     ,$wiki->create_url({action=>"ADMINSTYLE"}) ,998,
+						  "è¦‹æ „ãˆã«é–¢ã™ã‚‹è¨­å®šã‚’è¡Œã„ã¾ã™ã€‚");
 	
-	$wiki->add_admin_menu("¥æ¡¼¥¶´ÉÍý"       ,$wiki->create_url({action=>"ADMINUSER"})  ,997,
-						  "¥æ¡¼¥¶¤ÎÄÉ²Ã¡¢ÊÑ¹¹¡¢ºï½ü¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ãƒ¦ãƒ¼ã‚¶ç®¡ç†"       ,$wiki->create_url({action=>"ADMINUSER"})  ,997,
+						  "ãƒ¦ãƒ¼ã‚¶ã®è¿½åŠ ã€å¤‰æ›´ã€å‰Šé™¤ã‚’è¡Œã„ã¾ã™ã€‚");
 
-	$wiki->add_admin_menu("¥Ú¡¼¥¸´ÉÍý"       ,$wiki->create_url({action=>"ADMINPAGE"})  ,996,
-						  "¥Ú¡¼¥¸¤ÎÅà·ë¡¢¥¢¥¯¥»¥¹¸¢¸Â¡¢°ì³çºï½ü¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ãƒšãƒ¼ã‚¸ç®¡ç†"       ,$wiki->create_url({action=>"ADMINPAGE"})  ,996,
+						  "ãƒšãƒ¼ã‚¸ã®å‡çµã€ã‚¢ã‚¯ã‚»ã‚¹æ¨©é™ã€ä¸€æ‹¬å‰Šé™¤ã‚’è¡Œã„ã¾ã™ã€‚");
 	
-	$wiki->add_admin_menu("ºï½ü¤µ¤ì¤¿¥Ú¡¼¥¸" ,$wiki->create_url({action=>"ADMINDELETED"})  ,995,
-						  "ºï½ü¤µ¤ì¤¿¥Ú¡¼¥¸¤Î³ÎÇ§¤ÈÉü¸µ¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("å‰Šé™¤ã•ã‚ŒãŸãƒšãƒ¼ã‚¸" ,$wiki->create_url({action=>"ADMINDELETED"})  ,995,
+						  "å‰Šé™¤ã•ã‚ŒãŸãƒšãƒ¼ã‚¸ã®ç¢ºèªã¨å¾©å…ƒã‚’è¡Œã„ã¾ã™ã€‚");
 	
-	$wiki->add_admin_menu("¥×¥é¥°¥¤¥óÀßÄê"   ,$wiki->create_url({action=>"ADMINPLUGIN"}),994,
-						  "¥×¥é¥°¥¤¥ó¤ÎÍ­¸ú²½¡¢Ìµ¸ú²½¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ãƒ—ãƒ©ã‚°ã‚¤ãƒ³è¨­å®š"   ,$wiki->create_url({action=>"ADMINPLUGIN"}),994,
+						  "ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®æœ‰åŠ¹åŒ–ã€ç„¡åŠ¹åŒ–ã‚’è¡Œã„ã¾ã™ã€‚");
 
-	$wiki->add_admin_menu("¥í¥°¡¦¥­¥ã¥Ã¥·¥å" ,$wiki->create_url({ action=>"ADMINLOG"})   ,992,
-						  "¥í¥°¥Õ¥¡¥¤¥ë¡¢¥­¥ã¥Ã¥·¥å¥Õ¥¡¥¤¥ë¤Î¥À¥¦¥ó¥í¡¼¥É¤òºï½ü¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ãƒ­ã‚°ãƒ»ã‚­ãƒ£ãƒƒã‚·ãƒ¥" ,$wiki->create_url({ action=>"ADMINLOG"})   ,992,
+						  "ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã€ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’å‰Šé™¤ã‚’è¡Œã„ã¾ã™ã€‚");
 
-	$wiki->add_admin_menu("¥¹¥Ñ¥àÂÐºö" ,$wiki->create_url({ action=>"ADMINSPAM" })   ,991,
-						  "¥¹¥Ñ¥àÂÐºöÍÑ¤ÎÀßÄê¤ò¹Ô¤¤¤Þ¤¹¡£");
+	$wiki->add_admin_menu("ã‚¹ãƒ‘ãƒ å¯¾ç­–" ,$wiki->create_url({ action=>"ADMINSPAM" })   ,991,
+						  "ã‚¹ãƒ‘ãƒ å¯¾ç­–ç”¨ã®è¨­å®šã‚’è¡Œã„ã¾ã™ã€‚");
 
-	$wiki->add_user_menu("¥Ñ¥¹¥ï¡¼¥É¤ÎÊÑ¹¹",$wiki->create_url({ action=>"ACCOUNT" }),500,
-						 "¼«Ê¬¤Î¥Ñ¥¹¥ï¡¼¥É¤òÊÑ¹¹¤·¤Þ¤¹¡£");
+	$wiki->add_user_menu("ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®å¤‰æ›´",$wiki->create_url({ action=>"ACCOUNT" }),500,
+						 "è‡ªåˆ†ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å¤‰æ›´ã—ã¾ã™ã€‚");
 	
 	$wiki->add_admin_handler("ADMINPAGE"   ,"plugin::admin::AdminPageHandler");
 	$wiki->add_admin_handler("ADMINDELETED","plugin::admin::AdminDeletedPageHandler");

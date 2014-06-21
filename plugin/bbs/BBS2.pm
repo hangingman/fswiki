@@ -1,42 +1,42 @@
 ###############################################################################
 #
-# <p>�Ǽ���������ƥե��������Ϥ��ޤ����������Ƥ����ڡ����Ȥʤꡢ�ڡ��������⥵�ݡ��Ȥ��ޤ���</p>
+# <p>掲示版風の投稿フォームを出力します。１件の投稿が１ページとなり、ページ処理もサポートします。</p>
 # <pre>
-# {{bbs2 �Ǽ��Ĥ�̾��,ɽ�����}}
+# {{bbs2 掲示板の名前,表示件数}}
 # </pre>
 # <p>
-#   bbs�ץ饰����Ȥΰ㤤�ϣ������Ƥ����ĤΥڡ����Ȥ��ƺ������졢
-#   ����ɽ������뤳�ȤǤ��������ϻ���������ɽ������뤿�ᡢ
-#   ��������������˲��������ư���Խ�����ɬ�פ�����ޤ���
-#   ɽ��������ά��������10�鷺��ɽ������ޤ���
+#   bbsプラグインとの違いは１件の投稿が１つのページとして作成され、
+#   一覧表示されることです。一覧は指定件数ずつ表示されるため、
+#   件数が増えた場合に過去ログを手動で編集する必要がありません。
+#   表示件数を省略した場合は10件ずつ表示されます。
 # </p>
 # <p>
-#   �ǥե���ȤǤϳ���Ƶ������ֿ��ѤΥ����ȥե����ब���Ϥ���ޤ�����
-#   no_comment���ץ�����Ĥ����OFF�ˤ��뤳�Ȥ��Ǥ��ޤ���
+#   デフォルトでは各投稿記事に返信用のコメントフォームが出力されますが、
+#   no_commentオプションをつけるとOFFにすることができます。
 # </p>
 # <pre>
-# {{bbs2 �Ǽ��Ĥ�̾��,ɽ�����,no_comment}}
+# {{bbs2 掲示板の名前,表示件数,no_comment}}
 # </pre>
 # <p>
-#   reverse_comment���ץ�����Ĥ���ȳƵ����ˤĤ�comment�ץ饰�����
-#   reverse���ץ�����Ĥ��뤳�Ȥ��Ǥ��������Ȥ������ɽ�������褦�ˤʤ�ޤ���
+#   reverse_commentオプションをつけると各記事につくcommentプラグインに
+#   reverseオプションをつけることができ、コメントが新着順表示されるようになります。
 # </p>
 # <pre>
-# {{bbs2 �Ǽ��Ĥ�̾��,ɽ�����,reverse_comment}}
+# {{bbs2 掲示板の名前,表示件数,reverse_comment}}
 # </pre>
 # <p>
-#   no_list���ץ�����Ĥ���ȵ����ΰ�����ɽ����������ƥե����������ɽ�����ޤ���
-#   ���ξ���bbs2list�ץ饰�����ȤäƵ����ΰ�����ɽ�����뤳�Ȥ��Ǥ��ޤ���
+#   no_listオプションをつけると記事の一覧は表示せず、投稿フォームだけを表示します。
+#   この場合はbbs2listプラグインを使って記事の一覧を表示することができます。
 # </p>
 # <pre>
-# {{bbs2 �Ǽ��Ĥ�̾��,no_list}}
+# {{bbs2 掲示板の名前,no_list}}
 # </pre>
 #
 ###############################################################################
 package plugin::bbs::BBS2;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -45,7 +45,7 @@ sub new {
 }
 
 #==============================================================================
-# �Ǽ������ϥե�����
+# 掲示板入力フォーム
 #==============================================================================
 sub paragraph {
 	my $self   = shift;
@@ -55,7 +55,7 @@ sub paragraph {
 	my $option = shift;
 	
 	if($name eq ""){
-		return &Util::paragraph_error("�Ǽ��Ĥ�̾�������ꤵ��Ƥ��ޤ���");
+		return &Util::paragraph_error("掲示板の名前が指定されていません。");
 	}
 	if($once eq "" || !&Util::check_numeric($once)){
 		$option = $once;
@@ -65,11 +65,11 @@ sub paragraph {
 	my $cgi = $wiki->get_CGI;
 	my $page = $cgi->param("page");
 	
-	# ���ϥե�����
+	# 入力フォーム
 	my $tmpl = HTML::Template->new(filename=>$wiki->config('tmpl_dir')."/bbs.tmpl",
 	                               die_on_bad_params=>0);
 	
-	# ̾�������
+	# 名前を取得
 	my $postname = Util::url_decode($cgi->cookie(-name=>'fswiki_post_name'));
 	if($postname eq ''){
 		my $login = $wiki->get_login_info();
@@ -92,7 +92,7 @@ sub paragraph {
 	
 	$buf .= "</form>";
 	
-	# �����ΰ�����Ϣ���no_list���ץ���󤬤Ĥ���줿����ɽ�����ʤ���
+	# 記事の一覧を連結（no_listオプションがつけられた場合は表示しない）
 	if($option ne "no_list"){
 		$buf .= $wiki->process_wiki("{{bbs2list $name,$once}}");
 	}

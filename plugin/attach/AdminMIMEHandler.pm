@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# MIME�����פ������Ԥ����������ϥ�ɥ�
+# MIMEタイプの設定を行うアクションハンドラ
 #
 ###############################################################################
 package plugin::attach::AdminMIMEHandler;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,14 +15,14 @@ sub new {
 }
 
 #==============================================================================
-# ���������ϥ�ɥ�᥽�å�
+# アクションハンドラメソッド
 #==============================================================================
 sub do_action {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $cgi   = $wiki->get_CGI;
 	
-	$wiki->set_title("MIME�����פ�����");
+	$wiki->set_title("MIMEタイプの設定");
 	
 	if($cgi->param("ADD") ne ""){
 		return $self->add($wiki);
@@ -36,22 +36,22 @@ sub do_action {
 }
 
 #==============================================================================
-# ��������
+# 一覧画面
 #==============================================================================
 sub form {
 	my $self = shift;
 	my $wiki = shift;
-	my $buf = "<h2>MIME�����פ���Ͽ</h2>\n".
+	my $buf = "<h2>MIMEタイプの登録</h2>\n".
 	          "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
-	          "  ��ĥ�ҡʥɥåȤ����ס� <input type=\"text\" name=\"extention\" size=\"5\">\n".
-	          "  MIME������ <input type=\"text\" name=\"mimetype\" size=\"20\">\n".
-	          "  <input type=\"submit\" name=\"ADD\" value=\"��Ͽ\">\n".
+	          "  拡張子（ドットは不要） <input type=\"text\" name=\"extention\" size=\"5\">\n".
+	          "  MIMEタイプ <input type=\"text\" name=\"mimetype\" size=\"20\">\n".
+	          "  <input type=\"submit\" name=\"ADD\" value=\"登録\">\n".
 	          "  <input type=\"hidden\" name=\"action\" value=\"ADMINMIME\">\n".
 	          "</form>\n".
-	          "<h2>��Ͽ�Ѥ�MIME������</h2>\n".
+	          "<h2>登録済のMIMEタイプ</h2>\n".
 	          "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
 	          "<table>\n".
-	          "<tr><th>&nbsp;</td><th>��ĥ��</th><th>MIME������</th></tr>\n";
+	          "<tr><th>&nbsp;</td><th>拡張子</th><th>MIMEタイプ</th></tr>\n";
 	
 	my $mime = &Util::load_config_hash($wiki,$wiki->config('mime_file'));
 	
@@ -63,7 +63,7 @@ sub form {
 		        "</tr>\n";
 	}
 	$buf .= "</table>\n".
-	        "<input type=\"submit\" name=\"DELETE\" value=\"������ܤ���\">\n".
+	        "<input type=\"submit\" name=\"DELETE\" value=\"選択項目を削除\">\n".
 	        "<input type=\"hidden\" name=\"action\" value=\"ADMINMIME\">\n".
 	        "</form>\n";
 	
@@ -71,7 +71,7 @@ sub form {
 }
 
 #==============================================================================
-# �ɲ�
+# 追加
 #==============================================================================
 sub add {
 	my $self = shift;
@@ -89,12 +89,12 @@ sub add {
 		#return $self->form($wiki);
 		
 	} else {
-		return $wiki->error("��ĥ�Ҥ�MIME�����פ����Ϥ��Ƥ���������");
+		return $wiki->error("拡張子とMIMEタイプを入力してください。");
 	}
 }
 
 #==============================================================================
-# ���
+# 削除
 #==============================================================================
 sub delete {
 	my $self = shift;

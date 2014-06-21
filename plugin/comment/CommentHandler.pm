@@ -1,12 +1,12 @@
 ############################################################
 # 
-# Comment¥×¥é¥°¥¤¥ó¤Î¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¡£
+# Commentãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ã€‚
 # 
 ############################################################
 package plugin::comment::CommentHandler;
 use strict;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -15,7 +15,7 @@ sub new {
 }
 
 #===========================================================
-# ¥³¥á¥ó¥È¤Î½ñ¤­¹ş¤ß
+# ã‚³ãƒ¡ãƒ³ãƒˆã®æ›¸ãè¾¼ã¿
 #===========================================================
 sub do_action {
 	my $self = shift;
@@ -29,18 +29,18 @@ sub do_action {
 	my $option  = $cgi->param("option");
 	
 	if(!$wiki->can_show($page)){
-		return $wiki->error("¥Ú¡¼¥¸¤Î»²¾È¸¢¸Â¤¬¤¢¤ê¤Ş¤»¤ó¡£");
+		return $wiki->error("ãƒšãƒ¼ã‚¸ã®å‚ç…§æ¨©é™ãŒã‚ã‚Šã¾ã›ã‚“ã€‚");
 	}
 	if($name eq ""){
-		$name = "Ì¾Ìµ¤·¤µ¤ó";
+		$name = "åç„¡ã—ã•ã‚“";
 	} else {
-		# fswiki_post_name¤È¤¤¤¦¥­¡¼¤Ç¥¯¥Ã¥­¡¼¤ò¥»¥Ã¥È¤¹¤ë
+		# fswiki_post_nameã¨ã„ã†ã‚­ãƒ¼ã§ã‚¯ãƒƒã‚­ãƒ¼ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 		my $path   = &Util::cookie_path($wiki);
 		my $cookie = $cgi->cookie(-name=>'fswiki_post_name',-value=>Util::url_encode($name),-expires=>'+1M',-path=>$path);
 		print "Set-Cookie: ",$cookie->as_string,"\n";
 	}
 	
-	# ¥Õ¥©¡¼¥Ş¥Ã¥È¥×¥é¥°¥¤¥ó¤Ø¤ÎÂĞ±ş
+	# ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã¸ã®å¯¾å¿œ
 	my $format = $wiki->get_edit_format();
 	$name    = $wiki->convert_to_fswiki($name   ,$format,1);
 	$message = $wiki->convert_to_fswiki($message,$format,1);
@@ -53,7 +53,7 @@ sub do_action {
 		my $content    = "";
 		
 		foreach(@lines){
-			# ¿·Ãå½ç¤Î¾ì¹ç
+			# æ–°ç€é †ã®å ´åˆ
 			if($option eq "reverse"){
 				$content = $content.$_."\n";
 				if(/^{{comment\s*.*}}$/ && $flag==0){
@@ -64,11 +64,11 @@ sub do_action {
 						$form_count++;
 					}
 				}
-			# ¥Ú¡¼¥¸ËöÈø¤ËÄÉ²Ã¤Î¾ì¹ç
+			# ãƒšãƒ¼ã‚¸æœ«å°¾ã«è¿½åŠ ã®å ´åˆ
 			} elsif($option eq "tail"){
 				$content = $content.$_."\n";
 				
-			# Åê¹Æ½ç¤Î¾ì¹ç
+			# æŠ•ç¨¿é †ã®å ´åˆ
 			} else {
 				if(/^{{comment\s*.*}}$/ && $flag==0){
 					if($form_count==$count){
@@ -82,7 +82,7 @@ sub do_action {
 			}
 		}
 		
-		# ¥Ú¡¼¥¸ËöÈø¤ËÄÉ²Ã¤Î¾ì¹ç¤ÏºÇ¸å¤ËÄÉ²Ã
+		# ãƒšãƒ¼ã‚¸æœ«å°¾ã«è¿½åŠ ã®å ´åˆã¯æœ€å¾Œã«è¿½åŠ 
 		if($option eq "tail" && check_comment($wiki, 'Footer')){
 			$content = $content."*$message - $name (".Util::format_date(time()).")\n";
 			$flag = 1;
@@ -93,12 +93,12 @@ sub do_action {
 		}
 	}
 	
-	# ¸µ¤Î¥Ú¡¼¥¸¤Ë¥ê¥À¥¤¥ì¥¯¥È
+	# å…ƒã®ãƒšãƒ¼ã‚¸ã«ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆ
 	$wiki->redirect($page);
 }
 
 #==================================================================
-# ¥Ú¡¼¥¸¤Ëcomment¥×¥é¥°¥¤¥ó¤¬´Ş¤Ş¤ì¤Æ¤¤¤ë¤«¤É¤¦¤«¤ò¥Á¥§¥Ã¥¯
+# ãƒšãƒ¼ã‚¸ã«commentãƒ—ãƒ©ã‚°ã‚¤ãƒ³ãŒå«ã¾ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯
 #==================================================================
 sub check_comment {
 	my $wiki = shift;

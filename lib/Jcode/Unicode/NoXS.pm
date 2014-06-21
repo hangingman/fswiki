@@ -26,7 +26,7 @@ $PEDANTIC = 0;
 
 sub _init_u2e{
     unless ($PEDANTIC){
-	$_U2E{"\xff\x3c"} = "\xa1\xc0"; # ¡À
+	$_U2E{"\xff\x3c"} = "\xa1\xc0"; # ï¼¼
     }else{
 	delete $_U2E{"\xff\x3c"};
 	$_U2E{"\x00\x5c"} = "\xa1\xc0";     #\
@@ -40,7 +40,7 @@ sub _init_e2u{
 	    reverse %_U2E;
     }
     unless ($PEDANTIC){
-	$_E2U{"\xa1\xc0"} = "\xff\x3c"; # ¡À
+	$_E2U{"\xa1\xc0"} = "\xff\x3c"; # ï¼¼
     }else{
 	delete $_E2U{"\xa1\xc0"};
 	$_E2U{"\xa1\xc0"} = "\x00\x5c";     #\

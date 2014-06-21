@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# PDF¥Ñ¡¼¥µ
+# PDFãƒ‘ãƒ¼ã‚µ
 #
 ###############################################################################
 package plugin::pdf::PDFParser;
@@ -13,7 +13,7 @@ use Image::Info qw(image_info dim);
 @ISA = qw(Wiki::Parser);
 
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -80,7 +80,7 @@ sub new {
 }
 
 #==============================================================================
-# ¥Õ¥¡¥¤¥ë¤ËÊÝÂ¸¤·¤Þ¤¹
+# ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ã—ã¾ã™
 #==============================================================================
 sub save_file {
 	my $self = shift;
@@ -98,7 +98,7 @@ sub save_file {
 }
 
 #==============================================================================
-# ¥¹¥¿¥¤¥ë¤ò¾å½ñ¤­
+# ã‚¹ã‚¿ã‚¤ãƒ«ã‚’ä¸Šæ›¸ã
 #==============================================================================
 sub update_style {
 	my $self  = shift;
@@ -112,7 +112,7 @@ sub update_style {
 }
 
 #==============================================================================
-# Text¤Î¥Æ¥­¥¹¥È¤Î¤ß¤ò¼èÆÀ
+# Textã®ãƒ†ã‚­ã‚¹ãƒˆã®ã¿ã‚’å–å¾—
 #==============================================================================
 sub get_texts {
 	my $self = shift;
@@ -163,7 +163,7 @@ sub l_headline {
 
 	} elsif($level==3){
 		my @outline;
-		push @outline,Outline($texts, 2), Dest($texts), "¢£".$texts;
+		push @outline,Outline($texts, 2), Dest($texts), "â– ".$texts;
 		push(@{$self->{paras}},Paragraph(Text([@outline], $self->{tstyle}->{head3}),$self->{pstyle}->{head3}));
 	}
 	$self->{last} = "headline";
@@ -185,7 +185,7 @@ sub l_list {
 		push(@{$self->{paras}},Paragraph(Text(" ",$self->{tstyle}->{normal}),$self->{pstyle}->{normal}));
 	}
 	
-	push(@{$self->{paras}},Paragraph(Text("¡¦",@{$obj},$self->{tstyle}->{normal}),$liststyle));
+	push(@{$self->{paras}},Paragraph(Text("ãƒ»",@{$obj},$self->{tstyle}->{normal}),$liststyle));
 	$self->{last} = "list";
 }
 
@@ -238,7 +238,7 @@ sub l_verbatim {
 	$self->end_numlist;
 	$self->{table} = 1;
 	
-	# ¹ÔËö¤Î¶õÇòÊ¸»ú¤Ï½üµî¤¹¤ë
+	# è¡Œæœ«ã®ç©ºç™½æ–‡å­—ã¯é™¤åŽ»ã™ã‚‹
 	$text =~ s/(?:\s)+$//o;
 	
 	push(@{$self->{pre}},$text);
@@ -420,14 +420,14 @@ sub text {
 }
 
 #===============================================================================
-# ¥×¥é¥°¥¤¥ó¤Î½èÍý¡£
+# ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®å‡¦ç†ã€‚
 #===============================================================================
 sub plugin {
 	my $self   = shift;
 	my $plugin = shift;
 	my $info   = $self->{wiki}->get_plugin_info($plugin->{command});
 	
-	# Wiki·Á¼°¤Î¥×¥é¥°¥¤¥ó¤Î¤ß¼Â¹Ô
+	# Wikiå½¢å¼ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã¿å®Ÿè¡Œ
 	if($info->{FORMAT} eq "WIKI"){
 		return $self->{wiki}->process_plugin($plugin,$self);
 	} else {
@@ -443,7 +443,7 @@ sub l_plugin {
 	$self->end_text;
 	$self->end_verbatim;
 	
-	# Wiki·Á¼°¤Î¥×¥é¥°¥¤¥ó¤Î¤ß¼Â¹Ô
+	# Wikiå½¢å¼ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã¿å®Ÿè¡Œ
 	if($info->{FORMAT} eq "WIKI"){
 		$self->{wiki}->process_plugin($plugin,$self);
 	}

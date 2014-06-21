@@ -1,13 +1,13 @@
 ############################################################
 #
-# ¥Ú¡¼¥¸ÊİÂ¸»şorºï½ü»ş¤Ë¥á¡¼¥ëÁ÷¿®¤ò¹Ô¤¦¥Õ¥Ã¥¯¥×¥é¥°¥¤¥ó
+# ãƒšãƒ¼ã‚¸ä¿å­˜æ™‚orå‰Šé™¤æ™‚ã«ãƒ¡ãƒ¼ãƒ«é€ä¿¡ã‚’è¡Œã†ãƒ•ãƒƒã‚¯ãƒ—ãƒ©ã‚°ã‚¤ãƒ³
 #
 ############################################################
 package plugin::core::SendMail;
 use strict;
 use plugin::core::Diff;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -16,7 +16,7 @@ sub new {
 }
 
 #===========================================================
-# ¥Ú¡¼¥¸ÊİÂ¸¸åorºï½ü¸å¤Î¥Õ¥Ã¥¯¥á¥½¥Ã¥É
+# ãƒšãƒ¼ã‚¸ä¿å­˜å¾Œorå‰Šé™¤å¾Œã®ãƒ•ãƒƒã‚¯ãƒ¡ã‚½ãƒƒãƒ‰
 #===========================================================
 sub hook {
 	my $self = shift;
@@ -32,15 +32,15 @@ sub hook {
 	my $subject;
 	my $tmpl;
 	
-	# ¥¿¥¤¥È¥ë¤È¥Æ¥ó¥×¥ì¡¼¥È¤ò·èÄê
+	# ã‚¿ã‚¤ãƒˆãƒ«ã¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’æ±ºå®š
 	if($content eq ""){
-		$subject = $wiki->config('mail_prefix')."$pagename¤¬ºï½ü¤µ¤ì¤Ş¤·¤¿";
+		$subject = $wiki->config('mail_prefix')."$pagenameãŒå‰Šé™¤ã•ã‚Œã¾ã—ãŸ";
 		
 	} elsif($backup eq "") {
-		$subject = $wiki->config('mail_prefix')."$pagename¤¬ºîÀ®¤µ¤ì¤Ş¤·¤¿";
+		$subject = $wiki->config('mail_prefix')."$pagenameãŒä½œæˆã•ã‚Œã¾ã—ãŸ";
 		
 	} else {
-		$subject = $wiki->config('mail_prefix')."$pagename¤¬¹¹¿·¤µ¤ì¤Ş¤·¤¿";
+		$subject = $wiki->config('mail_prefix')."$pagenameãŒæ›´æ–°ã•ã‚Œã¾ã—ãŸ";
 		
 	}
 	
@@ -59,19 +59,19 @@ sub hook {
 		my @list = $wiki->{storage}->get_backup_list($pagename);
 		my $last_generation = @list - 1;
 		$mail .= "----\n";
-		$mail .= "°Ê²¼¤ÏÊÑ¹¹¤Îº¹Ê¬¤Ç¤¹¡£\n";
+		$mail .= "ä»¥ä¸‹ã¯å¤‰æ›´ã®å·®åˆ†ã§ã™ã€‚\n";
 		$mail .= "----\n";
 		$mail .= $diff->get_diff_text($wiki,$pagename,$last_generation)."\n";
 	}
 	if($wiki->config('mail_backup_source')==1){
 		$mail .= "----\n";
-		$mail .= "°Ê²¼¤ÏÊÑ¹¹Á°¤Î¥½¡¼¥¹¤Ç¤¹¡£\n";
+		$mail .= "ä»¥ä¸‹ã¯å¤‰æ›´å‰ã®ã‚½ãƒ¼ã‚¹ã§ã™ã€‚\n";
 		$mail .= "----\n";
 		$mail .= $backup."\n";
 	}
 	if($wiki->config('mail_modified_source')==1){
 		$mail .= "----\n";
-		$mail .= "°Ê²¼¤ÏÊÑ¹¹¸å¤Î¥½¡¼¥¹¤Ç¤¹¡£\n";
+		$mail .= "ä»¥ä¸‹ã¯å¤‰æ›´å¾Œã®ã‚½ãƒ¼ã‚¹ã§ã™ã€‚\n";
 		$mail .= "----\n";
 		$mail .= $content."\n";
 	}

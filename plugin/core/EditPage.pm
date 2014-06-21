@@ -1,13 +1,13 @@
 ###############################################################################
 # 
-# �ڡ������Խ�����ץ饰����
+# ページを編集するプラグイン
 # 
 ###############################################################################
 package plugin::core::EditPage;
 use strict;
 use plugin::core::Diff;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -16,7 +16,7 @@ sub new {
 }
 
 #==============================================================================
-# ���������μ¹�
+# アクションの実行
 #==============================================================================
 sub do_action {
 	my $self = shift;
@@ -35,25 +35,25 @@ sub do_action {
 	my $login = $wiki->get_login_info();
 
 	if($pagename eq ""){
-		return $wiki->error("�ڡ��������ꤵ��Ƥ��ޤ���");
+		return $wiki->error("ページが指定されていません。");
 	}
 	if($pagename =~ /([\|\[\]])|^:|([^:]:[^:])/){
-		return $wiki->error("�ڡ���̾�˻��ѤǤ��ʤ�ʸ�����ޤޤ�Ƥ��ޤ���");
+		return $wiki->error("ページ名に使用できない文字が含まれています。");
 	}
 	if(!$wiki->can_modify_page($pagename)){
-		return $wiki->error("�ڡ������Խ��ϵ��Ĥ���Ƥ��ޤ���");
+		return $wiki->error("ページの編集は許可されていません。");
 	}
 	
 	#--------------------------------------------------------------------------
-	# ��¸����
+	# 保存処理
 	if($cgi->param("save") ne ""){
 		if($wiki->config('page_max') ne '' && $wiki->config('page_max') > 0){
 			if(length($content) > $wiki->config('page_max')){
-				return $wiki->error('�ڡ�������¸��ǽ�ʺ��祵������Ķ���Ƥ��ޤ���');
+				return $wiki->error('ページが保存可能な最大サイズを超えています。');
 			}
 		}
 		if($wiki->page_exists($pagename) && $cgi->param("lastmodified") != $time){
-			$buf .= "<p><span class=\"error\">�ڡ����ϴ����̤Υ桼���ˤ�äƹ�������Ƥ��ޤ����ǿ��ǤȤκ�ʬ���ǧ���ƺ����Խ���ԤäƤ���������</span></p>";
+			$buf .= "<p><span class=\"error\">ページは既に別のユーザによって更新されています。最新版との差分を確認して再度編集を行ってください。</span></p>";
 			
 			my $mode = $wiki->get_edit_format();
 			my $orig_source = undef;
@@ -76,15 +76,15 @@ sub do_action {
 			my $mode = $wiki->get_edit_format();
 			my $save_content = $wiki->convert_to_fswiki($content,$mode);
 
-			# �ѡ����Խ��ξ��
+			# パート編集の場合
 			if($artno ne ""){
 				$save_content = &make_save_source($wiki->get_page($pagename), $save_content, $artno, $wiki);
 			}
-			# FrontPage�Ϻ���Բ�
+			# FrontPageは削除不可
 			if($pagename eq $wiki->config("frontpage") && $save_content eq ""){
-				$buf = "<b>".&Util::escapeHTML($wiki->config("frontpage"))."�Ϻ�����뤳�ȤϤǤ��ޤ���</b>\n";
+				$buf = "<b>".&Util::escapeHTML($wiki->config("frontpage"))."は削除することはできません。</b>\n";
 
-			# ����ʳ��ξ��Ͻ�����¹Ԥ��ƥ�å��������ֵ�
+			# それ以外の場合は処理を実行してメッセージを返却
 			} else {
 				$wiki->save_page($pagename, $save_content, $sage);
 				
@@ -92,21 +92,21 @@ sub do_action {
 					$wiki->redirect($pagename, $artno);
 				} else {
 					if($artno eq ""){
-						$wiki->set_title($pagename."�������ޤ���");
-						return Util::escapeHTML($pagename)."�������ޤ�����";
+						$wiki->set_title($pagename."を削除しました");
+						return Util::escapeHTML($pagename)."を削除しました。";
 					} else {
-						$wiki->set_title($pagename."�Υѡ��Ȥ������ޤ���");
-						return Util::escapeHTML($pagename)."�Υѡ��Ȥ������ޤ�����";
+						$wiki->set_title($pagename."のパートを削除しました");
+						return Util::escapeHTML($pagename)."のパートを削除しました。";
 					}
 				}
 			}
 		}
 	#--------------------------------------------------------------------------
-	# ��ʬ��ǧ����
+	# 差分確認処理
 	} elsif($cgi->param("diff") ne ""){
 		if($wiki->config('page_max') ne '' && $wiki->config('page_max') > 0){
 			if(length($content) > $wiki->config('page_max')){
-				return $wiki->error('�ڡ�������¸��ǽ�ʺ��祵������Ķ���Ƥ��ޤ���');
+				return $wiki->error('ページが保存可能な最大サイズを超えています。');
 			}
 		}
 		$time = $cgi->param("lastmodified");
@@ -123,30 +123,30 @@ sub do_action {
 		$your_source =~ s/\r/\n/g;
 		
 		if($orig_source eq $your_source){
-			$buf .= '<p class="error">��ʬ�Ϥ���ޤ���</p>';
+			$buf .= '<p class="error">差分はありません。</p>';
 		} else {
 			my $diff = plugin::core::Diff::_get_diff_html($wiki, $your_source, $orig_source);
 			$buf .= $diff."<br>";
 		}
 		
 	#--------------------------------------------------------------------------
-	# �ץ�ӥ塼����
+	# プレビュー処理
 	} elsif($cgi->param("preview") ne ""){
 		if($wiki->config('page_max') ne '' && $wiki->config('page_max') > 0){
 			if(length($content) > $wiki->config('page_max')){
-				return $wiki->error('�ڡ�������¸��ǽ�ʺ��祵������Ķ���Ƥ��ޤ���');
+				return $wiki->error('ページが保存可能な最大サイズを超えています。');
 			}
 		}
 		$time = $cgi->param("lastmodified");
-		$buf = "�ʲ��Υץ�ӥ塼���ǧ���Ƥ��������С���¸�ץܥ���򲡤��Ƥ���������<br>";
+		$buf = "以下のプレビューを確認してよろしければ「保存」ボタンを押してください。<br>";
 		if($content eq ""){
 			if($pagename eq $wiki->config("frontpage") && $artno eq ""){
-				$buf = $buf."<b>��".&Util::escapeHTML($wiki->config("frontpage"))."�Ϻ�����뤳�ȤϤǤ��ޤ��󡣡�</b>";
+				$buf = $buf."<b>（".&Util::escapeHTML($wiki->config("frontpage"))."は削除することはできません。）</b>";
 			} else {
 				if($artno eq ""){
-					$buf = $buf."<b>�ʥڡ������Ƥ϶��Ǥ�����������Ȥ��Υڡ����Ϻ������ޤ�����</b>";
+					$buf = $buf."<b>（ページ内容は空です。更新するとこのページは削除されます。）</b>";
 				} else {
-					$buf = $buf."<b>�ʥڡ������Ƥ϶��Ǥ�����������Ȥ��Υѡ��ȤϺ������ޤ�����</b>";
+					$buf = $buf."<b>（ページ内容は空です。更新するとこのパートは削除されます。）</b>";
 				}
 			}
 		}
@@ -154,20 +154,20 @@ sub do_action {
 		$buf = $buf."<br>".$wiki->process_wiki($content);
 
 	} elsif($wiki->page_exists($pagename)) {
-		#�ڡ�����¸�ߤ�����
+		#ページが存在する場合
 		if($artno eq ""){
 			$content = $wiki->get_page($pagename);
 		} else {
 			$content = &read_by_part($wiki->get_page($pagename), $artno);
 		}
 	} elsif($template ne ""){
-		#�ƥ�ץ졼�Ȥ���ꤵ�줿���
+		#テンプレートを指定された場合
 		$content = $wiki->get_page($template);
 	}
 	
 	#--------------------------------------------------------------------------
-	# ���ϥե�����
-	$wiki->set_title($pagename."���Խ�",1);
+	# 入力フォーム
+	$wiki->set_title($pagename."の編集",1);
 
 	my $tmpl = HTML::Template->new(filename=>$wiki->config('tmpl_dir')."/editform.tmpl",
                                    die_on_bad_params => 0);
@@ -186,14 +186,14 @@ sub do_action {
 
 	$buf .= $tmpl->output();
 
-	# �ץ饰���������
+	# プラグインを挿入
 	$buf .= $wiki->get_editform_plugin();
 	
 	return $buf;
 }
 
 #==============================================================================
-# �ѡ����Խ��ξ����Խ���ʬ�μ��Ф�
+# パート編集の場合の編集部分の取り出し
 #==============================================================================
 sub read_by_part {
 	my $page  = shift;
@@ -221,7 +221,7 @@ sub read_by_part {
 }
 
 #==============================================================================
-# �ѡ����Խ��ξ�����¸�ѥ������κ���
+# パート編集の場合の保存用ソースの作成
 #==============================================================================
 sub make_save_source {
 	my $org   = shift;
@@ -241,7 +241,7 @@ sub make_save_source {
 				$flag  = 1;
 				$level = length($1);
 				$buf .= $edit;
-				# �Ǹ夬���ԤǤʤ����������Ԥ��ɲáʼ��Υ��������Ȥ��äĤ��Ƥ��ޤ������
+				# 最後が改行でない場合だけ改行を追加（次のセクションとくっついてしまうため）
 				$buf .= "\n" unless($edit =~ /\n$/);
 			}
 			$count++;
@@ -254,8 +254,8 @@ sub make_save_source {
 }
 
 #==============================================================================
-# �ڡ���ɽ�����Υեå��᥽�å�
-# ���Խ��ץ�˥塼��ͭ���ˤ��ޤ�
+# ページ表示時のフックメソッド
+# 「編集」メニューを有効にします
 #==============================================================================
 sub hook {
 	my $self = shift;
@@ -265,9 +265,9 @@ sub hook {
 	my $pagename = $cgi->param("page");
 	my $login    = $wiki->get_login_info();
 	
-	# �Խ���˥塼������
+	# 編集メニューの制御
 	if($wiki->can_modify_page($pagename)){
-		$wiki->add_menu("�Խ�",$wiki->create_url({ action=>"EDIT",page=>$pagename }));
+		$wiki->add_menu("編集",$wiki->create_url({ action=>"EDIT",page=>$pagename }));
 	}
 }
 

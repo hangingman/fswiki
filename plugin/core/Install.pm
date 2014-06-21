@@ -1,6 +1,6 @@
 ############################################################
 #
-# FreeStyleWiki¤Î´ğËÜÅª¤Êµ¡Ç½¤òÄó¶¡¤·¤Ş¤¹¡£
+# FreeStyleWikiã®åŸºæœ¬çš„ãªæ©Ÿèƒ½ã‚’æä¾›ã—ã¾ã™ã€‚
 #
 ############################################################
 package plugin::core::Install;
@@ -10,20 +10,20 @@ sub install {
 	my $wiki  = shift;
 	my $login = $wiki->get_login_info();
 	
-	$wiki->add_menu("¥È¥Ã¥×",$wiki->create_page_url($wiki->config("frontpage")),999);
+	$wiki->add_menu("ãƒˆãƒƒãƒ—",$wiki->create_page_url($wiki->config("frontpage")),999);
 	
 	if(&accept_edit($wiki)){
-		$wiki->add_menu("¿·µ¬",$wiki->create_url({ action=>"NEW" }),998,1);
+		$wiki->add_menu("æ–°è¦",$wiki->create_url({ action=>"NEW" }),998,1);
 	}
 	
-	$wiki->add_menu("ÊÔ½¸"  ,"",997,1);
+	$wiki->add_menu("ç·¨é›†"  ,"",997,1);
 	if($wiki->{storage}->backup_type eq 'all'){
-		$wiki->add_menu("ÍúÎò"  ,"",996,1);
+		$wiki->add_menu("å±¥æ­´"  ,"",996,1);
 	} else {
-		$wiki->add_menu("º¹Ê¬"  ,"",996,1);
+		$wiki->add_menu("å·®åˆ†"  ,"",996,1);
 	}
-	$wiki->add_menu("°ìÍ÷"  ,$wiki->create_url({ action=>"LIST" }),995);
-	$wiki->add_menu("¥Ø¥ë¥×",$wiki->create_page_url("Help"),100);
+	$wiki->add_menu("ä¸€è¦§"  ,$wiki->create_url({ action=>"LIST" }),995);
+	$wiki->add_menu("ãƒ˜ãƒ«ãƒ—",$wiki->create_page_url("Help"),100);
 	
 	$wiki->add_handler("","plugin::core::ShowPage");
 	$wiki->add_handler("NEW","plugin::core::NewPage");
@@ -45,7 +45,7 @@ sub install {
 	$wiki->add_editform_plugin("plugin::core::Template",100);
 	$wiki->add_editform_plugin("plugin::core::EditHelper",0);
 
-	$wiki->add_menu("¥½¡¼¥¹","",700,1);
+	$wiki->add_menu("ã‚½ãƒ¼ã‚¹","",700,1);
 	$wiki->add_handler("SOURCE","plugin::core::Source");
 	$wiki->add_hook("show","plugin::core::Source");
 	
@@ -55,9 +55,9 @@ sub install {
 	$wiki->add_paragraph_plugin("format_help","plugin::core::FormatHelp","WIKI");
 	$wiki->add_paragraph_plugin("paragraph","plugin::core::Paragraph","WIKI");
 	
-	# Farm´Ø·¸¤Î¥×¥é¥°¥¤¥ó¤ò¥¤¥ó¥¹¥È¡¼¥ë
-	$wiki->add_admin_menu("WikiFarm¤ÎÀßÄê",$wiki->create_url({ action=>"ADMINFARM" }),950,
-						  "WikiFarm¤ÎÆ°ºî¤Ë´Ø¤¹¤ëÀßÄê¤ò¹Ô¤¤¤Ş¤¹¡£");
+	# Farmé–¢ä¿‚ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
+	$wiki->add_admin_menu("WikiFarmã®è¨­å®š",$wiki->create_url({ action=>"ADMINFARM" }),950,
+						  "WikiFarmã®å‹•ä½œã«é–¢ã™ã‚‹è¨­å®šã‚’è¡Œã„ã¾ã™ã€‚");
 	$wiki->add_admin_handler("ADMINFARM","plugin::core::AdminFarmHandler");
 	
 	if($wiki->farm_is_enable()){

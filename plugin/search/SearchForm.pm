@@ -1,10 +1,10 @@
 ############################################################
 # 
-# <p>¸¡º÷¥Õ¥©¡¼¥à¤òÉ½¼¨¤·¤Ş¤¹¡£</p>
+# <p>æ¤œç´¢ãƒ•ã‚©ãƒ¼ãƒ ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚</p>
 # <pre>
 # {{search}}
 # </pre>
-# <p>¥µ¥¤¥É¥Ğ¡¼¤ËÉ½¼¨¤¹¤ë¾ì¹ç¤Ïv¥ª¥×¥·¥ç¥ó¤ò¤Ä¤±¤Æ¤¯¤À¤µ¤¤¡£</p>
+# <p>ã‚µã‚¤ãƒ‰ãƒãƒ¼ã«è¡¨ç¤ºã™ã‚‹å ´åˆã¯vã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ã¤ã‘ã¦ãã ã•ã„ã€‚</p>
 # <pre>
 # {{search v}}
 # </pre>
@@ -13,7 +13,7 @@
 package plugin::search::SearchForm;
 use strict;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -22,7 +22,7 @@ sub new {
 }
 
 #===========================================================
-# ¸¡º÷¥Õ¥©¡¼¥à
+# æ¤œç´¢ãƒ•ã‚©ãƒ¼ãƒ 
 #===========================================================
 sub paragraph {
 	my $self = shift;
@@ -33,7 +33,7 @@ sub paragraph {
 		$way = "h";
 	}
 	my $buf = "<form method=\"GET\" action=\"".$wiki->create_url()."\">\n".
-	          "¥­¡¼¥ï¡¼¥É <input type=\"TEXT\" name=\"word\" size=\"20\">";
+	          "ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ <input type=\"TEXT\" name=\"word\" size=\"20\">";
 	
 	if($way eq "v" || $way eq "V"){
 		$buf .= "<br>";
@@ -47,9 +47,9 @@ sub paragraph {
 	}
 	
 	$buf .= "<input type=\"checkbox\" id=\"contents\" name=\"c\" value=\"true\">";
-	$buf .= "<label for=\"contents\">¥Ú¡¼¥¸ÆâÍÆ¤â´Ş¤á¤ë</label>\n";
+	$buf .= "<label for=\"contents\">ãƒšãƒ¼ã‚¸å†…å®¹ã‚‚å«ã‚ã‚‹</label>\n";
 	
-	$buf .= "<input type=\"SUBMIT\" value=\" ¸¡ º÷ \">".
+	$buf .= "<input type=\"SUBMIT\" value=\" æ¤œ ç´¢ \">".
 	        "<input type=\"HIDDEN\" name=\"action\" value=\"SEARCH\">".
 	        "</form>\n";
 	

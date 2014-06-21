@@ -1,19 +1,19 @@
 ############################################################
 #
-# <p>�ڡ����κǽ������Ԥȹ���������ɽ�����ޤ���</p>
+# <p>ページの最終更新者と更新日時を表示します。</p>
 # <pre>
-# {{lastedit ɽ�����,�ڡ���̾}}
+# {{lastedit 表示件数,ページ名}}
 # </pre>
 # <p>
-# ������ά����ȺǸ�Σ����ɽ�����ޤ���
-# �ڡ���̾���ά����ȸ���ɽ������Ƥ���ڡ����κǽ������Ԥȹ���������ɽ�����ޤ���
+# 件数を省略すると最後の１件を表示します。
+# ページ名を省略すると現在表示されているページの最終更新者と更新日時を表示します。
 # </p>
 #
 ############################################################
 package plugin::editlog::LastEdit;
 use strict;
 #===========================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #===========================================================
 sub new {
 	my $class = shift;
@@ -22,7 +22,7 @@ sub new {
 }
 
 #===========================================================
-# �ѥ饰��ե᥽�å�
+# パラグラフメソッド
 #===========================================================
 sub paragraph {
 	my $self = shift;
@@ -31,8 +31,8 @@ sub paragraph {
 	my $page = shift;
 	my $cgi  = $wiki->get_CGI();
 	
-	return "��������Ϥ���ޤ���" if $wiki->config('log_dir') eq "";
-	return "��������Ϥ���ޤ���" if ! -e $wiki->config('log_dir')."/useredit.log";
+	return "更新履歴はありません。" if $wiki->config('log_dir') eq "";
+	return "更新履歴はありません。" if ! -e $wiki->config('log_dir')."/useredit.log";
 	
 	if($page eq ""){ $page = $cgi->param("page"); }
 	if($max  eq ""){ $max  = 1; }
@@ -48,7 +48,7 @@ sub paragraph {
 	close(DATA);
 	
 	if($#editlist==-1){
-		return "��������Ϥ���ޤ���";
+		return "更新履歴はありません。";
 	}
 	
 	@editlist = sort { $b->{UNIXTIME}<=>$a->{UNIXTIME} } @editlist;

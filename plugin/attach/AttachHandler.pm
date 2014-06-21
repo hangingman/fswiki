@@ -1,13 +1,13 @@
 ############################################################
 #
-# ÅºÉÕ¥Õ¥¡¥¤¥ë¤Î¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¡£
+# æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ã€‚
 #
 ############################################################
 package plugin::attach::AttachHandler;
 use strict;
 use plugin::attach::Files;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -16,7 +16,7 @@ sub new {
 }
 
 #===========================================================
-# ¥¢¥¯¥·¥ç¥ó¤Î¼Â¹Ô
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œ
 #===========================================================
 sub do_action {
 	my $self = shift;
@@ -28,22 +28,22 @@ sub do_action {
 		$pagename = $wiki->config("frontpage");
 	}
 	
-	$wiki->set_title("¥Õ¥¡¥¤¥ë¤ÎÅºÉÕ",1);
+	$wiki->set_title("ãƒ•ã‚¡ã‚¤ãƒ«ã®æ·»ä»˜",1);
 	
 	if($cgi->param("UPLOAD") ne "" || $cgi->param("CONFIRM") ne "" || $cgi->param("DELETE") ne ""){
 		unless($wiki->can_modify_page($pagename)){
-			return $wiki->error("ÊÔ½¸¤Ï¶Ø»ß¤µ¤ì¤Æ¤¤¤Ş¤¹¡£");
+			return $wiki->error("ç·¨é›†ã¯ç¦æ­¢ã•ã‚Œã¦ã„ã¾ã™ã€‚");
 		}
 	}
 	
 	if($cgi->param("DELETE") ne ""){
 		unless(&plugin::attach::Files::can_attach_delete($wiki, $pagename)){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤Îºï½ü¤Ïµö²Ä¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ã®å‰Šé™¤ã¯è¨±å¯ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 	}
 	
 	#-------------------------------------------------------
-	# ¥¢¥Ã¥×¥í¡¼¥É¼Â¹Ô
+	# ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰å®Ÿè¡Œ
 	if($cgi->param("UPLOAD") ne ""){
 		my $filename = $cgi->param("file");
 		$filename =~ s/\\/\//g;
@@ -52,17 +52,17 @@ sub do_action {
 		&Jcode::convert(\$filename,'euc');
 		
 		if($filename eq ""){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 		
 		my $hundle = $cgi->upload("file");
 		unless($hundle){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬ÆÉ¤ß¹ş¤á¤Ş¤»¤ó¤Ç¤·¤¿¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸã€‚");
 		}
 		
 		my $uploadfile = $wiki->config('attach_dir')."/".&Util::url_encode($pagename).".".&Util::url_encode($filename);
 		if(-e $uploadfile && !&plugin::attach::Files::can_attach_update($wiki, $pagename)){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤Î¾å½ñ¤­¤Ïµö²Ä¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ã®ä¸Šæ›¸ãã¯è¨±å¯ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 		
 		open(DATA,">$uploadfile") or die $!;
@@ -70,7 +70,7 @@ sub do_action {
 		while(read($hundle,$_,16384)){ print DATA $_; }
 		close(DATA);
 				
-		# attach¥×¥é¥°¥¤¥ó¤«¤éÅºÉÕ¤µ¤ì¤¿¾ì¹ç
+		# attachãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‹ã‚‰æ·»ä»˜ã•ã‚ŒãŸå ´åˆ
 		if(defined($cgi->param("count"))){
 			my @lines = split(/\n/,$wiki->get_page($pagename));
 			my $flag = 0;
@@ -97,25 +97,25 @@ sub do_action {
 			}
 		}
 		
-		# ¥í¥°¤Îµ­Ï¿
+		# ãƒ­ã‚°ã®è¨˜éŒ²
 		&write_log($wiki,"UPLOAD",$pagename,$filename);
 		
 		$wiki->redirect($pagename);
 		
 	#-------------------------------------------------------
-	# ºï½ü³ÎÇ§
+	# å‰Šé™¤ç¢ºèª
 	} elsif($cgi->param("CONFIRM") ne ""){
 		my $file = $cgi->param("file");
 		if($file eq ""){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 		
 		my $buf = "";
 		
 		$buf .= "<a href=\"".$wiki->create_page_url($pagename)."\">".
-		        Util::escapeHTML($pagename)."</a>¤«¤é".Util::escapeHTML($file)."¤òºï½ü¤·¤Æ¤è¤í¤·¤¤¤Ç¤¹¤«¡©\n".
+		        Util::escapeHTML($pagename)."</a>ã‹ã‚‰".Util::escapeHTML($file)."ã‚’å‰Šé™¤ã—ã¦ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ\n".
 		        "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
-		        "  <input type=\"submit\" name=\"DELETE\" value=\"ºï ½ü\">".
+		        "  <input type=\"submit\" name=\"DELETE\" value=\"å‰Š é™¤\">".
 		        "  <input type=\"hidden\" name=\"action\" value=\"ATTACH\">".
 		        "  <input type=\"hidden\" name=\"page\" value=\"".Util::escapeHTML($pagename)."\">".
 		        "  <input type=\"hidden\" name=\"file\" value=\"".Util::escapeHTML($file)."\">".
@@ -123,35 +123,35 @@ sub do_action {
 		return $buf;
 	
 	#-------------------------------------------------------
-	# ºï½ü¼Â¹Ô
+	# å‰Šé™¤å®Ÿè¡Œ
 	} elsif($cgi->param("DELETE") ne ""){
 		my $file = $cgi->param("file");
 		if($file eq ""){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 		
-		# ¥í¥°¤Îµ­Ï¿
+		# ãƒ­ã‚°ã®è¨˜éŒ²
 		&write_log($wiki,"DELETE",$pagename,$file);
 
 		unlink($wiki->config('attach_dir')."/".&Util::url_encode($pagename).".".&Util::url_encode($file));
 		$wiki->redirect($pagename);
 		
 	#-------------------------------------------------------
-	# ¥À¥¦¥ó¥í¡¼¥É
+	# ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
 	} else {
 		my $file = $cgi->param("file");
 		if($file eq ""){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 		unless($wiki->page_exists($pagename)){
-			return $wiki->error("¥Ú¡¼¥¸¤¬Â¸ºß¤·¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒšãƒ¼ã‚¸ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚");
 		}
 		unless($wiki->can_show($pagename)){
-			return $wiki->error("¥Ú¡¼¥¸¤Î»²¾È¸¢¸Â¤¬¤¢¤ê¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒšãƒ¼ã‚¸ã®å‚ç…§æ¨©é™ãŒã‚ã‚Šã¾ã›ã‚“ã€‚");
 		}
 		my $filepath = $wiki->config('attach_dir')."/".&Util::url_encode($pagename).".".&Util::url_encode($file);
 		unless(-e $filepath){
-			return $wiki->error("¥Õ¥¡¥¤¥ë¤¬¤ß¤Ä¤«¤ê¤Ş¤»¤ó¡£");
+			return $wiki->error("ãƒ•ã‚¡ã‚¤ãƒ«ãŒã¿ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
 		}
 		
 		my $contenttype = &get_mime_type($wiki,$file);
@@ -165,7 +165,7 @@ sub do_action {
 		while(read(DATA,$_,16384)){ print $_; }
 		close(DATA);
 				
-		# ¥í¥°¤Îµ­Ï¿
+		# ãƒ­ã‚°ã®è¨˜éŒ²
 		&write_log($wiki,"DOWNLOAD",$pagename,$file);
 		&count_up($wiki,$pagename,$file);
 		
@@ -174,7 +174,7 @@ sub do_action {
 }
 
 #===========================================================
-# ¥À¥¦¥ó¥í¡¼¥É¥«¥¦¥ó¥È¤ò¥¤¥ó¥¯¥ê¥á¥ó¥È
+# ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚«ã‚¦ãƒ³ãƒˆã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 #===========================================================
 sub count_up {
 	my $wiki = shift;
@@ -195,7 +195,7 @@ sub count_up {
 }
 
 #===========================================================
-# ÅºÉÕ¥Õ¥¡¥¤¥ë¤Î¥í¥°
+# æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ­ã‚°
 #===========================================================
 sub write_log(){
 	my $wiki = shift;
@@ -225,7 +225,7 @@ sub write_log(){
 }
 
 #===========================================================
-# MIME¥¿¥¤¥×¤ò¼èÆÀ¤·¤Ş¤¹
+# MIMEã‚¿ã‚¤ãƒ—ã‚’å–å¾—ã—ã¾ã™
 #===========================================================
 sub get_mime_type {
 	my $wiki = shift;

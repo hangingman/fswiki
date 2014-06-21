@@ -1,38 +1,38 @@
 ###############################################################################
 #
-# <p>bbs2�ץ饰���󤫤���Ƥ��줿�����ΰ�����ɽ�����ޤ���</p>
+# <p>bbs2プラグインから投稿された記事の一覧を表示します。</p>
 # <pre>
-# {{bbs2list �Ǽ��Ĥ�̾��,ɽ�����}}
+# {{bbs2list 掲示板の名前,表示件数}}
 # </pre>
 # <p>
-#  ɽ��������ά�����10�鷺��ɽ������ޤ���
-#  �ޤ������ץ����ǳƵ����Υ����ȥ�Τ�ɽ�����뤳�Ȥ䡢
-#  �������ɽ�����뤳�Ȥ�Ǥ��ޤ���
+#  表示件数を省略すると10件ずつ表示されます。
+#  また、オプションで各記事のタイトルのみ表示することや、
+#  更新順に表示することもできます。
 # </p>
 # <pre>
-# {{bbs2list �Ǽ��Ĥ�̾��,ɽ�����,title}}
+# {{bbs2list 掲示板の名前,表示件数,title}}
 # </pre>
 # <p>
-#  ���ξ���ɽ��������ά���뤳�Ȥ��Ǥ��ޤ�����ά�����10�鷺��ɽ�����ޤ���
+#  この場合も表示件数を省略することができます。省略すると10件ずつ表示します。
 # </p>
 # <pre>
-# {{bbs2list �Ǽ��Ĥ�̾��,title}}
+# {{bbs2list 掲示板の名前,title}}
 # </pre>
 # <p>
-#  recent�ϡ������򹹿����ɽ�����ޤ����ʥ���åɡ��ե����ȷ�����
-#  title��recent�Ϥɤ������˻��ꤷ�Ƥ��ɤ��Ǥ���
-#  ����2�ĤΥ��ץ����Ϥ��줾����Ω�˺��Ѥ��ޤ���
+#  recentは、記事を更新順に表示します。（スレッド・フロート形式）
+#  titleとrecentはどちらを先に指定しても良いです。
+#  この2つのオプションはそれぞれ独立に作用します。
 # </p>
 # <pre>
-# {{bbs2list �Ǽ��Ĥ�̾��,ɽ�����,recent,title}}
-# {{bbs2list �Ǽ��Ĥ�̾��,title,recent}}
+# {{bbs2list 掲示板の名前,表示件数,recent,title}}
+# {{bbs2list 掲示板の名前,title,recent}}
 # </pre>
 #
 ###############################################################################
 package plugin::bbs::BBS2List;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -41,7 +41,7 @@ sub new {
 }
 
 #==============================================================================
-# �����ΰ��������
+# 記事の一覧を作成
 #==============================================================================
 sub paragraph {
 	my $self   = shift;
@@ -49,16 +49,16 @@ sub paragraph {
 	my $cgi    = $wiki->get_CGI();
 	my $name   = shift;
 	
-	# �����Υ����å�
+	# 引数のチェック
 	if($name eq ""){
-		return &Util::paragraph_error("�Ǽ��Ĥ�̾�������ꤵ��Ƥ��ޤ���");
+		return &Util::paragraph_error("掲示板の名前が指定されていません。");
 	}
 	
-	# 2���ܤΰ������������ä����Ϥ����ɽ������ˤ��롣
+	# 2番目の引数が数字だった場合はそれを表示件数にする。
 	my $once = &Util::trim($_[0]);
 	$once = &Util::check_numeric($once) ? $once : 10;
 	
-	# �Ĥ�Υ��ץ��������
+	# 残りのオプションを解析
 	my %option;
 	undef %option;
 	$option{lc &Util::trim($_)} = 1 foreach @_;
@@ -66,7 +66,7 @@ sub paragraph {
 	my $recent = exists $option{'recent'} ? 1 : 0;
 
 	
-	# �������������Wiki������ʸ������Ȥ�Ω�Ƥ�
+	# 一覧を取得してWiki形式の文字列を組み立てる
 	my $i    = 0;
 	my $buf  = "";
 	my $page = $cgi->param("page");
@@ -86,7 +86,7 @@ sub paragraph {
 		last if($i/$once == $cnt+1);
 	}
 	
-	# �ڡ��������ѤΥ�󥯤����
+	# ページ処理用のリンクを作成
 	$buf .= "\n[ ";
 	my $pagecnt = 1;
 	for($i=0;$i<=$#$ref_list;$i=$i+$once){
@@ -103,7 +103,7 @@ sub paragraph {
 }
 
 #==============================================================================
-# �����ΰ��������
+# 記事の一覧を取得
 #==============================================================================
 sub _get_content_list {
 	my $self   = shift;
@@ -129,14 +129,14 @@ sub _get_content_list {
 	}
 	
 	if($recent){
-		# �ƥ���åɤι������������
+		# 各スレッドの更新日時を取得
 		foreach (@list) {
 			$_->{last_modified} = $wiki->get_last_modified2("BBS-$name/$_->{id}");
 		}
-		# ���������ʿ����ˤ˥�����
+		# 更新日時（新着順）にソート
 		@list = sort { $b->{last_modified} <=> $a->{last_modified} } @list;
 	} else {
-		# recent�λ��꤬�ʤ��Ȥ���id�ʥ���å�Ω�Ƥ����֡ˤι߽�
+		# recentの指定がないときはid（スレッド立てた順番）の降順
 		@list = sort { $b->{id} <=> $a->{id} } @list;
 	}
 	

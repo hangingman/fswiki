@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# �桼������Ͽ��Ԥ����������ϥ�ɥ�
+# ユーザの登録を行うアクションハンドラ
 #
 ###############################################################################
 package plugin::admin::UserRegisterHandler;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,7 +15,7 @@ sub new {
 }
 
 #==============================================================================
-# ���������ϥ�ɥ�᥽�å�
+# アクションハンドラメソッド
 #==============================================================================
 sub do_action {
 	my $self = shift;
@@ -31,21 +31,21 @@ sub do_action {
 }
 
 #==============================================================================
-# �桼���ɲá������ե�����
+# ユーザ追加・更新フォーム
 #==============================================================================
 sub user_form {
 	my $self = shift;
 	my $wiki = shift;
 	
-	$wiki->set_title("�桼���������Ͽ");
+	$wiki->set_title("ユーザ情報の登録");
 	
 	my $buf = "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
-	$buf .= "<h2>�桼���������Ͽ</h2>";
+	$buf .= "<h2>ユーザ情報の登録</h2>";
 	$buf .= "<h3>ID</h3>\n";
 	$buf .= "<p><input type=\"text\" name=\"id\" size=\"20\"></p>\n";
-	$buf .= "<h3>�ѥ����</h3>\n";
+	$buf .= "<h3>パスワード</h3>\n";
 	$buf .= "<p><input type=\"password\" name=\"pass\" size=\"20\"></p>\n";
-	$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"��Ͽ\">\n";
+	$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"登録\">\n";
 	$buf .= "<input type=\"hidden\" name=\"action\" value=\"USERREGISTER\">\n";
 	$buf .= "</form>\n";
 	
@@ -53,7 +53,7 @@ sub user_form {
 }
 
 #==============================================================================
-# �桼���������¸
+# ユーザ情報の保存
 #==============================================================================
 sub save_user {
 	my $self = shift;
@@ -65,13 +65,13 @@ sub save_user {
 	my $type = 1;
 	
 	if($wiki->user_exists($id)){
-		return $wiki->error("���Ϥ��줿ID�Ϥ��Ǥ˻��Ѥ���Ƥ��ޤ���");
+		return $wiki->error("入力されたIDはすでに使用されています。");
 	}
 	if($id eq "" || $pass eq ""){
-		return $wiki->error("ID���ѥ���ɤ���ꤷ�Ƥ���������");
+		return $wiki->error("ID、パスワードを指定してください。");
 	}
 	unless($id =~ /^[a-zA-Z0-9\-_]+$/ && $pass =~ /^[a-zA-Z0-9\-_]+/){
-		return $wiki->error("ID���ѥ���ɤˤ�Ⱦ�ѱѿ����������ѤǤ��ޤ���");
+		return $wiki->error("ID、パスワードには半角英数字しか使用できません。");
 	}
 	
 	Util::sync_update_config($wiki,$wiki->config('userdat_file'),sub {
@@ -83,10 +83,10 @@ sub save_user {
 	});
 	
 	return qq|
-	<h1>�桼���������Ͽ</h1>
+	<h1>ユーザ情報の登録</h1>
 	<p>
-		�桼���������Ͽ���ޤ�����
-		����³��<a href="@{[$wiki->create_url({action=>'LOGIN'})]}">��������</a>���Ƥ���������
+		ユーザ情報を登録しました。
+		引き続き<a href="@{[$wiki->create_url({action=>'LOGIN'})]}">ログイン</a>してください。
 	</p>
 	|;
 }

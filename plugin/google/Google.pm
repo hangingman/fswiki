@@ -1,51 +1,51 @@
 ######################################################################
 #
-# <p>Google�θ����ܥå�����ɽ�����ޤ���</p>
+# <p>Googleの検索ボックスを表示します。</p>
 # <pre>
 # {{google}}
 # </pre>
-# <p>�����ȸ�����ǽ��������뤳�Ȥ�Ǥ��ޤ���</p>
+# <p>サイト検索機能を持たせることもできます。</p>
 # <pre>
-# {{google ������̾}}
+# {{google サーバ名}}
 # </pre>
-# <p>���ܸ�Υڡ������鸡�������뤿��������ɽ�����뤳�Ȥ��Ǥ��ޤ���</p>
+# <p>日本語のページから検索させるための選択を表示することができます。</p>
 # <pre>
 # {{google l}}
 # </pre>
-# <p>Menu������Google�����ȥƥ����ȥܥå����ȥܥ����Ĥ����֤Ǥ��ޤ���</p>
+# <p>Menu向けにGoogleロゴとテキストボックスとボタンを縦に配置できます。</p>
 # <pre>
 # {{google v}}
 # </pre>
-# <p>������̤򿷤�����ǳ����褦�˽���ޤ���</p>
+# <p>検索結果を新しい窓で開くように出来ます。</p>
 # <pre>
 # {{google t}}
 # </pre>
-# <p>Google�����Υ��������طʿ������Ǥ��ޤ���</p>
+# <p>Googleロゴのサイズと背景色を指定できます。</p>
 # <pre>
 # {{google (25|40|50|60)(wht|gry|blk)}}
 # </pre>
 # <p>
-#   ���ο�����������(����Υ����Ȥ���Ψ)������Υ���ե��٥åȤ�
-#   =�طʿ�(wht=��gry=������blk=��)�ˤʤäƤ��ޤ���
-#   �ºݤΥ����ΰ����ϡ�
-#   =<a href='http://www.google.co.jp/intl/ja/logos.html'>Google ��������</a>
-#   �򻲾Ȥ��Ƥ���������
+#   前の数字がサイズ(本来のロゴとの比率)、後ろのアルファベットが
+#   =背景色(wht=白、gry=灰色、blk=黒)になっています。
+#   実際のロゴの一覧は、
+#   =<a href='http://www.google.co.jp/intl/ja/logos.html'>Google ロゴ使用</a>
+#   を参照してください。
 # </p>
-# <p>�ƥ����ȥܥå�������������Ǥ��ޤ���</p>
+# <p>テキストボックスの幅が指定できます。</p>
 # <pre>
-# {{google s��}}
+# {{google s幅}}
 # </pre>
-# <p>����1��255�δ֤ǻ��ꤷ�Ƥ���������</p>
-# <p>ɽ�����֤λ��꤬����ޤ���</p>
+# <p>幅は1〜255の間で指定してください。</p>
+# <p>表示位置の指定が出来ます。</p>
 # <pre>
 # {{google (center|right|left)}}
 # </pre>
 # <p>
-#   �����Υ��ץ�����ʻ�Ѥ��뤳�Ȥ�Ǥ��ޤ���
-#   ����ޤǶ��ڤäƵ��Ҥ��Ƥ��������������Ǥ�դǤ���
+#   これらのオプションは併用することもできます。
+#   カンマで区切って記述してください。順序は任意です。
 # </p>
 # <pre>
-# {{google ������̾,l,v,t,25wht,s��,center}}
+# {{google サーバ名,l,v,t,25wht,s幅,center}}
 # </pre>
 #
 ######################################################################
@@ -53,7 +53,7 @@ package plugin::google::Google;
 use strict;
 
 #=====================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #=====================================================================
 sub new {
 	my $class = shift;
@@ -62,7 +62,7 @@ sub new {
 }
 
 #=====================================================================
-# �ѥ饰��ե᥽�å�
+# パラグラフメソッド
 #=====================================================================
 sub paragraph {
 	my $self = shift;
@@ -92,15 +92,15 @@ sub paragraph {
 		} elsif ($arg =~ /^s([0-9]+)/) {
 			$size = $1;
 			if (($size < 1) || ($size > 255)) {
-				$error = '��������1��255�ǻ��ꤷ�Ƥ���������';
+				$error = 'サイズは1〜255で指定してください。';
 			}
 		} elsif ($arg =~ /(center|right|left)/) {
 			$align = $1;
 		} else {
 			if (defined($domain)) {
-				$error = '�ɥᥤ��ʣ�����ꤵ��Ƥ��ޤ���';
+				$error = 'ドメインが複数指定されています。';
 			} elsif (($arg eq '') || ($arg =~ /[^-0-9A-Za-z.]/)) {
-				$error = '�ɥᥤ��̾�˻��ѤǤ��ʤ�ʸ��������ޤ���';
+				$error = 'ドメイン名に使用できない文字があります。';
 			} else {
 				$domain = $arg;
 			}
@@ -116,7 +116,7 @@ sub paragraph {
 EOD
 
 		$siteoption .= <<"EOD" if defined($lang);
-<br><input type=radio name=lr value="" checked>���������� <input type=radio name=lr value=lang_ja >���ܸ�
+<br><input type=radio name=lr value="" checked>ウェブ全体 <input type=radio name=lr value=lang_ja >日本語
 EOD
 
 		$siteoption = "<font size=-1>${siteoption}</font>" if $siteoption ne '';
@@ -125,7 +125,7 @@ EOD
 <!-- Google  -->
 <div class="plugin_google" align="$align">
 <form method=GET action="http://www.google.co.jp/search" $target>
-<a href="http://www.google.co.jp/"><IMG SRC="http://www.google.com/logos/Logo_${logo}.gif" border="0" ALT="Google" align="absmiddle"></a> <INPUT type=submit name=btnG VALUE="����"><input type=hidden name=hl value="ja"><input type=hidden name=ie value="EUC-JP"><br>
+<a href="http://www.google.co.jp/"><IMG SRC="http://www.google.com/logos/Logo_${logo}.gif" border="0" ALT="Google" align="absmiddle"></a> <INPUT type=submit name=btnG VALUE="検索"><input type=hidden name=hl value="ja"><input type=hidden name=ie value="EUC-JP"><br>
 <INPUT TYPE=text name=q size=${size} maxlength=255 value="">${siteoption}
 </form>
 </div>
@@ -135,11 +135,11 @@ EOD
 		my $siteoption = '';
 
 		$siteoption .= <<"EOD" if defined($domain);
-<input type=hidden name=domains value="${domain}"><br><input type=radio name=sitesearch value=""> WWW �򸡺� <input type=radio name=sitesearch value="${domain}" checked> ${domain} �򸡺�
+<input type=hidden name=domains value="${domain}"><br><input type=radio name=sitesearch value=""> WWW を検索 <input type=radio name=sitesearch value="${domain}" checked> ${domain} を検索
 EOD
 
 		$siteoption .= <<"EOD" if defined($lang);
-<br><input type=radio name=lr value="" checked>���������Τ��鸡�� <input type=radio name=lr value=lang_ja >���ܸ�Υڡ����򸡺�
+<br><input type=radio name=lr value="" checked>ウェブ全体から検索 <input type=radio name=lr value=lang_ja >日本語のページを検索
 EOD
 
 		$siteoption = "<font size=-1>${siteoption}</font>" if $siteoption ne '';
@@ -157,7 +157,7 @@ border="0" ALT="Google" align="absmiddle"></A>
 <INPUT TYPE=text name=q size=${size} maxlength=255 value="">
 <input type=hidden name=hl value="ja">
 <input type=hidden name=ie value="EUC-JP">
-<INPUT type=submit name=btnG VALUE="Google����">${siteoption}
+<INPUT type=submit name=btnG VALUE="Google検索">${siteoption}
 </td></tr></TABLE>
 </FORM>
 </div>

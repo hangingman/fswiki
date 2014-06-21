@@ -1,12 +1,12 @@
 ############################################################
 #
-# •⁄°º•∏§ŒÃææŒ§Ú —ππ§π§Î§ø§·§Œ•’•©°º•‡§ÚΩ–Œœ§∑§ﬁ§π°£
+# „Éö„Éº„Ç∏„ÅÆÂêçÁß∞„ÇíÂ§âÊõ¥„Åô„Çã„Åü„ÇÅ„ÅÆ„Éï„Ç©„Éº„É†„ÇíÂá∫Âäõ„Åó„Åæ„Åô„ÄÇ
 #
 ############################################################
 package plugin::rename::RenameForm;
 use strict;
 #===========================================================
-# •≥•Û•π•»•È•Ø•ø
+# „Ç≥„É≥„Çπ„Éà„É©„ÇØ„Çø
 #===========================================================
 sub new {
 	my $class = shift;
@@ -15,7 +15,7 @@ sub new {
 }
 
 #===========================================================
-# •ÿ•Î•◊§Ú…Ωº®§∑§ﬁ§π°£
+# „Éò„É´„Éó„ÇíË°®Á§∫„Åó„Åæ„Åô„ÄÇ
 #===========================================================
 sub editform {
 	my $self = shift;
@@ -23,17 +23,17 @@ sub editform {
 	my $cgi  = $wiki->get_CGI();
 	my $page = $cgi->param("page");
 	
-	# •⁄°º•∏§¨¬∏∫ﬂ§π§ÎæÏπÁ§¿§±•’•©°º•‡§Ú…Ωº®
+	# „Éö„Éº„Ç∏„ÅåÂ≠òÂú®„Åô„ÇãÂ†¥Âêà„Å†„Åë„Éï„Ç©„Éº„É†„ÇíË°®Á§∫
 	if($wiki->page_exists($page)){
 		my $time = $wiki->get_last_modified($page);
-		return "<h2>•Í•Õ°º•‡°¶•≥•‘°º</h2>".
+		return "<h2>„É™„Éç„Éº„É†„Éª„Ç≥„Éî„Éº</h2>".
 		       "<form method=\"post\" action=\"".$wiki->create_url()."\">\n".
 		       "  <input type=\"text\" name=\"newpage\" size=\"40\" value=\"".&Util::escapeHTML($page)."\">\n".
 		       "  <br>\n".
-		       "  <input type=\"radio\"  id=\"do_move\" name=\"do\" value=\"move\" checked><label for=\"do_move\">•Í•Õ°º•‡</label>\n".
-		       "  <input type=\"radio\"  id=\"do_movewm\" name=\"do\" value=\"movewm\"><label for=\"do_movewm\">•·•√•ª°º•∏§Úªƒ§∑§∆•Í•Õ°º•‡</label>\n".
-		       "  <input type=\"radio\"  id=\"do_copy\" name=\"do\" value=\"copy\"><label for=\"do_copy\">•≥•‘°º</label>\n".
-		       "  <input type=\"submit\" name=\"execute_rename\" value=\" º¬π‘ \">\n".
+		       "  <input type=\"radio\"  id=\"do_move\" name=\"do\" value=\"move\" checked><label for=\"do_move\">„É™„Éç„Éº„É†</label>\n".
+		       "  <input type=\"radio\"  id=\"do_movewm\" name=\"do\" value=\"movewm\"><label for=\"do_movewm\">„É°„ÉÉ„Çª„Éº„Ç∏„ÇíÊÆã„Åó„Å¶„É™„Éç„Éº„É†</label>\n".
+		       "  <input type=\"radio\"  id=\"do_copy\" name=\"do\" value=\"copy\"><label for=\"do_copy\">„Ç≥„Éî„Éº</label>\n".
+		       "  <input type=\"submit\" name=\"execute_rename\" value=\" ÂÆüË°å \">\n".
 		       "  <input type=\"hidden\" name=\"action\" value=\"RENAME\">".
 		       "  <input type=\"hidden\" name=\"lastmodified\" value=\"".&Util::escapeHTML($time)."\">\n".
 		       "  <input type=\"hidden\" name=\"page\" value=\"".&Util::escapeHTML($page)."\">".

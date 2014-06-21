@@ -27,10 +27,10 @@ my %_0208 = (
 		);
 
 %CHARCODE = (
-	     UNDEF_EUC  =>     "\xa2\xae",  # ¢® in EUC
-	     UNDEF_SJIS =>     "\x81\xac",  # ¢® in SJIS
-	     UNDEF_JIS  =>     "\xa2\xf7",  # ¢÷ -- used in unicode
-	     UNDEF_UNICODE  => "\x20\x20",  # ¢÷ -- used in unicode
+	     UNDEF_EUC  =>     "\xa2\xae",  # ã€“ in EUC
+	     UNDEF_SJIS =>     "\x81\xac",  # ã€“ in SJIS
+	     UNDEF_JIS  =>     "\xa2\xf7",  # â€  -- used in unicode
+	     UNDEF_UNICODE  => "\x20\x20",  # â€  -- used in unicode
 	 );
 
 %ESC =  (

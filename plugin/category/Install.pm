@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# Wiki¥Ú¡¼¥¸¤ò¥«¥Æ¥´¥é¥¤¥º¤¹¤ë¤¿¤á¤Î¥×¥é¥°¥¤¥ó¤òÄó¶¡¤·¤Þ¤¹¡£
+# Wikiãƒšãƒ¼ã‚¸ã‚’ã‚«ãƒ†ã‚´ãƒ©ã‚¤ã‚ºã™ã‚‹ãŸã‚ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’æä¾›ã—ã¾ã™ã€‚
 #
 ###############################################################################
 package plugin::category::Install;
@@ -12,7 +12,7 @@ sub install {
 	$wiki->add_inline_plugin("category","plugin::category::Category","HTML");
 	$wiki->add_handler("CATEGORY","plugin::category::CategoryHandler");
 	
-	# ¥Ú¡¼¥¸¤ÎÊÝÂ¸»þ¡¢ºï½ü»þ¤Ë¥­¥ã¥Ã¥·¥å¤ò¹¹¿·
+	# ãƒšãƒ¼ã‚¸ã®ä¿å­˜æ™‚ã€å‰Šé™¤æ™‚ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°
 	$wiki->add_hook("save_after","plugin::category::CategoryCache");
 	$wiki->add_hook("delete"    ,"plugin::category::CategoryCache");
 }

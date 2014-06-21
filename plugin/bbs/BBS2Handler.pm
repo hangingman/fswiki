@@ -1,12 +1,12 @@
 ############################################################
 #
-# ·Ç¼¨ÈÇ¥×¥é¥°¥¤¥ó¤Î¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¡£
+# æ²ç¤ºç‰ˆãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ã€‚
 #
 ############################################################
 package plugin::bbs::BBS2Handler;
 use strict;
 #===========================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #===========================================================
 sub new {
 	my $class = shift;
@@ -15,7 +15,7 @@ sub new {
 }
 
 #===========================================================
-# µ­»ö¤Î½ñ¤­¹ş¤ß
+# è¨˜äº‹ã®æ›¸ãè¾¼ã¿
 #===========================================================
 sub do_action {
 	my $self = shift;
@@ -30,26 +30,26 @@ sub do_action {
 	my $option  = $cgi->param("option");
 	
 	if($name    eq ""){
-		$name    = "Ì¾Ìµ¤·¤µ¤ó";
+		$name    = "åç„¡ã—ã•ã‚“";
 	} else {
-		# fswiki_post_name¤È¤¤¤¦¥­¡¼¤Ç¥¯¥Ã¥­¡¼¤ò¥»¥Ã¥È¤¹¤ë
+		# fswiki_post_nameã¨ã„ã†ã‚­ãƒ¼ã§ã‚¯ãƒƒã‚­ãƒ¼ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 		my $path   = &Util::cookie_path($wiki);
 		my $cookie = $cgi->cookie(-name=>'fswiki_post_name',-value=>Util::url_encode($name),-expires=>'+1M',-path=>$path);
 		print "Set-Cookie: ",$cookie->as_string,"\n";
 	}
 	
 	if($subject eq ""){
-		$subject = "ÌµÂê";
+		$subject = "ç„¡é¡Œ";
 	}
 	
 	if($bbsname eq ""){
-		return $wiki->error("¥Ñ¥é¥á¡¼¥¿¤¬ÉÔÀµ¤Ç¤¹¡£");
+		return $wiki->error("ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒä¸æ­£ã§ã™ã€‚");
 	}
 	if($message eq ""){
-		return $wiki->error("ËÜÊ¸¤òÆşÎÏ¤·¤Æ¤¯¤À¤µ¤¤¡£");
+		return $wiki->error("æœ¬æ–‡ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚");
 	}
 	
-	# ¥Õ¥©¡¼¥Ş¥Ã¥È¥×¥é¥°¥¤¥ó¤Ø¤ÎÂĞ±ş
+	# ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã¸ã®å¯¾å¿œ
 	my $format = $wiki->get_edit_format();
 	$name    = $wiki->convert_to_fswiki($name   ,$format,1);
 	$subject = $wiki->convert_to_fswiki($subject,$format,1);
@@ -59,24 +59,24 @@ sub do_action {
 	my $content = "!![[$subject|$pagename]] - $name (".&Util::format_date(time()).")\n".
 	              "$message\n";
 	
-	# no_comment¥ª¥×¥·¥ç¥ó
+	# no_commentã‚ªãƒ—ã‚·ãƒ§ãƒ³
 	if($option eq "no_comment"){
 		
-	# reverse_comment¥ª¥×¥·¥ç¥ó
+	# reverse_commentã‚ªãƒ—ã‚·ãƒ§ãƒ³
 	} elsif($option eq "reverse_comment"){
 		$content .= "{{comment reverse}}\n";
-	# ¥Ç¥Õ¥©¥ë¥È
+	# ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
 	} else {
 		$content .= "{{comment}}\n";
 	}
 	$wiki->save_page($pagename,$content);
 	
-	# ¸µ¤Î¥Ú¡¼¥¸¤Ë¥ê¥À¥¤¥ì¥¯¥È
+	# å…ƒã®ãƒšãƒ¼ã‚¸ã«ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆ
 	$wiki->redirect($pagename);
 }
 
 #===========================================================
-# ºîÀ®¤¹¤ë¥Ú¡¼¥¸Ì¾¤ò¼èÆÀ
+# ä½œæˆã™ã‚‹ãƒšãƒ¼ã‚¸åã‚’å–å¾—
 #===========================================================
 sub get_page_name {
 	my $self  = shift;

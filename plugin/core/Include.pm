@@ -1,25 +1,25 @@
 ###############################################################################
 #
-# <p>���ꤷ���ڡ������⤷���ϻ���ڡ����λ���ѥ饰��դ򥤥󥯥롼�ɤ��ޤ���</p>
+# <p>指定したページ、もしくは指定ページの指定パラグラフをインクルードします。</p>
 # <p>
-#   �ڡ������Τ򥤥󥯥롼�ɤ�����ϰ����˥ڡ���̾����ꤷ�ޤ���
+#   ページ全体をインクルードする場合は引数にページ名を指定します。
 # </p>
 # <pre>
-# {{include �ڡ���̾}}
+# {{include ページ名}}
 # </pre>
 # <p>
-#   ����ڡ���������Υѥ饰��դ򥤥󥯥롼�ɤ������
-#   �ڡ���̾��³�����裲�����˥ѥ饰���̾����ꤷ�ޤ���
+#   指定ページの特定のパラグラフをインクルードする場合は
+#   ページ名に続けて第２引数にパラグラフ名を指定します。
 # </p>
 # <pre>
-# {{include �ڡ���̾,�ѥ饰���̾}}
+# {{include ページ名,パラグラフ名}}
 # </pre>
 #
 ###############################################################################
 package plugin::core::Include;
 use strict;
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -28,7 +28,7 @@ sub new {
 }
 
 #==============================================================================
-# �ѥ饰��մؿ�
+# パラグラフ関数
 #==============================================================================
 sub paragraph {
 	my $self   = shift;
@@ -37,61 +37,61 @@ sub paragraph {
 	my $para   = shift;
 	my $cgi    = $wiki->get_CGI;
 	
-	# ���顼�����å�
+	# エラーチェック
 	if($self->{count}++ > 50){
-		return &Util::paragraph_error("include�ץ饰����¿�����ޤ���","WIKI");
+		return &Util::paragraph_error("includeプラグインが多すぎます。","WIKI");
 	}
 	if($page eq ""){
-		return &Util::paragraph_error("�ڡ��������ꤵ��Ƥ��ޤ���","WIKI");
+		return &Util::paragraph_error("ページが指定されていません。","WIKI");
 	}
 	if(!$wiki->page_exists($page)){
-		return &Util::paragraph_error("�ڡ�����¸�ߤ��ޤ���","WIKI");
+		return &Util::paragraph_error("ページが存在しません。","WIKI");
 	}
 	if(!$wiki->can_show($page)){
-		return &Util::paragraph_error("�ڡ����λ��ȸ��¤�����ޤ���","WIKI");
+		return &Util::paragraph_error("ページの参照権限がありません。","WIKI");
 	}
 	if($page eq $cgi->param("page")){
-		return &Util::paragraph_error("Ʊ��Υڡ�����include�Ǥ��ޤ���","WIKI");
+		return &Util::paragraph_error("同一のページはincludeできません。","WIKI");
 	}
 	foreach my $incpage (@{$self->{stack}}){
 		if($incpage eq $page){
-			return &Util::paragraph_error("Ʊ��Υڡ�����include�Ǥ��ޤ���","WIKI");
+			return &Util::paragraph_error("同一のページはincludeできません。","WIKI");
 		}
 	}
 	
-	# �����������
+	# ソースを取得
 	my $source = $wiki->get_page($page);
 	
-	# �ѥ饰��դ����ꤵ��Ƥ������ϥѥ饰��դ��ڤ�Ф�
+	# パラグラフが指定されていた場合はパラグラフを切り出す
 	$para = quotemeta(Util::trim($para));
 	if($para ne ""){
 		if($source =~ /(\n|^)!!!\s*$para\s*(\n!!!|$)/){
-			return &Util::paragraph_error("�ѥ饰��դ���ʸ��¸�ߤ��ޤ���","WIKI");
+			return &Util::paragraph_error("パラグラフの本文が存在しません。","WIKI");
 		} elsif($source =~ /(\n|^)!!!\s*$para\s*\n((.|\s|\r|\n)*?)\s*(\n!!!|$)/){
 			$source = $2;
 		} elsif($source =~ /(\n|^)!!\s*$para\s*(\n!!|$)/){
-			return &Util::paragraph_error("�ѥ饰��դ���ʸ��¸�ߤ��ޤ���","WIKI");
+			return &Util::paragraph_error("パラグラフの本文が存在しません。","WIKI");
 		} elsif($source =~ /(\n|^)!!\s*$para\s*\n((.|\s|\r|\n)*?)\s*(\n!!|$)/){
 			$source = $2;
 		} elsif($source =~ /(\n|^)!\s*$para\s*(\n!|$)/){
-			return &Util::paragraph_error("�ѥ饰��դ���ʸ��¸�ߤ��ޤ���","WIKI");
+			return &Util::paragraph_error("パラグラフの本文が存在しません。","WIKI");
 		} elsif($source =~ /(\n|^)!\s*$para\s*\n((.|\s|\r|\n)*?)\s*(\n!|$)/){
 			$source = $2;
 		} else {
-			return &Util::paragraph_error("�ڡ�����¸�ߤ��ޤ���","WIKI");
+			return &Util::paragraph_error("ページが存在しません。","WIKI");
 		}
 	}
 	
-	# �����å��ˤĤ��̵�¥롼���ɻ��ѡ�
+	# スタックにつむ（無限ループ防止用）
 	push(@{$self->{stack}},$page);
 	
-	# ����ä�΢��
+	# ちょっと裏技
 	my $pagetmp = $cgi->param("page");
 	$cgi->param("page",$page);
 	$wiki->get_current_parser()->parse($source);
 	$cgi->param("page",$pagetmp);
 	
-	# �����å�������
+	# スタックから削除
 	pop(@{$self->{stack}});
 	
 	return undef;

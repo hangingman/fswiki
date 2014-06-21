@@ -1,13 +1,13 @@
 ###############################################################################
 #
-# WikiFarm¤Îºï½ü¤ò¹Ô¤¦¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¡£
-# WikiFarm¤ÎÀßÄê¤ÇFarmµ¡Ç½¤ò»ÈÍÑ¤¹¤ëÀßÄê¤Ë¤Ê¤Ã¤Æ¤¤¤ë¾ì¹ç¤Î¤ßÍ­¸ú¤Ë¤Ê¤ê¤Ş¤¹¡£
+# WikiFarmã®å‰Šé™¤ã‚’è¡Œã†ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ã€‚
+# WikiFarmã®è¨­å®šã§Farmæ©Ÿèƒ½ã‚’ä½¿ç”¨ã™ã‚‹è¨­å®šã«ãªã£ã¦ã„ã‚‹å ´åˆã®ã¿æœ‰åŠ¹ã«ãªã‚Šã¾ã™ã€‚
 #
 ###############################################################################
 package plugin::core::RemoveWikiHandler;
 use strict;
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,30 +15,30 @@ sub new {
 	return bless $self,$class;
 }
 #==============================================================================
-# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¥á¥½¥Ã¥É
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub do_action {
 	my $self = shift;
 	my $farm = shift;
-	$farm->set_title("Wiki¤Îºï½ü");
+	$farm->set_title("Wikiã®å‰Šé™¤");
 	
-	# ¸¢¸Â¤Î¥Á¥§¥Ã¥¯
+	# æ¨©é™ã®ãƒã‚§ãƒƒã‚¯
 	my $login  = $farm->get_login_info();
 	my $config = &Util::load_config_hash($farm,$farm->config('farmconf_file'));
 	if($config->{remove}==1){
 		if(!defined($login)){
-			return $farm->error("Wiki¤Îºï½ü¤Ïµö²Ä¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $farm->error("Wikiã®å‰Šé™¤ã¯è¨±å¯ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 	} elsif($config->{remove}==2){
 		if(!defined($login) || $login->{type}!=0){
-			return $farm->error("Wiki¤Îºï½ü¤Ïµö²Ä¤µ¤ì¤Æ¤¤¤Ş¤»¤ó¡£");
+			return $farm->error("Wikiã®å‰Šé™¤ã¯è¨±å¯ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		}
 	}
 	
-	# Wiki¤ÎÂ¸ºß¥Á¥§¥Ã¥¯
+	# Wikiã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯
 	my $path = $farm->get_CGI()->param("path");
 	unless($path =~ s|^/|| and $farm->wiki_exists($path)) {
-		return $farm->error("Wiki¤¬Â¸ºß¤·¤Ş¤»¤ó¡£");
+		return $farm->error("WikiãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚");
 	}
 	
 	if($farm->get_CGI()->param("exec_delete") ne ""){
@@ -48,22 +48,22 @@ sub do_action {
 	}
 }
 #==============================================================================
-# ºï½ü³ÎÇ§
+# å‰Šé™¤ç¢ºèª
 #==============================================================================
 sub conf_remove {
 	my $self = shift;
 	my $farm = shift;
 	my $path = $farm->get_CGI()->param("path");
 	
-	return "<p><a href=\"".$farm->config('script_name')."$path\">$path</a>¤òºï½ü¤·¤Æ¤è¤í¤·¤¤¤Ç¤¹¤«¡©</p>".
+	return "<p><a href=\"".$farm->config('script_name')."$path\">$path</a>ã‚’å‰Šé™¤ã—ã¦ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ</p>".
 	       "<form action=\"".$farm->create_url()."\" method=\"POST\">\n".
-	       "  <input type=\"submit\" name=\"exec_delete\" value=\"ºï½ü\">\n".
+	       "  <input type=\"submit\" name=\"exec_delete\" value=\"å‰Šé™¤\">\n".
 	       "  <input type=\"hidden\" name=\"action\" value=\"REMOVE_WIKI\">\n".
 	       "  <input type=\"hidden\" name=\"path\" value=\"".&Util::escapeHTML($path)."\">\n".
 	       "</form>\n";
 }
 #==============================================================================
-# ºï½ü¼Â¹Ô
+# å‰Šé™¤å®Ÿè¡Œ
 #==============================================================================
 sub exec_remove {
 	my $self = shift;
@@ -71,7 +71,7 @@ sub exec_remove {
 	my $path = $farm->get_CGI()->param("path");
 	
 	$farm->remove_wiki($path);
-	return "<p>".&Util::escapeHTML($path)."¤òºï½ü¤·¤Ş¤·¤¿¡£</p>";
+	return "<p>".&Util::escapeHTML($path)."ã‚’å‰Šé™¤ã—ã¾ã—ãŸã€‚</p>";
 }
 
 1;

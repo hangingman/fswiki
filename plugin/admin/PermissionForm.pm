@@ -1,13 +1,13 @@
 ###############################################################################
 #
-# ´ÉÍı¼Ô¥í¥°¥¤¥ó»ş¤Ë¥Ú¡¼¥¸ÊÔ½¸²èÌÌ¤Ë¸¢¸ÂÊÑ¹¹ÍÑ¤Î¥Õ¥©¡¼¥à¤ò½ĞÎÏ¤¹¤ë¥×¥é¥°¥¤¥ó¡£
+# ç®¡ç†è€…ãƒ­ã‚°ã‚¤ãƒ³æ™‚ã«ãƒšãƒ¼ã‚¸ç·¨é›†ç”»é¢ã«æ¨©é™å¤‰æ›´ç”¨ã®ãƒ•ã‚©ãƒ¼ãƒ ã‚’å‡ºåŠ›ã™ã‚‹ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã€‚
 #
 ###############################################################################
 package plugin::admin::PermissionForm;
 use strict;
 
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -16,7 +16,7 @@ sub new {
 }
 
 #==============================================================================
-# ÊÔ½¸¥Õ¥©¡¼¥à¤ò½ĞÎÏ¤¹¤ë¥á¥½¥Ã¥É
+# ç·¨é›†ãƒ•ã‚©ãƒ¼ãƒ ã‚’å‡ºåŠ›ã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub editform {
 	my $self = shift;
@@ -37,26 +37,26 @@ sub editform {
 	
 	my $show_level = $wiki->get_page_level($page);
 	
-	my $buf = "<h2>¥Ú¡¼¥¸¤Î»²¾È¡¦¹¹¿·¸¢¸Â</h2>\n";
+	my $buf = "<h2>ãƒšãƒ¼ã‚¸ã®å‚ç…§ãƒ»æ›´æ–°æ¨©é™</h2>\n";
 	
 	$buf .= "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
 	
 	$buf .= "<input type=\"radio\" id=\"show_level_0\" name=\"show_level\" value=\"0\"";
 	if($show_level==0){ $buf .= " checked"; }
-	$buf .= "><label for=\"show_level_0\">Á´°÷¤Ë¸ø³«</label> ";
+	$buf .= "><label for=\"show_level_0\">å…¨å“¡ã«å…¬é–‹</label> ";
 	$buf .= "<input type=\"radio\" id=\"show_level_1\" name=\"show_level\" value=\"1\"";
 	if($show_level==1){ $buf .= " checked"; }
-	$buf .= "><label for=\"show_level_1\">¥æ¡¼¥¶¤Î¤ß</label> ";
+	$buf .= "><label for=\"show_level_1\">ãƒ¦ãƒ¼ã‚¶ã®ã¿</label> ";
 	$buf .= "<input type=\"radio\" id=\"show_level_2\" name=\"show_level\" value=\"2\"";
 	if($show_level==2){ $buf .= " checked"; }
-	$buf .= "><label for=\"show_level_2\">´ÉÍı¼Ô¤Î¤ß</label> \n";
+	$buf .= "><label for=\"show_level_2\">ç®¡ç†è€…ã®ã¿</label> \n";
 	
-	$buf .= "<input type=\"submit\" name=\"change_show_level\" value=\"»²¾È¸¢¸Â¤òÊÑ¹¹\">\n";
+	$buf .= "<input type=\"submit\" name=\"change_show_level\" value=\"å‚ç…§æ¨©é™ã‚’å¤‰æ›´\">\n";
 	
 	if($wiki->is_freeze($page)){
-		$buf .= "<input type=\"submit\" name=\"unfreeze\" value=\"Åà·ë¤ò²ò½ü\">";
+		$buf .= "<input type=\"submit\" name=\"unfreeze\" value=\"å‡çµã‚’è§£é™¤\">";
 	} else {
-		$buf .= "<input type=\"submit\" name=\"freeze\" value=\"¥Ú¡¼¥¸¤òÅà·ë\">";
+		$buf .= "<input type=\"submit\" name=\"freeze\" value=\"ãƒšãƒ¼ã‚¸ã‚’å‡çµ\">";
 	}
 	$buf .= "<input type=\"hidden\" name=\"page\" value=\"".&Util::escapeHTML($page)."\">\n";
 	$buf .= "<input type=\"hidden\" name=\"action\" value=\"CHANGE_PAGE_PERMISSION\">\n";
@@ -66,7 +66,7 @@ sub editform {
 }
 
 #==============================================================================
-# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¥á¥½¥Ã¥É
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub do_action {
 	my $self = shift;

@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# ¥æ¡¼¥¶´ÉÍı¤ò¹Ô¤¦¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é
+# ãƒ¦ãƒ¼ã‚¶ç®¡ç†ã‚’è¡Œã†ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©
 #
 ###############################################################################
 package plugin::admin::AdminUserHandler;
 use strict;
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,14 +15,14 @@ sub new {
 }
 
 #==============================================================================
-# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¥á¥½¥Ã¥É
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub do_action {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $cgi   = $wiki->get_CGI;
 	
-	$wiki->set_title("¥æ¡¼¥¶´ÉÍı");
+	$wiki->set_title("ãƒ¦ãƒ¼ã‚¶ç®¡ç†");
 	
 	if($cgi->param("delete") ne ""){
 		return $self->delete_user($wiki);
@@ -49,16 +49,16 @@ sub do_action {
 }
 
 #==============================================================================
-# ¥æ¡¼¥¶°ìÍ÷
+# ãƒ¦ãƒ¼ã‚¶ä¸€è¦§
 #==============================================================================
 sub user_list {
 	my $self = shift;
 	my $wiki = shift;
 	
 	my $users = &Util::load_config_hash($wiki,$wiki->config('userdat_file'));
-	my $buf .= "<h2>¥æ¡¼¥¶°ìÍ÷</h2>\n".
+	my $buf .= "<h2>ãƒ¦ãƒ¼ã‚¶ä¸€è¦§</h2>\n".
 	           "<table>\n".
-	           "<tr><th>ID</th><th>¼ïÊÌ</th><th>Áàºî</th></tr>\n";
+	           "<tr><th>ID</th><th>ç¨®åˆ¥</th><th>æ“ä½œ</th></tr>\n";
 	
 	foreach my $id (sort(keys(%$users))){
 		my ($pass,$type) = split(/\t/,$users->{$id});
@@ -66,24 +66,24 @@ sub user_list {
 		$buf .= "<tr>\n";
 		$buf .= "  <td>".&Util::escapeHTML($id)."</td>\n";
 		if($type==0){
-			$buf .= "  <td>´ÉÍı¼Ô</td>\n";
+			$buf .= "  <td>ç®¡ç†è€…</td>\n";
 		} else {
-			$buf .= "  <td>°ìÈÌ</td>\n";
+			$buf .= "  <td>ä¸€èˆ¬</td>\n";
 		}
-		$buf .= "  <td><a href=\"".$wiki->create_url({action=>"ADMINUSER",update=>$id})."\">ÊÑ¹¹</a> ".
-		              "<a href=\"".$wiki->create_url({action=>"ADMINUSER",delete=>$id})."\">ºï½ü</a></td>\n";
+		$buf .= "  <td><a href=\"".$wiki->create_url({action=>"ADMINUSER",update=>$id})."\">å¤‰æ›´</a> ".
+		              "<a href=\"".$wiki->create_url({action=>"ADMINUSER",delete=>$id})."\">å‰Šé™¤</a></td>\n";
 		$buf .= "</tr>\n";
 	}
 	$buf .= "</table>\n";
 	$buf .= "<form action=\"".$wiki->create_url()."\" method=\"GET\">\n".
-	        "  <input type=\"submit\" name=\"regist\" value=\"¥æ¡¼¥¶¤ÎÄÉ²Ã\">\n".
+	        "  <input type=\"submit\" name=\"regist\" value=\"ãƒ¦ãƒ¼ã‚¶ã®è¿½åŠ \">\n".
 	        "  <input type=\"hidden\" name=\"action\" value=\"ADMINUSER\">\n".
 	        "</form>\n";
 	return $buf;
 }
 
 #==============================================================================
-# ¥æ¡¼¥¶ÄÉ²Ã¡¦¹¹¿·¥Õ¥©¡¼¥à
+# ãƒ¦ãƒ¼ã‚¶è¿½åŠ ãƒ»æ›´æ–°ãƒ•ã‚©ãƒ¼ãƒ 
 #==============================================================================
 sub user_form {
 	my $self = shift;
@@ -92,57 +92,57 @@ sub user_form {
 	
 	my $buf = "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
 	if(defined($data->{id})){
-		$buf .= "<h2>¥æ¡¼¥¶¤ÎÊÑ¹¹</h2>";
+		$buf .= "<h2>ãƒ¦ãƒ¼ã‚¶ã®å¤‰æ›´</h2>";
 	} else {
-		$buf .= "<h2>¥æ¡¼¥¶¤ÎÄÉ²Ã</h2>";
+		$buf .= "<h2>ãƒ¦ãƒ¼ã‚¶ã®è¿½åŠ </h2>";
 	}
 	$buf .= "<h3>ID</h3>\n";
 	if(defined($data->{id})){
-		$buf .= "<p><b>".&Util::escapeHTML($data->{id})."</b>¡ÊÊÑ¹¹¤Ï¤Ç¤­¤Ş¤»¤ó¡Ë</p>\n";
+		$buf .= "<p><b>".&Util::escapeHTML($data->{id})."</b>ï¼ˆå¤‰æ›´ã¯ã§ãã¾ã›ã‚“ï¼‰</p>\n";
 		$buf .= "<input type=\"hidden\" name=\"id\" value=\"".&Util::escapeHTML($data->{id})."\">\n";
 	} else {
 		$buf .= "<p><input type=\"text\" name=\"id\" size=\"20\"></p>\n";
 	}
 	if(!defined($data->{id})){
-		$buf .= "<h3>¥Ñ¥¹¥ï¡¼¥É</h3>\n";
+		$buf .= "<h3>ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰</h3>\n";
 		$buf .= "<p><input type=\"password\" name=\"pass\" size=\"20\"></p>\n";
 	}
-	$buf .= "<h3>¼ïÊÌ</h3>\n";
+	$buf .= "<h3>ç¨®åˆ¥</h3>\n";
 	$buf .= "<p>\n";
 	$buf .= "<input type=\"radio\" name=\"type\" value=\"0\" id=\"type_0\"";
 	if($data->{type}!=1){ $buf .= " checked"; }
-	$buf .= "><label for=\"type_0\">´ÉÍı¼Ô</label>\n";
+	$buf .= "><label for=\"type_0\">ç®¡ç†è€…</label>\n";
 	$buf .= "<input type=\"radio\" name=\"type\" value=\"1\" id=\"type_1\"";
 	if($data->{type}==1){ $buf .= " checked"; }
-	$buf .= "><label for=\"type_1\">°ìÈÌ</label>\n";
+	$buf .= "><label for=\"type_1\">ä¸€èˆ¬</label>\n";
 	$buf .= "</p>\n";
 	
 	if(defined($data->{id})){
-		$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"ÊÑ¹¹\">\n";
+		$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"å¤‰æ›´\">\n";
 	} else {
-		$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"ÄÉ²Ã\">\n";
+		$buf .= "<input type=\"submit\" name=\"saveuser\" value=\"è¿½åŠ \">\n";
 	}
 	$buf .= "<input type=\"hidden\" name=\"action\" value=\"ADMINUSER\">\n";
 	$buf .= "</form>\n";
 	
 	if(defined($data->{id})){
 		$buf .= "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
-		$buf .= "  <h2>¥Ñ¥¹¥ï¡¼¥É¤ÎÊÑ¹¹</h2>\n";
-		$buf .= "  <h3>¿·¤·¤¤¥Ñ¥¹¥ï¡¼¥É</h3>\n";
+		$buf .= "  <h2>ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®å¤‰æ›´</h2>\n";
+		$buf .= "  <h3>æ–°ã—ã„ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰</h3>\n";
 		$buf .= "  <p><input type=\"password\" name=\"pass\" size=\"30\"></p>\n";
-		$buf .= "  <input type=\"submit\" name=\"changepass\" value=\"ÊÑ¹¹\">\n";
+		$buf .= "  <input type=\"submit\" name=\"changepass\" value=\"å¤‰æ›´\">\n";
 		$buf .= "  <input type=\"hidden\" name=\"action\" value=\"ADMINUSER\">\n";
 		$buf .= "  <input type=\"hidden\" name=\"id\" value=\"".&Util::escapeHTML($data->{id})."\">\n";
 		$buf .= "</form>\n";
 	}
 	
-	$buf .= "[<a href=\"". $wiki->create_url({ action=>"ADMINUSER" }) . "\">Ìá¤ë</a>]\n";
+	$buf .= "[<a href=\"". $wiki->create_url({ action=>"ADMINUSER" }) . "\">æˆ»ã‚‹</a>]\n";
 	
 	return $buf;
 }
 
 #==============================================================================
-# ¥æ¡¼¥¶¾ğÊó¤ÎÊİÂ¸
+# ãƒ¦ãƒ¼ã‚¶æƒ…å ±ã®ä¿å­˜
 #==============================================================================
 sub save_user {
 	my $self = shift;
@@ -156,15 +156,15 @@ sub save_user {
 	
 	if(!defined($users->{$id})){
 		if($id eq "" || $pass eq "" || $type eq ""){
-			return $wiki->error("ID¡¢¥Ñ¥¹¥ï¡¼¥É¡¢¥æ¡¼¥¶¼ïÊÌ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤¡£");
+			return $wiki->error("IDã€ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã€ãƒ¦ãƒ¼ã‚¶ç¨®åˆ¥ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚");
 		}
 	} else {
 		if($id eq "" || $type eq ""){
-			return $wiki->error("ID¡¢¥æ¡¼¥¶¼ïÊÌ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤¡£");
+			return $wiki->error("IDã€ãƒ¦ãƒ¼ã‚¶ç¨®åˆ¥ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚");
 		}
 	}
 	unless($id =~ /^[a-zA-Z0-9\-_]+$/ && (!defined($pass) || $pass =~ /^[a-zA-Z0-9\-_]+/)){
-		return $wiki->error("ID¡¢¥Ñ¥¹¥ï¡¼¥É¤Ë¤ÏÈ¾³Ñ±Ñ¿ô»ú¤·¤«»ÈÍÑ¤Ç¤­¤Ş¤»¤ó¡£");
+		return $wiki->error("IDã€ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«ã¯åŠè§’è‹±æ•°å­—ã—ã‹ä½¿ç”¨ã§ãã¾ã›ã‚“ã€‚");
 	}
 	
 	if(defined($users->{$id})){
@@ -179,7 +179,7 @@ sub save_user {
 }
 
 #==============================================================================
-# ¥Ñ¥¹¥ï¡¼¥É¤ÎÊÑ¹¹
+# ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®å¤‰æ›´
 #==============================================================================
 sub change_pass {
 	my $self = shift;
@@ -197,7 +197,7 @@ sub change_pass {
 }
 
 #==============================================================================
-# ¥æ¡¼¥¶¤Îºï½ü
+# ãƒ¦ãƒ¼ã‚¶ã®å‰Šé™¤
 #==============================================================================
 sub delete_user {
 	my $self = shift;

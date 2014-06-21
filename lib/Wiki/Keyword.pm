@@ -1,22 +1,22 @@
 ###############################################################################
 #
-# ������ɥѡ���
+# キーワードパーサ
 #
 ###############################################################################
 package Wiki::Keyword;
 use strict;
 
-# 1 ʸ���˥ޥå���������ɽ��
-my $ascii	  = '[\x00-\x7F]';				  # ASCII	  �� 1 ʸ��
-my $twoBytes   = '[\x8E\xA1-\xFE][\xA1-\xFE]';   # EUC 2 Byte �� 1 ʸ��
-my $threeBytes = '\x8F[\xA1-\xFE][\xA1-\xFE]';   # EUC 3 Byte �� 1 ʸ��
-my $AsciiOrEUC = "$ascii|$twoBytes|$threeBytes"; # ASCII/EUC  �� 1 ʸ��
+# 1 文字にマッチする正規表現
+my $ascii	  = '[\x00-\x7F]';				  # ASCII	  の 1 文字
+my $twoBytes   = '[\x8E\xA1-\xFE][\xA1-\xFE]';   # EUC 2 Byte の 1 文字
+my $threeBytes = '\x8F[\xA1-\xFE][\xA1-\xFE]';   # EUC 3 Byte の 1 文字
+my $AsciiOrEUC = "$ascii|$twoBytes|$threeBytes"; # ASCII/EUC  の 1 文字
 
-my $keyword_cache  = 'keywords.cache';  # �Ť�������ɥ���å���ե�����
-my $keyword_cache2 = 'keywords2.cache'; # ������������ɥ���å���ե�����
+my $keyword_cache  = 'keywords.cache';  # 古いキーワードキャッシュファイル
+my $keyword_cache2 = 'keywords2.cache'; # 新しいキーワードキャッシュファイル
 
 #==============================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #==============================================================================
 sub new {
 	my $class     = shift;
@@ -35,7 +35,7 @@ sub new {
 }
 
 #==============================================================================
-# ������ɤ��ޤޤ�뤫�ɤ��������å�
+# キーワードが含まれるかどうかチェック
 #==============================================================================
 sub exists_keyword {
 	my ($self, $str) = @_;
@@ -46,29 +46,29 @@ sub exists_keyword {
 	my $wiki   = $self->{wiki};
 	$self->{g_pre} = q{};
 
-	# $regexp �� qr/^((?:$AsciiOrEUC)*?)($keywords_regexp)/ ����������
-	# $str �������������ɽ���˥ޥå������顢
+	# $regexp は qr/^((?:$AsciiOrEUC)*?)($keywords_regexp)/ に等しい。
+	# $str がキーワード正規表現にマッチしたら、
 	while ($str =~ /$regexp/) {
 		$self->{g_pre} .= $1;
 		$self->{g_post} = $';
 		my $label = $self->{g_label} = $2;
 
-		# �ޥå�����������ɤ��б����� url ��ڡ���̾�������̵����С�
+		# マッチしたキーワードに対応する url やページ名の定義が無ければ、
 		if (not exists $self->{'keyword'}->{$label}) {
 
-			# ������ɤ��ڡ���̾�Ǳ�����ǽ�ʤ顢
+			# キーワードがページ名で閲覧可能なら、
 			if ($wiki->page_exists($label) and $wiki->can_show($label)) {
 
-				# �ڡ���̾�����ȥ��
+				# ページ名オートリンク
 				$self->{g_url}  = undef;
 				$self->{g_page} = $label;
 				return 1;
 			}
 
-			# ������ɤ��ڡ���̾�Ǥʤ��������Բ�ǽ�ʤ顢
+			# キーワードがページ名でないか閲覧不可能なら、
 			else {
 
-				# 1 ʸ���ʤ�ƥ�����ɤ�Ƹ�����
+				# 1 文字進めてキーワードを再検索。
 				$label =~ /^($AsciiOrEUC)(.*)$/;
 				$self->{g_pre} .= $1;
 				$str = $2 . $self->{g_post};
@@ -77,16 +77,16 @@ sub exists_keyword {
 		else {
 			my $word = $self->{'keyword'}->{$label};
 
-			# �ޥå�����������ɤ��б�����Τ� url �ʤ顢
+			# マッチしたキーワードに対応するのが url なら、
 			if ($word->{'type'} eq 'u') {
 
-				# url ���
+				# url リンク
 				$self->{g_url}  = $word->{'value'};
 				$self->{g_page} = undef;
 			}
 			else {
 
-				# wiki �ڡ������
+				# wiki ページリンク
 				$self->{g_url}  = undef;
 				$self->{g_page} = $word->{'value'};
 			}
@@ -97,13 +97,13 @@ sub exists_keyword {
 }
 
 #==============================================================================
-# ������ɤ򥭥�å���ե����뤫���ɤ߹���
+# キーワードをキャッシュファイルから読み込み
 #==============================================================================
 sub load_keywords {
 	my $self = shift;
 	my $wiki = $self->{wiki};
 
-	# ���ڡ��������ԲĤʤ顢���⤻���˽�λ��
+	# 全ページ閲覧不可なら、何もせずに終了。
 	my $can_show_max = $wiki->_get_can_show_max();
 	return if ($can_show_max < 0);
 
@@ -112,39 +112,39 @@ sub load_keywords {
 	my $cachefile = $log_dir . '/' . $keyword_cache2;
 	$self->{'regexp_list'} = [];
 
-	READ_CACHE: # ����å����ͭ��Ƚ�ꡢ�ڤ��ɹ���
+	READ_CACHE: # キャッシュの有効判定、及び読込み
 	while (1) {
 
-		# ����å��夬̵������ɹ��߽�����ȴ���롣
+		# キャッシュが無ければ読込み処理を抜ける。
 		last READ_CACHE if (not -e $cachefile);
 
 		my $cache_time = (stat $cachefile)[9];
 		my $pagelistfile = $log_dir . '/' . $Wiki::DefaultStorage::PAGE_LIST_FILE;
 
-		# DefaultStorage �Υڡ���̾�������Ť���Х���å�������Ѥ��ʤ���
+		# DefaultStorage のページ名一覧より古ければキャッシュを利用しない。
 		last READ_CACHE if ($cache_time < (stat $pagelistfile)[9]);
 
 		my $showlevel_file = $wiki->config('config_dir') . '/showlevel.log';
 
-		# �������¥ǡ������Ť���Х���å�������Ѥ��ʤ���
+		# 閲覧権限データより古ければキャッシュを利用しない。
 		last READ_CACHE if ($cache_time < (stat $showlevel_file)[9]);
 
 		my $keyword_file = $wiki->config('data_dir') . '/Keyword.wiki';
 
-		# �����������ڡ������Ť���Х���å�������Ѥ��ʤ���
+		# キーワード定義ページより古ければキャッシュを利用しない。
 		last READ_CACHE if ($cache_time < (stat $keyword_file)[9]);
 
-		# ������ɥ���å���ե����뤫���ɹ��ߡ�
+		# キーワードキャッシュファイルから読込み。
 		my $buf = Util::load_config_text(undef, $cachefile);
 		my @list = split /\n/, $buf;
 		my ($type, $label, $value);
 
-		# �ǽ�� 3 �ԡ��ƥ桼��������Υ����������ɽ��
+		# 最初の 3 行：各ユーザ権限毎のキーワード正規表現
 		foreach my $level (0 .. 2) {
 			my $line = shift @list;
 			($type, $label, $value) = split /\t/, $line;
 
-			# �ե�����������۾�ʤ顢�ɹ��ߤ�λ��
+			# ファイル形式が異常なら、読込みを終了。
 			if ($type ne 'r' or $label + 0 != $level) {
 				$self->{'regexp_list'} = [];
 				last READ_CACHE;
@@ -152,7 +152,7 @@ sub load_keywords {
 			push @{ $self->{'regexp_list'} }, $value;
 		}
 
-		# 4 ���ܰʹߡ�������ɤ� url �ޤ��� �ڡ���̾���б��ط����ɤ߹��ࡣ
+		# 4 行目以降：キーワードと url または ページ名の対応関係を読み込む。
 		foreach my $line (@list) {
 			($type, $label, $value) = split /\t/, $line;
 			$keyword->{$label} = { 'type'  => $type, 'value' => $value, };
@@ -160,37 +160,37 @@ sub load_keywords {
 		last READ_CACHE;
 	}
 
-	# ���λ����ǡ������������ɽ�����������Ƥʤ���С�
+	# この時点で、キーワード正規表現が定義されてなければ、
 	if (not @{ $self->{'regexp_list'} }) {
 
-		# ������ɥǡ�������������������ɥ���å���ե��������¸��
+		# キーワードデータを生成し、キーワードキャッシュファイルに保存。
 		$self->parse();
 		$self->save_keywords();
 	}
 
-	# ���ߤΥ桼���θ��¤��б����륭���������ɽ���򥳥�ѥ��롣
+	# 現在のユーザの権限に対応するキーワード正規表現をコンパイル。
 	my $regexp = $self->{'regexp_list'}->[$can_show_max];
 	$self->{'regexp'} = qr/^((?:$AsciiOrEUC)*?)($regexp)/;
 }
 
 #==============================================================================
-# ������ɤΥ���å���ե�����򹹿�
+# キーワードのキャッシュファイルを更新
 #==============================================================================
 sub save_keywords {
 	my $self = shift;
 
-	# FSWiki ɸ��Υ�����ɥ���å���⤳�Υ����ߥ󥰤Ǻ����
+	# FSWiki 標準のキーワードキャッシュもこのタイミングで削除。
 	my $log_dir = $self->{wiki}->config('log_dir');
 	my $cache   = "$log_dir/$keyword_cache";
 	unlink $cache if (-e $cache);
 
-	# �ƥ桼��������Υ����������ɽ����Хåե����ɲá�
+	# 各ユーザ権限毎のキーワード正規表現をバッファに追加。
 	my $buf = q{};
 	foreach my $level (0 .. 2) {
 		$buf .= "r\t$level\t" . $self->{'regexp_list'}->[$level] . "\n";
 	}
 
-	# ������ɤ� url �ޤ��ϥڡ���̾���б��ط���Хåե����ɲá�
+	# キーワードと url またはページ名の対応関係をバッファに追加。
 	my $keyword = $self->{'keyword'};
 	my $word;
 	foreach my $label (keys %$keyword){
@@ -198,12 +198,12 @@ sub save_keywords {
 		$buf .= $word->{'type'} . "\t$label\t" . $word->{'value'} . "\n";
 	}
 
-	# �Хåե������Ƥ򥭥�å���ե��������¸��
+	# バッファの内容をキャッシュファイルに保存。
 	Util::save_config_text(undef, "$log_dir/$keyword_cache2", $buf);
 }
 
 #==============================================================================
-# �ѡ����ʥ��󥹥ȥ饯������ƤФ�ޤ���
+# パース（コンストラクタから呼ばれます）
 #==============================================================================
 sub parse {
 	my $self = shift;
@@ -215,47 +215,47 @@ sub parse {
 
 	my $ra = Regexp::Assemble->new;
 
-	# �ڡ����Υ����ȥ�󥯤�ͭ���ʾ�硢�ڡ���̾�⥭����ɤ˴ޤࡣ
+	# ページのオートリンクが有効な場合、ページ名もキーワードに含む。
 	if ($wiki->config('auto_keyword_page') == 1) {
 		my $no_slash_page = $wiki->config('keyword_slash_page') ne '1';
 		my %hash = ();
 		my ($page, $pat, $level, $label);
 
-		# �ڡ���̾�ο������� \d\d* ���ˤ��ѥ������̲��γ�ǧ
+		# ページ名の数字部の \d\d* 化によるパターン共通化の確認
 		foreach $page ($wiki->get_page_list()){
 			next if ($no_slash_page and index($page, '/') != -1);
 			$pat = quotemeta $page;
-			$pat =~ s{\d+}{\\d\\d\*}g;	 # �ڡ���̾�ο������� \d\d* ���ִ���
-			$hash{$pat}->{'count'}++;	  # $pat �˶��̲��Ǥ���ڡ����ο�
-			$hash{$pat}->{'page'} = $page; # �ڡ���̾(count = 1 �ΤȤ�)
+			$pat =~ s{\d+}{\\d\\d\*}g;	 # ページ名の数字部を \d\d* に置換。
+			$hash{$pat}->{'count'}++;	  # $pat に共通化できるページの数
+			$hash{$pat}->{'page'} = $page; # ページ名(count = 1 のとき)
 		}
 
-		# ���̲��Ǥ����������ƤΥѥ�����ˤĤ��ơ�
+		# 共通化できそうな全てのパターンについて、
 		foreach $pat (sort keys %hash) {
 
-			# ���Υѥ�����˶��̲��Ǥ���ڡ������� 1 �ڡ����ΤߤΤȤ���
+			# そのパターンに共通化できるページ数が 1 ページのみのとき、
 			if ($hash{$pat}->{'count'} == 1) {
-				$page = $hash{$pat}->{'page'}; # ���Υڡ���̾�������
+				$page = $hash{$pat}->{'page'}; # 元のページ名を取得。
 				$level = $wiki->get_page_level($page);
 
-				# �ڡ���������٥���Υ�����ɥꥹ�Ȥ˥ڡ���̾���ɲá�
+				# ページ閲覧レベル毎のキーワードリストにページ名を追加。
 				push @{ $keywordlist[$level] }, $page;
 				next;
 			}
 
-			# ���Υѥ�����˶��̲��Ǥ���ڡ�������ʣ���ڡ����ΤȤ���
-			# ���̲��ѥ����������ɽ�����ɲá�
-			# (���������Ƭ��������Ⱦ�ѱѿ��ʤ顢ñ�춭�� \b ���ɲ�)��
+			# そのパターンに共通化できるページ数が複数ページのとき、
+			# 共通化パターンを正規表現に追加。
+			# (キーワード先頭・末尾が半角英数なら、単語境界 \b も追加)。
 			$pat  = "\\b$pat" if ($pat =~ /^(?:\w|\\d)/);
 			$pat .= "\\b"	 if ($pat =~ /(?:\w|\\d\*)$/);
 			$ra->add($pat);
 		}
 	}
 
-	# �ڡ�����Keyword�פ�¸�ߤ���С��������Ƥ��ɤࡣ
+	# ページ「Keyword」が存在すれば、その内容を読む。
 	if ($wiki->page_exists('Keyword')) {
 
-		# �ڡ�����Keyword�פ����Ƥ��饭����ɥǡ����������
+		# ページ「Keyword」の内容からキーワードデータを作成。
 		my $source = $wiki->get_page('Keyword');
 		$source =~ s/\r//g;
 		my @lines = split /\n/, $source;
@@ -265,29 +265,29 @@ sub parse {
 			}
 		}
 
-		# ������ɥǡ������顢�����������ɽ���������
+		# キーワードデータから、キーワード正規表現を作成。
 		my $keyword = $self->{'keyword'};
 		my ($level, $page, $word);
 		foreach my $label (keys %$keyword) {
 			$word = $keyword->{$label};
 
-			# ������ɤ��б�����Τ� url �ʤ顢
+			# キーワードと対応するのが url なら、
 			if ($word->{'type'} eq 'u') {
 
-				# ������� $label �򥭡��������ɽ�����ɲ�
-				# (���������Ƭ��������Ⱦ�ѱѿ��ʤ顢ñ�춭�� \b ���ɲ�)��
+				# キーワード $label をキーワード正規表現に追加
+				# (キーワード先頭・末尾が半角英数なら、単語境界 \b も追加)。
 				$label  = quotemeta $label;
 				$label  = "\\b$label" if ($label =~ /^\w/);
 				$label .= "\\b"	   if ($label =~ /\w$/);
 				$ra->add($label);
 			}
 
-			# ������ɤ��б�����Τ��ڡ���̾�ʤ顢
+			# キーワードと対応するのがページ名なら、
 			else {
 				$page = $word->{'value'};
 				$level = $wiki->get_page_level($page);
 
-				# �ڡ���������٥���Υꥹ�Ȥ˥�����ɤ��ɲá�
+				# ページ閲覧レベル毎のリストにキーワードを追加。
 				push @{ $keywordlist[$level] }, $label;
 			}
 		}
@@ -296,19 +296,19 @@ sub parse {
 	$self->{'regexp_list'} = [];
 	my $label;
 
-	# �ڡ���������٥���Υꥹ����Υ�����ɤ�����ɽ�����ɲá�
+	# ページ閲覧レベル毎のリスト内のキーワードを正規表現に追加。
 	foreach my $level (0 .. 2) {
 		foreach my $page (@{ $keywordlist[$level] }) {
 
-			# �ڡ���̾ $page �򥭡��������ɽ�����ɲ�
-			# (���������Ƭ��������Ⱦ�ѱѿ��ʤ顢ñ�춭�� \b ���ɲ�)��
+			# ページ名 $page をキーワード正規表現に追加
+			# (キーワード先頭・末尾が半角英数なら、単語境界 \b も追加)。
 			$page  = quotemeta $page;
 			$page  = "\\b$page" if ($page =~ /^\w/);
 			$page .= "\\b"	  if ($page =~ /\w$/);
 			$ra->add($page);
 		}
 
-		# �������������������ɽ����ꥹ�Ȥ���¸��
+		# 完成したキーワード正規表現をリストに保存。
 		push @{ $self->{'regexp_list'} }, $ra->clone()->as_string();
 	}
 }
@@ -319,15 +319,15 @@ sub parse_line {
 
 	return if (not defined $source);
 
-	# $source �����ˤʤ�ޤǷ����֤���
+	# $source が空になるまで繰り返す。
 	while ($source ne q{}) {
 
-		# ������ɤ��������񼰤��ʤ���н�λ��
+		# キーワードを定義する書式がなければ終了。
 		return if (not $source =~ /^[^\[]*(\[.+)$/);
 
 		$source = $1;
 
-		# ��̾���
+		# 別名リンク
 		if ($source =~ /^\[([^\[]+?)\|((?:https?|ftp|mailto):[a-zA-Z0-9\.,%~^_+\-%\/\?\(\)!&=:;\*#\@'\$]*)\]/
 		 || $source =~ /^\[([^\[]+?)\|(file:[^\[\]]*)\]/
 		 || $source =~ /^\[([^\[]+?)\|((?:\/|\.\/|\.\.\/)+[a-zA-Z0-9\.,%~^_+\-%\/\?\(\)!&=:;\*#\@'\$]*)\]/ ) {
@@ -345,7 +345,7 @@ sub parse_line {
 			$self->url_anchor($url, $label);
 		}
 
-		# �ڡ�����̾���
+		# ページ別名リンク
 		elsif ($source =~ /^\[\[([^\[]+?)\|(.+?)\]\]/) {
 			my $label = $1;
 			my $page  = $2;
@@ -353,7 +353,7 @@ sub parse_line {
 			$self->wiki_anchor($page, $label);
 		}
 
-		# Ǥ�դ�URL���
+		# 任意のURLリンク
 		elsif ($source =~ /^\[([^\[]+?)\|(.+?)\]/) {
 			my $label = $1;
 			my $url   = $2;
@@ -361,7 +361,7 @@ sub parse_line {
 			$self->url_anchor($url, $label);
 		}
 
-		# �ʾ�� macth ���ʤ��ä��ʤ顢1 ʸ���ʤ�롣
+		# 以上に macth しなかったなら、1 文字進める。
 		else {
 			$source =~ s/^.//;
 		}
@@ -369,7 +369,7 @@ sub parse_line {
 }
 
 #==============================================================================
-# URL����
+# URLアンカ
 #==============================================================================
 sub url_anchor {
 	my ($self, $url, $name) = @_;
@@ -378,7 +378,7 @@ sub url_anchor {
 }
 
 #==============================================================================
-# Wiki����
+# Wikiアンカ
 #==============================================================================
 sub wiki_anchor {
 	my ($self, $page, $name) = @_;

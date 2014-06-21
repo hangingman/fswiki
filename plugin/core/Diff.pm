@@ -1,6 +1,6 @@
 ###############################################################################
 # 
-# ∫π ¨§Ú…Ωº®§π§Î•◊•È•∞•§•Û
+# Â∑ÆÂàÜ„ÇíË°®Á§∫„Åô„Çã„Éó„É©„Ç∞„Ç§„É≥
 # 
 ###############################################################################
 package plugin::core::Diff;
@@ -8,7 +8,7 @@ use Algorithm::Diff qw(traverse_sequences);
 use strict;
 
 #==============================================================================
-# •≥•Û•π•»•È•Ø•ø
+# „Ç≥„É≥„Çπ„Éà„É©„ÇØ„Çø
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -18,7 +18,7 @@ sub new {
 }
 
 #==============================================================================
-# •¢•Ø•∑•Á•Û§Œº¬π‘
+# „Ç¢„ÇØ„Ç∑„Éß„É≥„ÅÆÂÆüË°å
 #==============================================================================
 sub do_action {
 	my $self = shift;
@@ -30,7 +30,7 @@ sub do_action {
 		$pagename = $wiki->config("frontpage");
 	}
 	unless($wiki->can_show($pagename)){
-		return $wiki->error("ª≤æ»∏¢∏¬§¨§¢§Í§ﬁ§ª§Û°£");
+		return $wiki->error("ÂèÇÁÖßÊ®©Èôê„Åå„ÅÇ„Çä„Åæ„Åõ„Çì„ÄÇ");
 	}
 	if($cgi->param('rollback') ne ''){
 		return $self->rollback($wiki, $pagename, $cgi->param('rollback'));
@@ -38,30 +38,30 @@ sub do_action {
 	} elsif($wiki->{storage}->backup_type eq 'all'){
 		my $login = $wiki->get_login_info();
 		if(defined($login) && $login->{'type'} == 0 && $cgi->param('clear') ne ''){
-			# Õ˙ŒÚ§Œ•Ø•Í•¢
+			# Â±•Ê≠¥„ÅÆ„ÇØ„É™„Ç¢
 			$self->clear_history($wiki, $pagename);
 			return $self->show_history($wiki, $pagename);
 			
 		} elsif($cgi->param('generation') eq '' && $cgi->param('diff') eq ''){
-			# Õ˙ŒÚ§Ú…Ωº®
+			# Â±•Ê≠¥„ÇíË°®Á§∫
 			return $self->show_history($wiki, $pagename);
 			
 		} else {
 			if($cgi->param('generation') ne ''){
-				# ªÿƒÍ§∑§ø•Í•”•∏•Á•Û§«§Œ∫π ¨§Ú…Ωº®
+				# ÊåáÂÆö„Åó„Åü„É™„Éì„Ç∏„Éß„É≥„Åß„ÅÆÂ∑ÆÂàÜ„ÇíË°®Á§∫
 				return $self->show_diff($wiki, $pagename, '', $cgi->param('generation'));
 			}
-			# ªÿƒÍ§∑§ø•Í•”•∏•Á•Û¥÷§Œ∫π ¨§Ú…Ωº®
+			# ÊåáÂÆö„Åó„Åü„É™„Éì„Ç∏„Éß„É≥Èñì„ÅÆÂ∑ÆÂàÜ„ÇíË°®Á§∫
 			return $self->show_diff($wiki, $pagename, $cgi->param('from'), $cgi->param('to'));
 		}
 	} else {
-		# ∫«∏Â§Œππø∑§Œ∫π ¨§Ú…Ωº®
+		# ÊúÄÂæå„ÅÆÊõ¥Êñ∞„ÅÆÂ∑ÆÂàÜ„ÇíË°®Á§∫
 		return $self->show_diff($wiki, $pagename, '', 0);
 	}
 }
 
 #==============================================================================
-# Õ˙ŒÚ§Œ•Ø•Í•¢
+# Â±•Ê≠¥„ÅÆ„ÇØ„É™„Ç¢
 #==============================================================================
 sub clear_history {
 	my $self = shift;
@@ -71,7 +71,7 @@ sub clear_history {
 }
 
 #==============================================================================
-# Õ˙ŒÚ§´§È•⁄°º•∏§Ú…¸∏µ
+# Â±•Ê≠¥„Åã„Çâ„Éö„Éº„Ç∏„ÇíÂæ©ÂÖÉ
 #==============================================================================
 sub rollback {
 	my $self = shift;
@@ -79,7 +79,7 @@ sub rollback {
 	my $page = shift;
 	my $gen  = shift;
 	unless($wiki->can_modify_page($page)){
-		return $wiki->error("ππø∑∏¢∏¬§¨§¢§Í§ﬁ§ª§Û°£");
+		return $wiki->error("Êõ¥Êñ∞Ê®©Èôê„Åå„ÅÇ„Çä„Åæ„Åõ„Çì„ÄÇ");
 	}
 	my $source = $wiki->get_backup($page,$gen);
 	$wiki->save_page($page, $source);
@@ -87,25 +87,25 @@ sub rollback {
 }
 
 #==============================================================================
-# Õ˙ŒÚ§Œ∞ÏÕ˜§Ú…Ωº®
-# •π•»•Ï°º•∏§Œbackup_type=all§Œ§»§≠
+# Â±•Ê≠¥„ÅÆ‰∏ÄË¶ß„ÇíË°®Á§∫
+# „Çπ„Éà„É¨„Éº„Ç∏„ÅÆbackup_type=all„ÅÆ„Å®„Åç
 #==============================================================================
 sub show_history {
 	my $self = shift;
 	my $wiki = shift;
 	my $page = shift;
 	
-	$wiki->set_title("$page§Œ —ππÕ˙ŒÚ");
+	$wiki->set_title("$page„ÅÆÂ§âÊõ¥Â±•Ê≠¥");
 	my $buf   = "<form><ul>\n";
 	my $count = 0;
 	my @list  = $wiki->{storage}->get_backup_list($page);
 	
 	if($#list == -1){
-		return "Õ˙ŒÚ§œ§¢§Í§ﬁ§ª§Û°£";
+		return "Â±•Ê≠¥„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì„ÄÇ";
 	}
 	
-	# editlog•◊•È•∞•§•Û§Œ•Ì•∞§´§È ‘Ω∏º‘§Œ•Ê°º•∂Ãæ§ÚºË∆¿
-	# ° editlog§Œ∆¸…’§¨•∫•Ï§Î§≥§»§¨§¢§√§ø§Œ§«1…√∞ ∆‚§Œππø∑§œ∆±§∏Õ˙ŒÚ§»§ﬂ§ §π§Ë§¶§À§∑§∆§ﬁ§π°À
+	# editlog„Éó„É©„Ç∞„Ç§„É≥„ÅÆ„É≠„Ç∞„Åã„ÇâÁ∑®ÈõÜËÄÖ„ÅÆ„É¶„Éº„Ç∂Âêç„ÇíÂèñÂæó
+	# Ôºàeditlog„ÅÆÊó•‰ªò„Åå„Ç∫„É¨„Çã„Åì„Å®„Åå„ÅÇ„Å£„Åü„ÅÆ„Åß1Áßí‰ª•ÂÜÖ„ÅÆÊõ¥Êñ∞„ÅØÂêå„ÅòÂ±•Ê≠¥„Å®„Åø„Å™„Åô„Çà„ÅÜ„Å´„Åó„Å¶„Åæ„ÅôÔºâ
 	my $editlog = {};
 	if($wiki->config('log_dir') ne "" && -e $wiki->config('log_dir')."/useredit.log"){
 		open(DATA,$wiki->config('log_dir')."/useredit.log") or die $!;
@@ -133,7 +133,7 @@ sub show_history {
 			        "<input type=\"radio\" name=\"to\" value=\"".($#list-$count)."\">";
 		}
 		$buf .= "<a href=\"".$wiki->create_url({ action=>"DIFF",page=>$page,generation=>($#list-$count) })."\">".&Util::format_date($time).
-		        "</a> <a href=\"".$wiki->create_url({ action=>"SOURCE",page=>$page,generation=>($#list-$count) })."\">•Ω°º•π</a>";
+		        "</a> <a href=\"".$wiki->create_url({ action=>"SOURCE",page=>$page,generation=>($#list-$count) })."\">„ÇΩ„Éº„Çπ</a>";
 		        
 		if(defined($editlog->{substr($time, 0, length($time) - 4)})){
 			$buf .= " by ".$editlog->{substr($time, 0, length($time) - 4)};
@@ -146,17 +146,17 @@ sub show_history {
 	$buf .= "</ul>".
 		"<input type=\"hidden\" name=\"page\" value=\"".Util::escapeHTML($page)."\">".
 		"<input type=\"hidden\" name=\"action\" value=\"DIFF\">".
-		"<input type=\"submit\" name=\"diff\" value=\"¡™¬Ú§∑§ø•Í•”•∏•Á•Û¥÷§Œ∫π ¨§Ú…Ωº®\">\n";
+		"<input type=\"submit\" name=\"diff\" value=\"ÈÅ∏Êäû„Åó„Åü„É™„Éì„Ç∏„Éß„É≥Èñì„ÅÆÂ∑ÆÂàÜ„ÇíË°®Á§∫\">\n";
 	
 	my $login = $wiki->get_login_info();
 	if(defined($login) && $login->{'type'} == 0){
-		$buf .= "<input type=\"submit\" name=\"clear\" value=\"Õ˙ŒÚ§Ú§π§Ÿ§∆∫ÔΩ¸\">\n";
+		$buf .= "<input type=\"submit\" name=\"clear\" value=\"Â±•Ê≠¥„Çí„Åô„Åπ„Å¶ÂâäÈô§\">\n";
 	}
 	return $buf."</form>\n";
 }
 
 #==============================================================================
-# ∫π ¨§Ú…Ωº®
+# Â∑ÆÂàÜ„ÇíË°®Á§∫
 #==============================================================================
 sub show_diff {
 	my $self = shift;
@@ -165,7 +165,7 @@ sub show_diff {
 	my $from = shift;
 	my $to   = shift;
 	
-	$wiki->set_title("$page§Œ —ππ≈¿");
+	$wiki->set_title("$page„ÅÆÂ§âÊõ¥ÁÇπ");
 	my ($source1, $source2) = $self->get_diff_sources($wiki, $page, $from, $to);
 	
 	my $theme_uri = $wiki->config('theme_uri');
@@ -174,7 +174,7 @@ sub show_diff {
 	if($wiki->can_modify_page($page) && $wiki->get_CGI->param('diff') eq ''){
 		$buf .= qq|
 			<form action="@{[$wiki->create_url()]}" method="POST">
-				<input type="submit" value="§≥§Œ•–°º•∏•Á•Û§ÀÃ·§π"/>
+				<input type="submit" value="„Åì„ÅÆ„Éê„Éº„Ç∏„Éß„É≥„Å´Êàª„Åô"/>
 				<input type="hidden" name="action" value="DIFF"/>
 				<input type="hidden" name="page" value="@{[Util::escapeHTML($page)]}"/>
 				<input type="hidden" name="rollback" value="@{[Util::escapeHTML($to)]}"/>
@@ -186,7 +186,7 @@ sub show_diff {
 }
 
 #==============================================================================
-# jsdifflib§Úª»§√§∆∫π ¨§Œ…Ωº®§Úπ‘§¶HTML§ÚºË∆¿
+# jsdifflib„Çí‰Ωø„Å£„Å¶Â∑ÆÂàÜ„ÅÆË°®Á§∫„ÇíË°å„ÅÜHTML„ÇíÂèñÂæó
 #==============================================================================
 sub _get_diff_html {
 	my $wiki = shift;
@@ -229,7 +229,7 @@ function diffUsingJS(type) {
 </script>
 <input id="newText"  type="hidden" value="@{[Util::escapeHTML($source1)]}">
 <input id="baseText" type="hidden" value="@{[Util::escapeHTML($source2)]}">
-<input type="checkbox" id="viewtype" onclick="diffUsingJS(this.checked ? 0 : 1)"><label for="viewtype">•µ•§•…•–•§•µ•§•…§«…Ωº®</label>
+<input type="checkbox" id="viewtype" onclick="diffUsingJS(this.checked ? 0 : 1)"><label for="viewtype">„Çµ„Ç§„Éâ„Éê„Ç§„Çµ„Ç§„Éâ„ÅßË°®Á§∫</label>
 <div id="diffoutputdiv"></div>
 <script type="text/javascript">
   diffUsingJS(1);
@@ -240,7 +240,7 @@ function diffUsingJS(type) {
 }
 
 #==============================================================================
-# ∫π ¨ ∏ª˙ŒÛ§ÚºË∆¿
+# Â∑ÆÂàÜÊñáÂ≠óÂàó„ÇíÂèñÂæó
 #==============================================================================
 sub get_diff_text {
 	my $self = shift;
@@ -278,7 +278,7 @@ sub get_diff_text {
 }
 
 #==============================================================================
-# ∫π ¨…Ωº®Õ—§Œ•Ω°º•π§ÚºË∆¿
+# Â∑ÆÂàÜË°®Á§∫Áî®„ÅÆ„ÇΩ„Éº„Çπ„ÇíÂèñÂæó
 #==============================================================================
 sub get_diff_sources {
 	my $self = shift;
@@ -309,8 +309,8 @@ sub get_diff_sources {
 }
 
 #==============================================================================
-# •⁄°º•∏…Ωº®ª˛§Œ•’•√•Ø•·•Ω•√•…
-# °÷∫π ¨°◊•·•À•Â°º§ÚÕ≠∏˙§À§∑§ﬁ§π
+# „Éö„Éº„Ç∏Ë°®Á§∫ÊôÇ„ÅÆ„Éï„ÉÉ„ÇØ„É°„ÇΩ„ÉÉ„Éâ
+# „ÄåÂ∑ÆÂàÜ„Äç„É°„Éã„É•„Éº„ÇíÊúâÂäπ„Å´„Åó„Åæ„Åô
 #==============================================================================
 sub hook {
 	my $self = shift;
@@ -318,9 +318,9 @@ sub hook {
 	my $cgi  = $wiki->get_CGI;
 	my $page = $cgi->param("page");
 	if($wiki->{storage}->backup_type eq 'all'){
-		$wiki->add_menu("Õ˙ŒÚ",$wiki->create_url({ action=>"DIFF",page=>$page }));
+		$wiki->add_menu("Â±•Ê≠¥",$wiki->create_url({ action=>"DIFF",page=>$page }));
 	} else {
-		$wiki->add_menu("∫π ¨",$wiki->create_url({ action=>"DIFF",page=>$page }));
+		$wiki->add_menu("Â∑ÆÂàÜ",$wiki->create_url({ action=>"DIFF",page=>$page }));
 	}
 }
 

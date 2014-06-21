@@ -1,14 +1,14 @@
 #########################################################################
 #
-# <p>�����Υ�󥯸���ɽ�����ޤ���</p>
+# <p>本日のリンク元を表示します。</p>
 # <pre>
 # {{todayslink}}
 # </pre>
-# <p>���ץ�����ɽ���������ꤹ�뤳�Ȥ�Ǥ��ޤ���</p>
+# <p>オプションで表示件数を指定することもできます。</p>
 # <pre>
 # {{todayslink 10}}
 # </pre>
-# <p>�ޤ���v���ץ�����Ĥ���ȥ�󥯸���URL��ɽ�����뤳�Ȥ�Ǥ��ޤ���</p>
+# <p>また、vオプションをつけるとリンク元のURLを表示することもできます。</p>
 # <pre>
 # {{todayslink 10,v}}
 # </pre>
@@ -17,7 +17,7 @@
 package plugin::info::TodaysLink;
 use strict;
 #========================================================================
-# ���󥹥ȥ饯��
+# コンストラクタ
 #========================================================================
 sub new {
 	my $class = shift;
@@ -26,12 +26,12 @@ sub new {
 }
 
 #========================================================================
-# �����Υ�󥯸���ɽ�����ޤ�
+# 本日のリンク元を表示します
 #========================================================================
 sub paragraph {
 	my $self = shift;
 	my $wiki = shift;
-	my $rank = shift;# ��� $rank �̤ޤ�ɽ��
+	my $rank = shift;# 上位 $rank 位まで表示
 	my $way = shift;
 	my $buf = "";
 	
@@ -47,7 +47,7 @@ sub paragraph {
 		$rank = "";
 	}
 
-	# ���������դ������Ʊ���ե����ޥåȤ�
+	# 今日の日付をログと同じフォーマットで
 	my $time = time();
 	my ($sec,$min,$hour,$mday,$month,$year,$wday) = localtime($time);
 	$year += 1900;
@@ -55,7 +55,7 @@ sub paragraph {
 	my $today =sprintf("%04d/%02d/%02d",$year,$month,$mday);
 	
 	my $count={};
-	#log������
+	#logを走査
 	open(LOG,$wiki->config('log_dir')."/".$wiki->config('access_log_file')) or return "";
 	while(my $line=<LOG>){
 		chomp $line;
@@ -78,8 +78,8 @@ sub paragraph {
 		$buf .= "[";
 	}
 	
-	my $url = $wiki->get_CGI->url; #wiki��Υڡ����ϳ���
-	$url = substr($url,index($url,":")); #XREA����include://�ˤʤ�Τ�ʬ��
+	my $url = $wiki->get_CGI->url; #wiki内のページは外す
+	$url = substr($url,index($url,":")); #XREAだとinclude://になるので分解
 	$url = quotemeta($url);
 	my $i=0;
 	

@@ -1,13 +1,13 @@
 ###############################################################################
 #
-# Category¥×¥é¥°¥¤¥ó¤Î¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é
+# Categoryãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©
 #
 ###############################################################################
 package plugin::category::CategoryHandler;
 use strict;
 use plugin::category::CategoryCache;
 #==============================================================================
-# ¥³¥ó¥¹¥È¥é¥¯¥¿
+# ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -16,7 +16,7 @@ sub new {
 }
 
 #==============================================================================
-# ¥¢¥¯¥·¥ç¥ó¥Ï¥ó¥É¥é¥á¥½¥Ã¥É
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ©ãƒ¡ã‚½ãƒƒãƒ‰
 #==============================================================================
 sub do_action {
 	my $self = shift;
@@ -31,7 +31,7 @@ sub do_action {
 	my $result = &Util::load_config_hash(undef,$cachefile);
 	
 	if($category eq ""){
-		$wiki->set_title("¥«¥Æ¥´¥ê¤Î°ìÍ÷");
+		$wiki->set_title("ã‚«ãƒ†ã‚´ãƒªã®ä¸€è¦§");
 		my $buf = "";
 		foreach my $key (sort(keys(%$result))){
 			$buf .= "<h2>".&Util::escapeHTML($key)."</h2>\n<ul>\n";
@@ -47,7 +47,7 @@ sub do_action {
 		return $buf;
 		
 	} else {
-		$wiki->set_title("¥«¥Æ¥´¥ê:".$category);
+		$wiki->set_title("ã‚«ãƒ†ã‚´ãƒª:".$category);
 		my $buf = "<h2>".&Util::escapeHTML($category)."</h2>\n<ul>\n";
 		foreach my $pagename (sort(split(/\t/,$result->{$category}))){
 			if($wiki->can_show($pagename)){

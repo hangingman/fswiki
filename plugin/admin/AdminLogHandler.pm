@@ -1,12 +1,12 @@
 ###############################################################################
 #
-# еэе░е╒ебедеыдЄ┤╔═¤д╣дыете╕ехб╝еы
+# уГнуВ░уГХуВбуВдуГлуВТчобчРЖуБЩуВЛуГвуВ╕уГеуГ╝уГл
 #
 ###############################################################################
 package plugin::admin::AdminLogHandler;
 use strict;
 #==============================================================================
-# е│еєе╣е╚ещепе┐
+# уВ│уГ│уВ╣уГИуГйуВпуВ┐
 #==============================================================================
 sub new {
 	my $class = shift;
@@ -15,7 +15,7 @@ sub new {
 }
 
 #==============================================================================
-# евепе╖ечеєе╧еєе╔ещесе╜е├е╔
+# уВвуВпуВ╖уГзуГ│уГПуГ│уГЙуГйуГбуВ╜уГГуГЙ
 #==============================================================================
 sub do_action {
 	my $self  = shift;
@@ -38,27 +38,27 @@ sub do_action {
 }
 
 #==============================================================================
-# еэе░е╒ебедеыд╬╛Ё╩єдЄ╔╜╝и
+# уГнуВ░уГХуВбуВдуГлуБоцГЕха▒уВТшбичд║
 #==============================================================================
 sub log_info {
 	my $self = shift;
 	my $wiki = shift;
 	my $buf  = "";
 	
-	$wiki->set_title("еэе░е╒ебедеыд╬┤╔═¤");
+	$wiki->set_title("уГнуВ░уГХуВбуВдуГлуБочобчРЖ");
 	
-	$buf .= $self->make_log_form($wiki,"евепе╗е╣еэе░","access");
-	$buf .= $self->make_log_form($wiki,"┼║╔╒е╒ебедеыд╬еэе░","attach");
-	$buf .= $self->make_log_form($wiki,"┼║╔╒е╒ебедеые└ежеєеэб╝е╔┐Їд╬еэе░","download");
-	$buf .= "<p>вид│д╬еэе░е╒ебедеыдЄ║я╜№д╣дыд╚┼║╔╒е╒ебедеыд╬е└ежеєеэб╝е╔┐Їдмепеъевд╡дьд▐д╣бг</p>\n";
-	$buf .= $self->make_log_form($wiki,"е┌б╝е╕┼р╖ыд╬еэе░","freeze");
-	$buf .= "<p>вид│д╬еэе░е╒ебедеыдЄ║я╜№д╣дыд╚┴┤д╞д╬е┌б╝е╕┼р╖ыдм▓Є╜№д╡дьд▐д╣бг</p>\n";
+	$buf .= $self->make_log_form($wiki,"уВвуВпуВ╗уВ╣уГнуВ░","access");
+	$buf .= $self->make_log_form($wiki,"ц╖╗ф╗ШуГХуВбуВдуГлуБоуГнуВ░","attach");
+	$buf .= $self->make_log_form($wiki,"ц╖╗ф╗ШуГХуВбуВдуГлуГАуВжуГ│уГнуГ╝уГЙцХ░уБоуГнуВ░","download");
+	$buf .= "<p>тА╗уБУуБоуГнуВ░уГХуВбуВдуГлуВТхЙКщЩдуБЩуВЛуБиц╖╗ф╗ШуГХуВбуВдуГлуБоуГАуВжуГ│уГнуГ╝уГЙцХ░уБМуВпуГкуВвуБХуВМуБ╛уБЩуАВ</p>\n";
+	$buf .= $self->make_log_form($wiki,"уГЪуГ╝уВ╕хЗНч╡РуБоуГнуВ░","freeze");
+	$buf .= "<p>тА╗уБУуБоуГнуВ░уГХуВбуВдуГлуВТхЙКщЩдуБЩуВЛуБихЕиуБжуБоуГЪуГ╝уВ╕хЗНч╡РуБМшзгщЩдуБХуВМуБ╛уБЩуАВ</p>\n";
 	
-	# енеуе├е╖ехе╒ебедеыд╬╛Ё╩є
-	$buf .= "<h2>енеуе├е╖ехе╒ебедеы</h2>\n";
+	# уВнуГгуГГуВ╖уГеуГХуВбуВдуГлуБоцГЕха▒
+	$buf .= "<h2>уВнуГгуГГуВ╖уГеуГХуВбуВдуГл</h2>\n";
 	my @cachefiles = ();
 	if($wiki->config("log_dir") ne ""){
-		opendir(DIR,$wiki->config("log_dir")) or die $wiki->config("log_dir")."д╬екб╝е╫еєд╦╝║╟╘д╖д▐д╖д┐бг";
+		opendir(DIR,$wiki->config("log_dir")) or die $wiki->config("log_dir")."уБоуВкуГ╝уГЧуГ│уБлхд▒цХЧуБЧуБ╛уБЧуБЯуАВ";
 		while(my $entry = readdir(DIR)){
 			if($entry =~ /\.cache$/){
 				push(@cachefiles,$entry);
@@ -68,7 +68,7 @@ sub log_info {
 	}
 	
 	if($#cachefiles==-1){
-		$buf .= "<p>енеуе├е╖ехе╒ебедеыд╧двдъд▐д╗дєбг</p>\n";
+		$buf .= "<p>уВнуГгуГГуВ╖уГеуГХуВбуВдуГлуБпуБВуВКуБ╛уБЫуВУуАВ</p>\n";
 	} else {
 		$buf .= "<ul>\n";
 		@cachefiles = sort(@cachefiles);
@@ -81,7 +81,7 @@ sub log_info {
 		}
 		$buf .= "</ul>\n";
 		$buf .= "<form action=\"\" method=\"POST\">\n".
-		        "  <input type=\"submit\" name=\"deletecache\" value=\"енеуе├е╖ехдЄ║я╜№\">\n".
+		        "  <input type=\"submit\" name=\"deletecache\" value=\"уВнуГгуГГуВ╖уГеуВТхЙКщЩд\">\n".
 		        "  <input type=\"hidden\" name=\"action\" value=\"ADMINLOG\">\n".
 		        "</form>\n";
 	}
@@ -90,7 +90,7 @@ sub log_info {
 }
 
 #==============================================================================
-# еэе░е╒ебедеыд╬╛Ё╩є╔╜╝ид╚┴р║юдЄ╣╘дже╒ейб╝ердЄ╜╨╬╧д╣ды┤╪┐Ї
+# уГнуВ░уГХуВбуВдуГлуБоцГЕха▒шбичд║уБицУНф╜ЬуВТшбМуБЖуГХуВйуГ╝уГауВТхЗ║хКЫуБЩуВЛщЦвцХ░
 #==============================================================================
 sub make_log_form {
 	my $self   = shift;
@@ -104,24 +104,24 @@ sub make_log_form {
 	if(-e $wiki->config('log_dir')."/$file"){
 		my @status = stat($wiki->config('log_dir')."/$file");
 		my $size = @status[7] / 1024;
-		# └░┐Їд╦└┌дъ╛хд▓
+		# цХ┤цХ░уБлхИЗуВКф╕КуБТ
 		$size = ($size==int($size) ? $size : int($size + 1));
 		$buf .= "<p>".&Util::escapeHTML($file)."(".$size."KB)</p>\n".
 		        "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
-		        "  <input type=\"submit\" name=\"download\" value=\"е└ежеєеэб╝е╔\">\n".
-		        "  <input type=\"submit\" name=\"delete\" value=\"е╒ебедеы║я╜№\">\n".
+		        "  <input type=\"submit\" name=\"download\" value=\"уГАуВжуГ│уГнуГ╝уГЙ\">\n".
+		        "  <input type=\"submit\" name=\"delete\" value=\"уГХуВбуВдуГлхЙКщЩд\">\n".
 		        "  <input type=\"hidden\" name=\"target\" value=\"$target\">\n".
 		        "  <input type=\"hidden\" name=\"action\" value=\"ADMINLOG\">\n".
 		        "</form>\n";
 	} else {
-		$buf .= "<p>еэе░е╒ебедеыд╧двдъд▐д╗дєбг</p>\n";
+		$buf .= "<p>уГнуВ░уГХуВбуВдуГлуБпуБВуВКуБ╛уБЫуВУуАВ</p>\n";
 	}
 	
 	return $buf;
 }
 
 #==============================================================================
-# еэе░е╒ебедеыдЄ║я╜№
+# уГнуВ░уГХуВбуВдуГлуВТхЙКщЩд
 #==============================================================================
 sub delete_log {
 	my $self = shift;
@@ -130,20 +130,20 @@ sub delete_log {
 	my $file   = $self->get_filename_from_target($wiki,$target);
 	
 	if($file eq ""){
-		return $wiki->error("е╤ещесб╝е┐дм╔╘└╡д╟д╣бг");
+		return $wiki->error("уГСуГйуГбуГ╝уВ┐уБМф╕НцнгуБзуБЩуАВ");
 	}
 	
-	unlink($wiki->config('log_dir')."/$file") or die $file."д╬║я╜№д╦╝║╟╘д╖д▐д╖д┐бг";
+	unlink($wiki->config('log_dir')."/$file") or die $file."уБохЙКщЩдуБлхд▒цХЧуБЧуБ╛уБЧуБЯуАВ";
 	
 	return $wiki->redirectURL( $wiki->create_url({ action=>"ADMINLOG"}) );
 	
-	#$wiki->set_title("еэе░е╒ебедеыд╬┤╔═¤");
-	#return "<p>еэе░е╒ебедеыдЄ║я╜№д╖д▐д╖д┐бг</p>\n".
-	#       "<p>[<a href=\"".$wiki->config('script_name')."?action=ADMINLOG\">╠сды</a>]</p>\n";
+	#$wiki->set_title("уГнуВ░уГХуВбуВдуГлуБочобчРЖ");
+	#return "<p>уГнуВ░уГХуВбуВдуГлуВТхЙКщЩдуБЧуБ╛уБЧуБЯуАВ</p>\n".
+	#       "<p>[<a href=\"".$wiki->config('script_name')."?action=ADMINLOG\">цИ╗уВЛ</a>]</p>\n";
 }
 
 #==============================================================================
-# еэе░е╒ебедеыдЄе└ежеєеэб╝е╔
+# уГнуВ░уГХуВбуВдуГлуВТуГАуВжуГ│уГнуГ╝уГЙ
 #==============================================================================
 sub download_log {
 	my $self = shift;
@@ -152,12 +152,12 @@ sub download_log {
 	my $file   = $self->get_filename_from_target($wiki,$target);
 	
 	if($file eq ""){
-		return $wiki->error("е╤ещесб╝е┐дм╔╘└╡д╟д╣бг");
+		return $wiki->error("уГСуГйуГбуГ╝уВ┐уБМф╕НцнгуБзуБЩуАВ");
 	}
 	
 	print "Content-Type: text/plain\n";
 	print "Content-Disposition: inline;filename=\"".&Jcode::convert($file,"sjis")."\"\n\n";
-	open(LOG,$wiki->config('log_dir')."/$file") or die $file."д╬екб╝е╫еєд╦╝║╟╘д╖д▐д╖д┐бг";
+	open(LOG,$wiki->config('log_dir')."/$file") or die $file."уБоуВкуГ╝уГЧуГ│уБлхд▒цХЧуБЧуБ╛уБЧуБЯуАВ";
 	binmode(LOG);
 	while(<LOG>){ print $_; }
 	close(LOG);
@@ -166,7 +166,7 @@ sub download_log {
 }
 
 #==============================================================================
-# еэе░е╒ебедеыд╬е╒ебедеы╠╛дЄ╝ш╞└д╣ды┤╪┐Ї
+# уГнуВ░уГХуВбуВдуГлуБоуГХуВбуВдуГлхРНуВТхПЦх╛ЧуБЩуВЛщЦвцХ░
 #==============================================================================
 sub get_filename_from_target {
 	my $self   = shift;
@@ -186,19 +186,19 @@ sub get_filename_from_target {
 }
 
 #==============================================================================
-# енеуе├е╖ехе╒ебедеыдЄ║я╜№
+# уВнуГгуГГуВ╖уГеуГХуВбуВдуГлуВТхЙКщЩд
 #==============================================================================
 sub delete_cache {
 	my $self = shift;
 	my $wiki = shift;
 	
-	unlink glob($wiki->config("log_dir")."/*.cache") or die "енеуе├е╖ехе╒ебедеыд╬║я╜№д╦╝║╟╘д╖д▐д╖д┐бг";
+	unlink glob($wiki->config("log_dir")."/*.cache") or die "уВнуГгуГГуВ╖уГеуГХуВбуВдуГлуБохЙКщЩдуБлхд▒цХЧуБЧуБ╛уБЧуБЯуАВ";
 	
 	return $wiki->redirectURL( $wiki->create_url({ action=>"ADMINLOG"}) );
 	
-	#$wiki->set_title("еэе░е╒ебедеыд╬┤╔═¤");
-	#return "<p>енеуе├е╖ехе╒ебедеыдЄ║я╜№д╖д▐д╖д┐бг</p>\n".
-	#       "<p>[<a href=\"".$wiki->config('script_name')."?action=ADMINLOG\">╠сды</a>]</p>\n";
+	#$wiki->set_title("уГнуВ░уГХуВбуВдуГлуБочобчРЖ");
+	#return "<p>уВнуГгуГГуВ╖уГеуГХуВбуВдуГлуВТхЙКщЩдуБЧуБ╛уБЧуБЯуАВ</p>\n".
+	#       "<p>[<a href=\"".$wiki->config('script_name')."?action=ADMINLOG\">цИ╗уВЛ</a>]</p>\n";
 }
 
 1;
