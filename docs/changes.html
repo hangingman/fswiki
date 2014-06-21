@@ -6,473 +6,473 @@
 </head>
 <body>
 <h1>CHANGES</h1>
-<h2>�ѹ�����</h2>
-<h3> 2010/08/28 - Version 3.6.4��꡼��</h3>
+<h2>変更履歴</h2>
+<h3> 2010/08/28 - Version 3.6.4リリース</h3>
 <ul>
-<li>Perl 5.10�ǥ����Ȥ�Ǽ��Ĥ����ϥե�����Τ�̾����ʸ���������Ƥ��ޤ��������������</li>
-<li>����饤��񼰤�ͥ��ȤǤ���褦�ˤ��ޤ�����</li>
-<li>������ɡ��ڡ���̾�μ�ư��󥯤ʤɤν������®�����ޤ�����</li>
-<li>�������̤Ǥ������ѹ����˵�ư�����եå����ɲä��ޤ�����</li>
-<li>�եå��θ��������ȤؤΥ����������ޤ�����</ll>
+<li>Perl 5.10でコメントや掲示板の入力フォームのお名前欄が文字化けしてしまう問題を修正した。</li>
+<li>インライン書式をネストできるようにしました。</li>
+<li>キーワード、ページ名の自動リンクなどの処理を高速化しました。</li>
+<li>管理画面での設定変更時に起動されるフックを追加しました。</li>
+<li>フッタの公式サイトへのリンク先を修正しました。</ll>
 </ul>
-<h3> 2008/12/14 - Version 3.6.3��꡼��</h3>
+<h3> 2008/12/14 - Version 3.6.3リリース</h3>
 <ul>
-<li>ź�եե�����ξ�񤭤�桼���⤷���ϴ����ԤΤߤ����¤Ǥ���褦�ˤ�����</li>
-<li>�ڡ������ƤΥե��륿��󥰥롼����ɲä�����</li>
-<li>ˬ��Ԥ��桼����Ͽ��Ԥ����Ȥ��Ǥ���褦�ˤ�����������̤�ON/OFF���ڤ��ؤ�����ǽ�Ǥ��ˡ�</li>
-<li>���Ϥ���HTML��������tDiary�Υơ��ޤȤθߴ�������塣</li>
-<li>�ڡ��������Υ���ǥå����ե�������������褦�ˤ������̥ڡ���������ǽ��ʼ㴳�˲�����</li>
-<li>ʣ���ԥץ饰����Υ��ݡ��Ȥ��ɲá�</li>
-<li>HTML����å��嵡ǽ������</li>
-<li>���Ԥ�BR�������Ѵ�����⡼�ɤǡ�ʣ���ζ��Ԥ�Ϣ³���Ƥ�������ʣ����BR�����ˤʤ�褦�ˤ�����</li>
-<li>������URL��img������ɽ�����뤫�ɤ�����������̤�����Ǥ���褦�ˤ�����</ll>
+<li>添付ファイルの上書きをユーザもしくは管理者のみに制限できるようにした。</li>
+<li>ページ内容のフィルタリングルールを追加した。</li>
+<li>訪問者がユーザ登録を行うことができるようにした（設定画面でON/OFFの切り替えが可能です）。</li>
+<li>出力するHTMLを修正し、tDiaryのテーマとの互換性を向上。</li>
+<li>ページ一覧のインデックスファイルを作成するようにし、大量ページ時の性能を（若干）改善。</li>
+<li>複数行プラグインのサポートを追加。</li>
+<li>HTMLキャッシュ機能を削除。</li>
+<li>改行をBRタグに変換するモードで、複数の空行が連続していた場合に複数のBRタグになるようにした。</li>
+<li>画像のURLをimgタグで表示するかどうかを管理画面で設定できるようにした。</ll>
 </ul>
-<h3> 2006/07/03 - Version 3.6.2��꡼��</h3>
+<h3> 2006/07/03 - Version 3.6.2リリース</h3>
 <ul>
-<li>��ʬɽ���ǡ��ڡ����ιԿ�����ü��¿�����Ϻ�ʬ���Ф�Ԥ�ʤ��褦�ˤ�����</li>
-<li>��������ꥯ�����ȤΥ�������setup.dat������Ǥ���褦�ˤ�����</ll>
+<li>差分表示で、ページの行数が極端に多い場合は差分検出を行わないようにした。</li>
+<li>受信するリクエストのサイズをsetup.datで設定できるようにした。</ll>
 </ul>
-<h3> 2006/05/30 - Version 3.6.1��꡼��</h3>
+<h3> 2006/05/30 - Version 3.6.1リリース</h3>
 <ul>
-<li>��ʬɽ���˴ؤ���XSS�ȼ����ؤ��б���</li>
-<li>���ܸ�ڡ���̾��PDF�ե�����̾�Υ��󥳡��ɤ�����</ll>
+<li>差分表示に関するXSS脆弱性への対応。</li>
+<li>日本語ページ名のPDFファイル名のエンコードを修正。</ll>
 </ul>
-<h3> 2006/05/13 - Version 3.6.0��꡼��</h3>
+<h3> 2006/05/13 - Version 3.6.0リリース</h3>
 <ul>
-<li>����饤��񼰤�ͥ��ȤǤ���褦�ˤ�����</li>
-<li>��ʬɽ����狼��䤹��ɽ���ˤ�����</li>
-<li>��ʬɽ�����ˤ��ΥС��������᤻��褦�ˤ�����</li>
-<li>���������Τλ��ȸ��¤�����Ǥ���褦�ˤ�����</li>
-<li>�ڡ���̾�˥�����ϻ��ѤǤ��ʤ��褦�ˤʤäƤ��뤬��Ϣ³����������Ǥ���л��ѤǤ���褦�ˤ�����</li>
-<li>setup.dat�ǥ����ॾ��������Ǥ���褦�ˤ�����</li>
-<li>setup.dat��MIME�����פ�����ե������̾�������Ǥ���褦�ˤ�����</li>
-<li>�������Υ᡼���ʣ���Υ��ɥ쥹�������Ǥ���褦�ˤ�����</li>
-<li>kati�ơ��ޤ��ɲáʼ㴳�������Ƥ��ޤ��ˡ�</li>
-<li>����¾���͡��ʥХ��ե��å�����</ll>
+<li>インライン書式をネストできるようにした。</li>
+<li>差分表示をわかりやすい表示にした。</li>
+<li>差分表示時にそのバージョンに戻せるようにした。</li>
+<li>サイト全体の参照権限を設定できるようにした。</li>
+<li>ページ名にコロンは使用できないようになっているが、連続したコロンであれば使用できるようにした。</li>
+<li>setup.datでタイムゾーンを指定できるようにした。</li>
+<li>setup.datでMIMEタイプの設定ファイルの名前を指定できるようにした。</li>
+<li>更新通知メールを複数のアドレスに送信できるようにした。</li>
+<li>katiテーマを追加（若干修正しています）。</li>
+<li>その他、様々なバグフィックス。</ll>
 </ul>
-<h3> 2006/04/16 - Version 3.5.11��꡼��</h3>
+<h3> 2006/04/16 - Version 3.5.11リリース</h3>
 <ul>
-<li>PDF�������˥��졼��������β�����ɽ���Ǥ���褦�ˤ�����</li>
-<li>PDF�������˲����ե����뤬�ѻ�β��������礭�����˼�ưŪ�˥ꥵ��������褦�ˤ�����</li>
-<li>�����Ԥؤι������Υ᡼���ʣ���Υ��ɥ쥹�������Ǥ���褦�ˤ�����</li>
-<li>Ǥ�դ�URL��󥯤������롼���XSS�ȼ�����¸�ߤ������ὤ��������</ll>
+<li>PDF生成時にグレースケールの画像も表示できるようにした。</li>
+<li>PDF生成時に画像ファイルが用紙の横幅よりも大きい場合に自動的にリサイズするようにした。</li>
+<li>管理者への更新通知メールを複数のアドレスに送信できるようにした。</li>
+<li>任意のURLリンクの整形ルールにXSS脆弱性が存在したため修正した。</ll>
 </ul>
-<h3> 2005/12/04 - Version 3.5.10��꡼��</h3>
+<h3> 2005/12/04 - Version 3.5.10リリース</h3>
 <ul>
-<li>Farm�������Υƥ�ץ졼�ȵ�ǽ��template�Ȥ���Wiki��������Ƥ����ȡ�Farm�ǿ���Wiki������������ˤ�������ڡ����򥳥ԡ����ƺ������ޤ��ˡ�</li>
-<li>�ڡ���Ƭ���������ѡ��ȤؤΥ�󥯤�ɽ���Ǥ���褦�ˤ����ʴ������̤���ON/OFF��ǽ�ˡ�</li>
-<li>���������ڡ�������Ϳ����뻲�ȸ��¤�������̤�������Ǥ���褦�ˤ�����</li>
-<li>mod_perl�Ǥ�ư����˰۾�ϤǤ����꡼�����ʤ��褦�ˤ�����</li>
-<li>Wiki#exit()�᥽�åɤ�����Util::_exit�ؿ��ǥ����С��饤�ɤ���褦�ˤ����ʥץ饰���󤫤�����̤�exit�ؿ���Ƥ��OK�Ǥ��ˡ�</li>
-<li>������󥯤��̥�����ɥ��ǳ�������ˤ��Ƥ����硢�������ब���ꤵ��Ƥ��ʤ�URL��Ʊ��������ɥ��ǳ�����褦�ˤ�����</li>
-<li>���󥰥�֥饱�åȤˤ��Ǥ�դ�URL�ؤΥ�󥯽������ȼ��������ä������н衣</li>
-<li>�����Ĥ��ΥХ��ե��å�����</ll>
+<li>Farm作成時のテンプレート機能（templateというWikiを作成しておくと、Farmで新規Wikiを作成した場合にそこからページをコピーして作成します）。</li>
+<li>ページ頭および前後パートへのリンクを表示できるようにした（管理画面からON/OFF可能）。</li>
+<li>新規作成ページに付与される参照権限を管理画面から設定できるようにした。</li>
+<li>mod_perlでの動作時に異常系でもメモリリークしないようにした。</li>
+<li>Wiki#exit()メソッドを削除しUtil::_exit関数でオーバーライドするようにした（プラグインからは普通にexit関数を呼んでOKです）。</li>
+<li>外部リンクを別ウィンドウで開く設定にしてある場合、スキームが指定されていないURLを同じウィンドウで開けるようにした。</li>
+<li>シングルブラケットによる任意のURLへのリンク処理に脆弱性があったため対処。</li>
+<li>いくつかのバグフィックス。</ll>
 </ul>
-<h3> 2005/08/27 - Version 3.5.9��꡼��</h3>
+<h3> 2005/08/27 - Version 3.5.9リリース</h3>
 <ul>
-<li>��������ѤΥ�����ץȤ�Ʊ������褦�ˤ�����3.5.9�Ǥϥ�꡼�����Υߥ��ǥ��������֤˴ޤޤ�Ƶ�ޤ���Ǥ����ˡ�</li>
-<li>PDF�ץ饰����ο��ͥꥹ�Ȥν��Ϥ������������������</li>
-<li>attach�ץ饰����Υ���������ɥ����󥿤��̥ե�����˵�Ͽ����褦�ˤ�����</li>
-<li>�������̤Υڡ����������̤�����ɽ���ǤϤʤ���AND��OR��NOT�ǥ�����ɥե��륿��Ԥ���褦�ˤ�����</li>
-<li>Wiki.pm��add_head_info()���ɲá��ץ饰���󤫤�&lt;head&gt;�������Ǥ�դΥ�������Ϥ��뤿��Τ�ΤǤ���</li>
-<li>rss�ץ饰����ͭ������RSS Auto Discovery���б���</ll>
+<li>初期設定用のスクリプトを同梱するようにした（3.5.9ではリリース時のミスでアーカイブに含まれて居ませんでした）。</li>
+<li>PDFプラグインの数値リストの出力がおかしい問題を修正。</li>
+<li>attachプラグインのダウンロードカウンタを別ファイルに記録するようにした。</li>
+<li>管理画面のページ管理画面で正規表現ではなく、AND・OR・NOTでキーワードフィルタを行えるようにした。</li>
+<li>Wiki.pmにadd_head_info()を追加。プラグインから&lt;head&gt;タグ内に任意のタグを出力するためのものです。</li>
+<li>rssプラグイン有効時にRSS Auto Discoveryに対応。</ll>
 </ul>
-<h3> 2005/05/19 - Version 3.5.8��꡼��</h3>
+<h3> 2005/05/19 - Version 3.5.8リリース</h3>
 <ul>
-<li>��������ѤΥ�����ץȤ�Ʊ������褦�ˤ�����</li>
-<li>ref�ץ饰�������3��������̾�����Ǥ���褦�ˤ�����</li>
-<li>�ֹ��ܡפ򶴤���ְ��ѡפ����äĤ��Ƥ��ޤ����������</li>
-<li>ź�եե�����ˤ��XSS�ȼ����˴ؤ��뽤����</ll>
+<li>初期設定用のスクリプトを同梱するようにした。</li>
+<li>refプラグインの第3引数で別名を指定できるようにした。</li>
+<li>「項目」を挟んだ「引用」がくっついてしまう問題を修正。</li>
+<li>添付ファイルによるXSS脆弱性に関する修正。</ll>
 </ul>
-<h3> 2005/02/11 - Version 3.5.7��꡼��</h3>
+<h3> 2005/02/11 - Version 3.5.7リリース</h3>
 <ul>
-<li>Wiki.pm��create_url��create_page_url�᥽�åɤ��ɲá�</li>
-<li>calendar�ץ饰����ν��Ϥ���HTML��tDiary�ߴ��ˤ�����</li>
-<li>Tar�ˤ��Хå����å׵�ǽ�򳰤�����</li>
-<li>tDiary�ΰ����Υơ��ޤ��Խ�����textarea�����������������</li>
-<li>buglist�ץ饰�������ʸ����縫�Ф�������ȥ��ޥ�����˼��Ԥ������������</li>
-<li>Ʊ����HTML::Template��2.7�˥С�����󥢥åס�</li>
-<li>RSS���ϻ���category�ץ饰����ν��Ϥ����������������</li>
-<li>��͡���ץ饰����Υ�͡���ե�����˥ǥե���ȤǸ��Υڡ���̾��ɽ������褦�ˤ�����</li>
-<li>��Wiki�ǤΥ������󤬿�Wiki�Ǥ�ͭ���ȤʤäƤ��ޤ����������</li>
-<li>���ѥ��к��Ѥε�ǽ(����ʸ���󤬴ޤޤ�Ƥ����鹹�������򥭥�󥻥�)</li>
-<li>����å������ѻ���ʣ���Ԥ������ѥƥ����Ȥ����Ԥ�ɽ������Ƥ��ޤ��Х�������</li>
-<li>Help/YukiWiki �ƥ��������� �ι�˸��꤬���ä��Τ�����</li>
-<li>AdminStyleHandler.pm��&lt;/form&gt;�����Ϥ���Ƥ��ʤ��ä��Τ�����</li>
-<li>RSS�ץ饰����ǽ��Ϥ��빹�������������դ��ѹ���</li>
-<li>����å������ѻ���calender��outline�������Ȥʤ����������</li>
-<li>lib/Wiki/DefaultStorage.pm �� can_modify_page �� can_modify �ˤʤäƤ���typo������</li>
-<li>/ ��ڡ���̾��Ƭ�ˤ������󥫡��������ư��ʤ����������</li>
-<li>YukiWiki�񼰤�----����Ƭ�ʳ��Ǥ�ʿ�����ˤʤ����������</li>
-<li>�����᡼��κ�ʬ������裰����Τ�Τ���κ�ʬ�ˤʤäƤ��ޤ����������</li>
-<li>���å���󥯥å�����PATH��QUERY_STRING���ޤޤ�Ƥ��ޤ����������</li>
-<li>�����ѥƥ����Ȥι����˥��ڡ��������ä�����PDF���Ϥ������Ȥʤ����������</ll>
+<li>Wiki.pmにcreate_url、create_page_urlメソッドを追加。</li>
+<li>calendarプラグインの出力するHTMLをtDiary互換にした。</li>
+<li>Tarによるバックアップ機能を外した。</li>
+<li>tDiaryの一部のテーマで編集時のtextareaが小さい問題を修正。</li>
+<li>buglistプラグインで本文中に大見出しがあるとサマリ取得に失敗する問題を修正。</li>
+<li>同梱のHTML::Templateを2.7にバージョンアップ。</li>
+<li>RSS出力時にcategoryプラグインの出力が不正な問題を修正。</li>
+<li>リネームプラグインのリネームフォームにデフォルトで元のページ名を表示するようにした。</li>
+<li>子Wikiでのログインが親Wikiでも有効となってしまう問題を修正。</li>
+<li>スパム対策用の機能(指定文字列が含まれていたら更新処理をキャンセル)</li>
+<li>キャッシュ利用時に複数行の整形済テキストが１行で表示されてしまうバグを修正。</li>
+<li>Help/YukiWiki テキスト装飾 の項に誤りがあったのを修正。</li>
+<li>AdminStyleHandler.pmで&lt;/form&gt;が出力されていなかったのを修正。</li>
+<li>RSSプラグインで出力する更新日を論理日付に変更。</li>
+<li>キャッシュ利用時にcalenderのoutlineが不正となる問題を修正。</li>
+<li>lib/Wiki/DefaultStorage.pm で can_modify_page が can_modify になっているtypoを修正。</li>
+<li>/ をページ名先頭にしたアンカーが正常に動作しない問題を修正。</li>
+<li>YukiWiki書式で----が行頭以外でも平行線になる問題を修正。</li>
+<li>更新メールの差分が常に第０世代のものからの差分になってしまう問題を修正。</li>
+<li>セッションクッキーのPATHにQUERY_STRINGが含まれてしまう問題を修正。</li>
+<li>整形済テキストの行末にスペースがあった場合にPDF出力が不正となる問題を修正。</ll>
 </ul>
-<h3> 2004/08/22 - Version 3.5.6��꡼��</h3>
+<h3> 2004/08/22 - Version 3.5.6リリース</h3>
 <ul>
-<li>�ե����ޥåȥץ饰�����FSWiki�ʳ��ν񼰤����򤷤Ƥ������BBS�ץ饰����ʤɥץ饰������ǥڡ������������Խ���ԤäƤ���ץ饰�����ȯ�������Զ�������</li>
-<li>¿���첽�ѥå���Ŭ�ѡ�</li>
-<li>amazon�ץ饰������ν�ν�Ƥˤ��б������ޤ�����</li>
-<li>DefaultStorage��get_page_list�᥽�åɤ�-max���ץ�������ꤷ�����˻���������ڡ����������ʤ��ä�����ȯ�������Զ�������</li>
-<li>��ʸ�Τʤ����������򥤥󥯥롼�ɤ������ˡ����Υ��������ޤǼ����ޤ�Ƥ��ޤ��Х�������</li>
-<li>�������Υ᡼���������������Ϳ����褦�ˤ�����</li>
-<li>�����ץ饰����ǥġ�����åפ�ɽ������褦�ˤ�����</li>
-<li>����å��嵡ǽ���ܳ�Ū�ʼ���������Ū�ˤϥѡ�����̤�HTML�Ȥ�����¸���Ƥ��ޤ������ץ饰������ʬ�ʤɰ�����ưŪ�˽��Ϥ���褦�ˤ��ޤ�����</li>
-<li>����Хå����å׻�������ΰ������������Υ�������ɽ���Ǥ���褦�ˤ�����</li>
-<li>format_help�ץ饰����ǻ�Wiki�ξ��ϥ롼�Ȥ�&quot;Help/�ե����ޥå�̾&quot;�ڡ�����ɽ������褦�ˤ�����</li>
-<li>���å�����path�˴Ķ��ѿ�REQUEST_URI���Խ�������Τ����ꤹ��褦�ˤ���(Ʊ�쥵���Ф�ʣ����Wiki�����֤������˥�������ط����Զ�礬���ä�����)��</ll>
+<li>フォーマットプラグインでFSWiki以外の書式を選択している場合にBBSプラグインなどプラグイン中でページの生成や編集を行っているプラグインで発生する不具合を修正。</li>
+<li>多言語化パッチを適用。</li>
+<li>amazonプラグインを洋書の書影にも対応させました。</li>
+<li>DefaultStorageのget_page_listメソッドに-maxオプションを指定した場合に指定件数よりもページ数が少なかった場合に発生する不具合を修正。</li>
+<li>本文のないセクションをインクルードした場合に、次のセクションまで取り込まれてしまうバグを修正。</li>
+<li>更新通知メールに送信日時を付与するようにした。</li>
+<li>脚注プラグインでツールチップを表示するようにした。</li>
+<li>キャッシュ機能の本格的な実装。基本的にはパース結果をHTMLとして保存していますが、プラグイン部分など一部を動的に出力するようにしました。</li>
+<li>世代バックアップ時に履歴の一覧から各世代のソースを表示できるようにした。</li>
+<li>format_helpプラグインで子Wikiの場合はルートの&quot;Help/フォーマット名&quot;ページを表示するようにした。</li>
+<li>クッキーのpathに環境変数REQUEST_URIを編集したものを設定するようにした(同一サーバに複数のWikiを設置した場合にログイン関係で不具合があったため)。</ll>
 </ul>
-<h3> 2004/05/20 - Version 3.5.5��꡼��</h3>
+<h3> 2004/05/20 - Version 3.5.5リリース</h3>
 <ul>
-<li>������ɥ���å��夬���ξ��֤Ǽ�ư��󥯤�OFF�ˤ���ȥϥ󥰤��Ƥ��ޤ��Х�������</li>
-<li>PDF�ץ饰������ֹ��դ��ꥹ�ȤΥʥ�Х�󥰤������ʥХ�������</li>
-<li>outline�ץ饰�����Ʊ��ڡ�����comment�ʤɤΥץ饰����򵭽Ҥ����ư��ʤ��Х������������ȥ饤����ϻ���Wiki�����פΥץ饰����Τ߽�������褦�ˤ�����</ll>
+<li>キーワードキャッシュが空の状態で自動リンクをOFFにするとハングしてしまうバグを修正。</li>
+<li>PDFプラグインで番号付きリストのナンバリングが不正なバグを修正。</li>
+<li>outlineプラグインと同一ページにcommentなどのプラグインを記述すると動作しないバグを修正。アウトライン解析時はWikiタイプのプラグインのみ処理するようにした。</ll>
 </ul>
-<h3> 2004/05/11 - Version 3.5.4��꡼��</h3>
+<h3> 2004/05/11 - Version 3.5.4リリース</h3>
 <ul>
-<li>mod_perl��Apache::Registory�ǥ�������Ǥ��ʤ��Х�������</li>
-<li>�ڡ����μ�ư��󥯤���Ѥ��Ƥ�����˥ڡ��������Ԥλ��ȸ��¤ˤ�äƥ�󥯤��Ԥ��Ƥ��ޤ��Х�������</li>
-<li>setup.dat�ǥȥåץڡ����Υڡ���̾���ѹ��Ǥ���褦�ˤ����ʥǥե���Ȥ�FrontPage�ˡ�</li>
-<li>����¾��3.5.3���Ф���٤����Х�������</ll>
+<li>mod_perlのApache::Registoryでログインできないバグを修正。</li>
+<li>ページの自動リンクを使用している場合にページ更新者の参照権限によってリンクが行われてしまうバグを修正。</li>
+<li>setup.datでトップページのページ名を変更できるようにした（デフォルトはFrontPage）。</li>
+<li>その他、3.5.3に対する細かいバグ修正。</ll>
 </ul>
-<h3> 2004/04/10 - Version 3.5.3��꡼��</h3>
+<h3> 2004/04/10 - Version 3.5.3リリース</h3>
 <ul>
-<li>�ե����ޥåȥץ饰�����Ƴ������Hiki��YukiWiki�񼰤Ǥ��Խ���Ԥʤ���褦�ˤ�����</li>
-<li>HTML�Υ���å��嵡ǽ�����������</li>
-<li>����Хå����å׵�ǽ�����������</li>
-<li>Tar�Ǥΰ��Хå����åסʥ���������ɡ˵�ǽ�����������</li>
-<li>�����Ϥ���¸������ϥ�����쥯�Ȥ����ܤ���褦�ˤ�����</li>
-<li>�����Location�إå��ǤΥ�����쥯�Ȥ�Ǥ���褦�ˤ�����</li>
-<li>���ȸ��¤Τʤ��ڡ�����META������NOARCHIVE����Ϥ���褦�ˤ�����</li>
-<li>AirH&quot;PHONE��������äȤߤʤ��褦�ˤ�����</li>
-<li>�Խ����̤ǥץ�ӥ塼�����ݤ�sage�����å�������Ѥ��褦�ˤ�����</li>
-<li>��®���Τ�������ϡ���̯��®���ʤäƤ���ĤϤ����ˡ�</li>
-<li>�եå���Perl�ΥС�������mod_perl��ư��Ƥ��뤫�ɤ�����ɽ������褦�ˤ�����</li>
-<li>mod_perl��Apache::Registory��ư��������˥���꡼������������ä�����</ll>
+<li>フォーマットプラグインを導入し、Hiki、YukiWiki書式での編集を行なえるようにした。</li>
+<li>HTMLのキャッシュ機能を実装した。</li>
+<li>世代バックアップ機能を実装した。</li>
+<li>Tarでの一括バックアップ（ダウンロード）機能を実装した。</li>
+<li>管理系で保存処理後はリダイレクトで遷移するようにした。</li>
+<li>設定でLocationヘッダでのリダイレクトもできるようにした。</li>
+<li>参照権限のないページにMETAタグでNOARCHIVEを出力するようにした。</li>
+<li>AirH&quot;PHONEを携帯電話とみなすようにした。</li>
+<li>編集画面でプレビューした際にsageチェックを引き継ぐようにした。</li>
+<li>高速化のための努力（微妙に速くなっている…はず？）。</li>
+<li>フッタにPerlのバージョンとmod_perlで動作しているかどうかを表示するようにした。</li>
+<li>mod_perlのApache::Registoryで動作させた場合にメモリリークする問題を解消した。</ll>
 </ul>
-<h3> 2003/12/20 - Version 3.5.2��꡼��</h3>
+<h3> 2003/12/20 - Version 3.5.2リリース</h3>
 <ul>
-<li>�������������Խ��ե����फ��ڡ������Ф��ƽ�����Ԥ�editform�ϥץ饰�������ɽ���ˤ�����</li>
-<li>¹Wiki�ǤΥ������󤬻�Wiki�ǰ����Ѥ���Ƥ��ޤ��Х�����������</li>
-<li>Wiki#get_page��Wiki#page_exists���Wiki���Ф���InterWiki�����ε��Ҥ��Ǥ���褦�ˤ����������Υץ饰�����InterWiki�����ǻ�Wiki�Υڡ�������ꤹ�뤳�Ȥ���ǽ�Ǥ���</li>
-<li>comment�ץ饰�����tail���ץ�����Ĥ�����</li>
-<li>�����Ԥϥڡ������Խ��ե��������롢���ȸ������꤬�Ǥ���褦�ˤ�����</li>
-<li>�������Υ᡼���ɽ��������ܤ�����Ǥ���褦�ˤ�����</li>
-<li>�ѥ���ɤΰŹ沽��MD5�ǹԤʤ��褦�ˤ��������Τ��ᡢconfig/user.dat�˸ߴ������ʤ��ʤäƤ��ޤ���</li>
-<li>��Wiki���Ф��Ƽ�ưŪ��InterWiki�Ȥ��ƻ��Ѳ�ǽ�ˤ�����</li>
-<li>pluginhelp������Υץ饰����Υإ�פΤߤ�ɽ���Ǥ���褦�ˤ�����</li>
-<li>bbs2list�ǵ����Υ����ȥ������ɽ���Ǥ���褦�ˤ�����</li>
-<li>���̥桼���ѤΥ�˥塼����ӥ�������������Ǥ���褦�ˤ������ѥ�����ѹ��ץ饰����Ϥ��η����Υץ饰������ѹ�������</li>
-<li>sage��ǽ�����������</li>
-<li>rename�ץ饰������Խ��ե������ѤΥץ饰������ѹ���</li>
-<li>CGI::Session����ν�����ľ����̵�̤ʥ��å������������ʤ��褦�ˤ������ޤ������å����˥��å���󥿥��ॢ���Ȼ��֤�Ʊ��ͭ�����֤����ꤹ��褦�ˤ�����</li>
-<li>RSS�ϥڡ����������Υեå��Ǻ�����������å��夹��褦�ˤ�����</li>
-<li>bbs2�ץ饰����򥪥ץ����ǥե�����Τ�ɽ���Ǥ���褦�ˤ�������ɽ���Ѥ�bbs2list�ץ饰������ɲä�����</li>
-<li>partedit�ץ饰����򥳥��ε�ǽ�Ȥ��Ƽ��������</li>
-<li>vote�ץ饰�������ɼ��̤�ե��������¸����褦�ˤ�����</li>
-<li>Wiki#get_page_list�ǥ����Ƚ硢��������ʤɤ����Ǥ���褦�ˤ�����</li>
-<li>recent�ץ饰����ǻ��Ѥ��Ƥ��륭��å���ϥ��ȥ졼��¦�Ǵ�������褦�ˤ�����</li>
-<li>�᡼��Υ��֥������ȤΥץ�ե��å�����������̤�������Ǥ���褦�ˤ�����</ll>
+<li>新規作成時の編集フォームからページに対して処理を行うeditform系プラグインを非表示にした。</li>
+<li>孫Wikiでのログインが子Wikiで引き継がれてしまうバグを修正した。</li>
+<li>Wiki#get_pageとWiki#page_existsを子Wikiに対してInterWiki形式の記述ができるようにした。一部のプラグインでInterWiki形式で子Wikiのページを指定することが可能です。</li>
+<li>commentプラグインにtailオプションをつけた。</li>
+<li>管理者はページの編集フォームで凍結、参照権の設定ができるようにした。</li>
+<li>更新通知メールで表示する項目を選択できるようにした。</li>
+<li>パスワードの暗号化をMD5で行なうようにした。そのため、config/user.datに互換性がなくなっています。</li>
+<li>子Wikiに対して自動的にInterWikiとして使用可能にした。</li>
+<li>pluginhelpで特定のプラグインのヘルプのみを表示できるようにした。</li>
+<li>bbs2listで記事のタイトル一覧を表示できるようにした。</li>
+<li>一般ユーザ用のメニューおよびアクションを設定できるようにした。パスワード変更プラグインはこの形式のプラグインに変更した。</li>
+<li>sage機能を実装した。</li>
+<li>renameプラグインを編集フォーム用のプラグインに変更。</li>
+<li>CGI::Session周りの処理を見直し、無駄なセッションを生成しないようにした。また、クッキーにセッションタイムアウト時間と同じ有効期間を設定するようにした。</li>
+<li>RSSはページ更新時のフックで作成し、キャッシュするようにした。</li>
+<li>bbs2プラグインをオプションでフォームのみ表示できるようにし、一覧表示用にbbs2listプラグインを追加した。</li>
+<li>parteditプラグインをコアの機能として取り込んだ。</li>
+<li>voteプラグインの投票結果をファイルに保存するようにした。</li>
+<li>Wiki#get_page_listでソート順、取得件数などを指定できるようにした。</li>
+<li>recentプラグインで使用しているキャッシュはストレージ側で管理するようにした。</li>
+<li>メールのサブジェクトのプレフィックスを管理画面から設定できるようにした。</ll>
 </ul>
-<h3> 2003/10/13 - Version 3.5.1��꡼��</h3>
+<h3> 2003/10/13 - Version 3.5.1リリース</h3>
 <ul>
-<li>�������ϥץ饰����ǻ��ȸ��Τʤ��ڡ�����ɽ������ʤ��褦�ˤ�����</li>
-<li>�������̤���MIME�����פ��ɲäǤ���褦�ˤ�����</li>
-<li>�֥饱�åȤ�ޤ�ڡ����Ϻ����Ǥ��ʤ��褦�ˤ�����</li>
-<li>��Wiki�ǥ��å���󤬰ݻ�����ʤ��Х�����������</li>
-<li>RSS�ץ饰�����̵�¥롼�פ��Ƥ��ޤ��Х�����������</li>
-<li>amazon�ץ饰���󡢴ʰ���ɼ�ץ饰���󡢥����󥿥ץ饰���󡢥ѥ�����ѹ��ץ饰���󡢥�͡���ץ饰������ɲá�</li>
-<li>�Х��ȥ�å��˥��ơ��������Ȥη����ɽ�������褦�ˤ�����</li>
-<li>����ե��٥åȤ���ʸ��/��ʸ������̤����˸����Ǥ���褦�ˤ�����</li>
-<li>Template/�ǤϤ��ޤ�ڡ����ϥ��ƥ��饤������ʤ��褦�ˤ�����</li>
-<li>���Ϥ����HTML��⤦���������ޤȤ�ˡ�</li>
-<li><a href="CGI2=HASH(0x373a7c0)/../wiki.cgi">FSWiki</a>�Τ褦�ʽ񼰤���󥯤ˤʤ�褦�ˤ�����</li>
-<li>mod_perl��Apache::Registory��ư��뤳�Ȥ��ǧ������</li>
-<li>���ȸ��Τʤ��ڡ�����ɽ�����ʤ��褦����Ū�ʽ�����Ԥä���</li>
-<li>img������div�����ǰϤ�褦�ˤ�����</li>
-<li>�������ϥץ饰��������partedit�Υ��󥫤�outline�ץ饰����Υ������褬����ʤ��褦����������</li>
-<li>Header�ˤ�붦�̥إå���ʬ��div.header���饹����ꤹ��褦�ˤ�����</ll>
+<li>カレンダ系プラグインで参照権のないページは表示されないようにした。</li>
+<li>管理画面からMIMEタイプを追加できるようにした。</li>
+<li>ブラケットを含むページは作成できないようにした。</li>
+<li>子Wikiでセッションが維持されないバグを修正した。</li>
+<li>RSSプラグインで無限ループしてしまうバグを修正した。</li>
+<li>amazonプラグイン、簡易投票プラグイン、カウンタプラグイン、パスワード変更プラグイン、リネームプラグインを追加。</li>
+<li>バグトラックにステータスごとの件数が表示されるようにした。</li>
+<li>アルファベットの大文字/小文字を区別せずに検索できるようにした。</li>
+<li>Template/ではじまるページはカテゴライズされないようにした。</li>
+<li>出力されるHTMLをもう少しだけまともに。</li>
+<li><a href="CGI2=HASH(0x373a7c0)/../wiki.cgi">FSWiki</a>のような書式がリンクになるようにした。</li>
+<li>mod_perlのApache::Registoryで動作することを確認した。</li>
+<li>参照権のないページは表示しないよう全体的な修正を行った。</li>
+<li>imgタグをdivタグで囲むようにした。</li>
+<li>カレンダ系プラグイン等でparteditのアンカやoutlineプラグインのジャンプ先がずれないよう修正した。</li>
+<li>Headerによる共通ヘッダ部分にdiv.headerクラスを指定するようにした。</ll>
 </ul>
-<h3>2003/08/23 - Version 3.5.0��꡼��</h3>
+<h3>2003/08/23 - Version 3.5.0リリース</h3>
 <ul>
-<li>�ץ饰����򥤥�饤��ץ饰����ȥѥ饰��եץ饰�����ʬ�ष����<ul>
-<li>Wiki#add_plugin�᥽�åɤ��ѻߤ���Wiki#add_inline_plugin��Wiki#add_paragraph_plugin����Ѥ���褦�ˤ�����</li>
-<li>����饤��ץ饰�����inline�᥽�åɡ��ѥ饰��եץ饰�����paragraph�᥽�åɤ��������褦�ˤ�����</li>
+<li>プラグインをインラインプラグインとパラグラフプラグインに分類した。<ul>
+<li>Wiki#add_pluginメソッドを廃止し、Wiki#add_inline_pluginとWiki#add_paragraph_pluginを使用するようにした。</li>
+<li>インラインプラグインはinlineメソッド、パラグラフプラグインはparagraphメソッドを実装するようにした。</li>
 </ul>
 </li>
-<li>�ץ饰���󤫤�Wiki������ʸ������֤������פΥץ饰����򥵥ݡ��Ȥ��������η����Υץ饰�����PDF�ˤ���Ϥ�ȿ�Ǥ���롣</li>
-<li>ref�ץ饰�����text��image���ץ������ѻߤ���������˲�����ź�դˤ�ref_image���ƥ����Ȥ��ɲäˤ�ref_text�ץ饰������ɲä�����</li>
-<li>�������̤Υڡ��������ǥե��륿����ѤǤ���褦�ˤ������ޤ�����������桼���Τ߻��Ȳ�ǽ�ʥڡ����������ԤΤ߻��Ȳ�ǽ�ʥڡ���������Ǥ���褦�ˤ����� </li>
-<li>RSS1.0����Ϥ���褦�ˤ������������̤δĶ����꤫����Ϥ���RSS�ΥС����������Ǥ���褦�ˤ����� </li>
-<li>�ڡ���̾�򸡺��оݤ˴ޤ��褦�ˤ����� </li>
-<li>Wiki.pm�ǥС�������ֹ���������褦�ˤ����� </li>
-<li>��������桼�����Ȥι��������ڡ����ι����Ԥʤɤ�ɽ�����뤿���editlog�ץ饰������ɲä����� </li>
-<li>��Ƭ��+���ֹ��դ��ꥹ�Ȥ�Ȥ���褦�ˤ����� </ll>
+<li>プラグインからWiki形式の文字列を返すタイプのプラグインをサポートした。この形式のプラグインはPDFにも出力が反映される。</li>
+<li>refプラグインのtext、imageオプションを廃止した。代わりに画像の添付にはref_image、テキストの追加にはref_textプラグインを追加した。</li>
+<li>管理画面のページ管理でフィルタを使用できるようにした。また、ログインユーザのみ参照可能なページ、管理者のみ参照可能なページを設定できるようにした。 </li>
+<li>RSS1.0を出力するようにした。管理画面の環境設定から出力するRSSのバージョンを指定できるようにした。 </li>
+<li>ページ名を検索対象に含めるようにした。 </li>
+<li>Wiki.pmでバージョン番号を定義するようにした。 </li>
+<li>ログインユーザごとの更新回数やページの更新者などを表示するためのeditlogプラグインを追加した。 </li>
+<li>行頭に+で番号付きリストを使えるようにした。 </ll>
 </ul>
-<h3>2003/08/17 - Version 3.4.4��꡼��</h3>
+<h3>2003/08/17 - Version 3.4.4リリース</h3>
 <ul>
-<li>���Ԥκǽ�ȺǸ�˥ץ饰����򵭽Ҥ�������������ǧ�������褦�ˤ�����</li>
-<li>���������Ȥΰ�ž��ȼ�����եå��Υ������ѹ�������</li>
-<li>�������ϤΥץ饰���������ɽ���Υ᥿ʸ����ޤ�ѥ饰��դ򥤥󥯥롼�ɤǤ��ʤ��Х�����������</ll>
+<li>１行の最初と最後にプラグインを記述した場合に正しく認識されるようにした。</li>
+<li>公式サイトの移転に伴い、フッタのリンク先を変更した。</li>
+<li>カレンダ系のプラグインで正規表現のメタ文字を含むパラグラフをインクルードできないバグを修正した。</ll>
 </ul>
-<h3>2003/08/13 - Version 3.4.3��꡼��</h3>
+<h3>2003/08/13 - Version 3.4.3リリース</h3>
 <ul>
-<li>include��bbs2��todolist��calendar�ϤΥץ饰�����̵�¥롼�פ��Ƥ��ޤ��Х�������</li>
-<li>�ͥ��Ȥ���Wiki::process_wiki�θƤӽФ���50��ޤǤ����¤�����</ll>
+<li>include、bbs2、todolist、calendar系のプラグインで無限ループしてしまうバグを修正。</li>
+<li>ネストしたWiki::process_wikiの呼び出しは50回までに制限した。</ll>
 </ul>
-<h3>2003/07/26 - Version 3.4.2��꡼��</h3>
+<h3>2003/07/26 - Version 3.4.2リリース</h3>
 <ul>
-<li>�Խ����̤�ź�եե�����ΰ�����ź�եե������ɽ������褦�ˤ�����</li>
-<li>�����ȡ��Ǽ��ǡ��Х��ȥ�å��˥��å�����̾����ɽ������褦�ˤ������ޤ������å��������åȤ���Ƥ��ʤ����ǥ������󤷤Ƥ�����֤Ǥ���Х桼��ID��ɽ������褦�ˤ�����</li>
-<li>�ڡ�������¸���META�����ǥ�����쥯�Ȥ���褦�ˤ�����</li>
-<li>�ʲ��Υץ饰������ɲä����� <ul>
-<li>�ѥ饰����Խ��ץ饰����</li>
-<li>Google�����ץ饰����</li>
-<li>�����ץ饰����</li>
+<li>編集画面に添付ファイルの一覧と添付フォームを表示するようにした。</li>
+<li>コメント、掲示版、バグトラックにクッキーで名前を表示するようにした。また、クッキーがセットされていない場合でログインしている状態であればユーザIDを表示するようにした。</li>
+<li>ページの保存後はMETAタグでリダイレクトするようにした。</li>
+<li>以下のプラグインを追加した。 <ul>
+<li>パラグラフ編集プラグイン</li>
+<li>Google検索プラグイン</li>
+<li>脚注プラグイン</li>
 </ul>
 </li>
-<li>WikiFarm�Υ桼��ǧ�ڤλ��ͤ��ѹ�������<ul>
-<li>��Wiki����Wiki�Ǥ�ID�ν�ʣ�ϲ�ǽ�������̥桼�������Ȥʤ롣</li>
-<li>��Wiki�ǥ������󤷤��桼���ϻ�Wiki�Ǥ�Ʊ�����¤ǥ���������֤ˤʤ롣 </li>
+<li>WikiFarmのユーザ認証の仕様を変更した。<ul>
+<li>親Wiki、子WikiでのIDの重複は可能だが、別ユーザ扱いとなる。</li>
+<li>親Wikiでログインしたユーザは子Wikiでも同じ権限でログイン状態になる。 </li>
 </ul>
 </li>
-<li>SMTP�ˤ�����Υ᡼����������б�������</li>
-<li>RSS�ץ饰���󤬥ץ������ʥץ�����ǧ�ڤ�ˤ��б�������</li>
-<li>������ɤ��Ĺ�ޥå��ˤ�����</li>
-<li>�ڡ����μ�ư��󥯤�/��ޤ�ڡ��������оݤˤ��뤫�ɤ���������Ǥ���褦�ˤ�����</li>
-<li>LWP��Net��URI�⥸�塼���Ʊ������褦�ˤ����� </li>
-<li>recent��recentdays�ץ饰����򥭥�å��夹��褦�ˤ�����</li>
-<li>���Ϥ���HTML��HTML 4.01 Transitional�ˤ����ʰ����ץ饰�����̤�б��ˡ�</li>
-<li>��Ƭ��//�ǥ����ȥ����ȤǤ���褦�ˤ�����</li>
-<li>�ץ饰�����������XSS�ȼ���������</li>
-<li>�桼��ǧ�ڤΥ��å����ݻ���CGI::Session��Ȥ��褦�ˤ�����</li>
-<li>�����ȥƥ�ץ졼�ȵ�ǽ�μ�����</li>
-<li>�ơ��ޤ���Ѥ������������륷���Ȥ�URL�����Ǥ���褦�ˤ�����</li>
-<li>��������CSS�ǥ����������Ǥ���褦�ˤ�����</li>
-<li>�羮�͡��ʥХ��ե��å�����</ll>
+<li>SMTPによる通知メールの送信に対応した。</li>
+<li>RSSプラグインがプロキシ（プロキシ認証も）に対応した。</li>
+<li>キーワードを最長マッチにした。</li>
+<li>ページの自動リンクで/を含むページをリンク対象にするかどうかを設定できるようにした。</li>
+<li>LWP、Net、URIモジュールを同梱するようにした。 </li>
+<li>recent、recentdaysプラグインをキャッシュするようにした。</li>
+<li>出力するHTMLをHTML 4.01 Transitionalにした（一部プラグインは未対応）。</li>
+<li>行頭に//でコメントアウトできるようにした。</li>
+<li>プラグイン解析部のXSS脆弱性を修正。</li>
+<li>ユーザ認証のセッション維持にCGI::Sessionを使うようにした。</li>
+<li>サイトテンプレート機能の実装。</li>
+<li>テーマを使用せず、スタイルシートのURLを指定できるようにした。</li>
+<li>カレンダをCSSでスタイル指定できるようにした。</li>
+<li>大小様々なバグフィックス。</ll>
 </ul>
-<h3>2003/06/30 - Version 3.4.1��꡼��</h3>
+<h3>2003/06/30 - Version 3.4.1リリース</h3>
 <ul>
-<li>���ƤΥե������use strict�ˤ����� </li>
-<li>SendMail.pm�ΥХ������� </li>
-<li>������ǽ�ΥХ������� </li>
-<li>images�ǥ��쥯�ȥ����������ź�եե�����Υ�󥯤Ǥ⥯��åײ�����ɽ�����ʤ��褦�ˤ����� </li>
-<li>�Ǽ��ġ��Х��ȥ�å���HTML::Template�������� </li>
-<li>pluginhelp��info�ѥå������˰�ư������ </li>
-<li>URL����̾��󥯤����Хѥ���Ȥ���褦�ˤ����� </li>
-<li>���󥰥륯�����Ȥ����ä�URL�˥�󥯤�Ϥ�褦�ˤ����� </li>
-<li>�Խ��Ϥβ��̤ξ��˥��ܥå��к���META��������Ϥ���褦�ˤ����� </li>
-<li>�桼���Υѥ���ɤ�Ź沽������¸����褦�ˤ����� </li>
-<li>WikiFarm������� </li>
-<li>�ʲ��Υץ饰������ɲá� <ul>
-<li>RSS�����ץ饰���� </li>
-<li>RSS-JP.NET�����Ѥ���RSS���������ץ饰���� </li>
-<li>BBS2�ץ饰���� </li>
-<li>������ɽ���ץ饰���� </li>
+<li>全てのファイルをuse strictにした。 </li>
+<li>SendMail.pmのバグ修正。 </li>
+<li>検索機能のバグ修正。 </li>
+<li>imagesディレクトリを削除した。添付ファイルのリンクでもクリップ画像を表示しないようにした。 </li>
+<li>掲示板、バグトラックをHTML::Template化した。 </li>
+<li>pluginhelpをinfoパッケージに移動した。 </li>
+<li>URLの別名リンクで相対パスを使えるようにした。 </li>
+<li>シングルクオートの入ったURLにリンクをはるようにした。 </li>
+<li>編集系の画面の場合にロボット対策のMETAタグを出力するようにした。 </li>
+<li>ユーザのパスワードを暗号化して保存するようにした。 </li>
+<li>WikiFarmを実装。 </li>
+<li>以下のプラグインを追加。 <ul>
+<li>RSS取得プラグイン </li>
+<li>RSS-JP.NETを利用してRSSを取得するプラグイン。 </li>
+<li>BBS2プラグイン </li>
+<li>ソース表示プラグイン </li>
 </ul>
 </li>
-<li>mod_perl���б��������Ϥ��� </li>
-<li>Keyword��InterWiki��Ȥ���褦�ˤ����� </li>
-<li>���ƥ���򥭥�å��夹��褦�ˤ����� </li>
-<li>�ڡ���̾�˥��󥫤�Ϥꡢ����å�����ȸ������̤����֤褦�ˤ����� </li>
-<li>�٤����Х��ե��å������������륷���Ȥν����� </li>
-<li>Jcode.pm��MIME::Base64��LWP��Ʊ������jcode.pl��mimew.pl�Ϻ�������� </ll>
+<li>mod_perlに対応した。はず。 </li>
+<li>KeywordでInterWikiを使えるようにした。 </li>
+<li>カテゴリをキャッシュするようにした。 </li>
+<li>ページ名にアンカをはり、クリックすると検索画面に飛ぶようにした。 </li>
+<li>細かいバグフィックス、スタイルシートの修正。 </li>
+<li>Jcode.pm、MIME::Base64、LWPを同梱し、jcode.plとmimew.plは削除した。 </ll>
 </ul>
-<h3>2003/06/07 - Version 3.4.0��꡼��</h3>
+<h3>2003/06/07 - Version 3.4.0リリース</h3>
 <ul>
-<li>ref��ref2�ץ饰�����text���ץ������ɲá�</li>
-<li>attach�ץ饰�����nolist���ץ������ɲá�</li>
-<li>��ʬ���ѹ��Τʤ��ä��ԤϽ��Ϥ��ʤ��褦������</li>
-<li>�֥饦������Ƽ�������ѹ��Ǥ���褦�ˤ�����<ul>
-<li>�����ԥ���������˥ڡ����ΰ���������롢�����������Ǥ���褦�ˤ������ޤ���ź�եե�����ΰ������������Ǥ���褦�ˤ������Խ����̤ǤΥڡ������ϤǤ��ʤ��褦�ˤ�����</li>
-<li>�������̤�������ե��������������������ɤǤ���褦�ˤ�����</li>
-<li>�������̤�ʣ���Υ�������Ȥ�����Ǥ���褦�ˤ������Խ��ػߥ⡼�ɤǱ��Ѥ��Ƥ����硢�������󤹤���Խ��俷���ڡ����κ�������ǽ���ޤ����᡼����Խ��Ԥ�ID��ɽ�������褦�ˤ�������뤵��Ƥ���ڡ����Ϻ��ޤǤɤ�������桼�������Խ����뤳�ȤϤǤ��ʤ���</li>
-<li>���Ԥ�&lt;br&gt;�������Ѵ����������Ǥ���褦�ˤ�����</li>
-<li>�ڡ���̾�˼�ưŪ�˥�󥯤�Ϥ������Ǥ���褦�ˤ�����</li>
-<li>ź�եե�����κ������Ĥ��뤫�ɤ���������Ǥ���褦�ˤ�����</li>
+<li>ref、ref2プラグインにtextオプションを追加。</li>
+<li>attachプラグインにnolistオプションを追加。</li>
+<li>差分で変更のなかった行は出力しないよう修正。</li>
+<li>ブラウザから各種設定を変更できるようにした。<ul>
+<li>管理者ログイン時にページの一覧から凍結、解除、削除ができるようにした。また、添付ファイルの一覧から削除ができるようにした。編集画面でのページ凍結はできないようにした。</li>
+<li>管理画面からログファイルを削除、ダウンロードできるようにした。</li>
+<li>管理画面で複数のアカウントを設定できるようにした。編集禁止モードで運用している場合、ログインすれば編集や新規ページの作成が可能。また、メールに編集者のIDが表示されるようにした。凍結されているページは今までどおり管理ユーザしか編集することはできない。</li>
+<li>改行を&lt;br&gt;タグに変換する設定をできるようにした。</li>
+<li>ページ名に自動的にリンクをはる設定をできるようにした。</li>
+<li>添付ファイルの削除を許可するかどうかを設定できるようにした。</li>
 </ul>
 </li>
-<li>���¤δ�����ʣ���ˤʤ뤿��ź�եե��������뵡ǽ�ϤҤȤޤ����������</li>
-<li>�ڡ�������¸�������Хå����å׽�����Wiki.pm����ʬ�䤷�����ǥե���ȤǤ�Wiki::DefaultStorage.pm����Ѥ��ޤ���ź�եե������ɸ�ൡǽ�Ȥ���API���󶡤����ۤ����褤����������</li>
-<li>save_end�եå���save_after���ѹ�����save_before�եå����ɲä�����</li>
-<li>�����ԤؤΥ᡼��������եå����ѹ�������</li>
-<li><a href="file://�ǥ��󥫤�Ϥ�褦�ˤ�����">file://�ǥ��󥫤�Ϥ�褦�ˤ�����</a></li>
-<li>�������������Login.pm�ǤϤʤ���Wiki.pm�ǹԤ��褦�ˤ�����Wiki.pm��login_check��get_login_info�᥽�åɤ��ɲä�����</li>
-<li>Wiki.pm�˥桼�����ɲä��뤿���add_user�᥽�åɡ��������ѥ�˥塼���ɲä��뤿���add_admin_menu�᥽�åɡ�add_admin_handler�᥽�åɤ��ɲä�����</li>
-<li>PDF�ˤϥץ饰����ν��Ϥ���ڼ����ޤʤ��褦�ˤ����������ȼ�ä�Image::Info�⥸�塼�뤬���פȤʤä����ޤ���PDF�ǥץ饰������θ����ɬ�פ��ʤ��ʤä����ᡢ��Ƭ�ʳ��Ǥ�ץ饰�����Ÿ������褦�ˤ�����</li>
-<li>���ԤΤߤΥڡ����Ϻ�������褦�ˤ�����</li>
-<li>�Խ����̤�ɽ�����륿���פΥץ饰�����EditForm�ץ饰����ˤ򥵥ݡ��Ȥ������Ȥꤢ����EditHelper�򤳤η����Υץ饰������ѹ�������</li>
-<li>�ڡ����ο����������̤ǥ���ܤ���ƥ�ץ졼�Ȥ�����Ǥ���褦�ˤ�����</li>
-<li>calendar�ץ饰����Υ��ץ����ǥƥ�ץ졼�Ȥ����Ǥ���褦�ˤ�����</li>
-<li>�ʲ��Υ���饤��ץ饰������ɲä������ޤ��������Υץ饰�����info�ѥå������˰�ư������<ul>
-<li>todoadd - TODO���ɲä��뤿��Υե������ɽ�����롣</li>
-<li>accessdays - ����Υ�����������¿����˥ڡ�����������Ϥ��롣</li>
-<li>lastmodified - �ڡ����ι���������ɽ�����롣</li>
+<li>権限の管理が複雑になるため添付ファイルの凍結機能はひとまず削除した。</li>
+<li>ページの保存処理、バックアップ処理をWiki.pmから分割した。デフォルトではWiki::DefaultStorage.pmを使用します。添付ファイルも標準機能としてAPIを提供したほうがよいだろうか？</li>
+<li>save_endフックをsave_afterに変更し、save_beforeフックを追加した。</li>
+<li>管理者へのメール送信をフックに変更した。</li>
+<li><a href="file://でアンカをはるようにした。">file://でアンカをはるようにした。</a></li>
+<li>ログイン処理はLogin.pmではなく、Wiki.pmで行うようにした。Wiki.pmにlogin_check、get_login_infoメソッドを追加した。</li>
+<li>Wiki.pmにユーザを追加するためのadd_userメソッド、管理者用メニューを追加するためのadd_admin_menuメソッド、add_admin_handlerメソッドを追加した。</li>
+<li>PDFにはプラグインの出力を一切取り込まないようにした。これに伴ってImage::Infoモジュールが不要となった。また、PDFでプラグインを考慮する必要がなくなったため、行頭以外でもプラグインを展開するようにした。</li>
+<li>改行のみのページは削除されるようにした。</li>
+<li>編集画面に表示するタイプのプラグイン（EditFormプラグイン）をサポートした。とりあえずEditHelperをこの形式のプラグインに変更した。</li>
+<li>ページの新規作成画面でコンボからテンプレートを選択できるようにした。</li>
+<li>calendarプラグインのオプションでテンプレートを指定できるようにした。</li>
+<li>以下のインラインプラグインを追加した。また、一部のプラグインをinfoパッケージに移動した。<ul>
+<li>todoadd - TODOを追加するためのフォームを表示する。</li>
+<li>accessdays - 日毎のアクセス数の多い順にページ一覧を出力する。</li>
+<li>lastmodified - ページの更新日時を表示する。</li>
 </ul>
 </li>
-<li>������log�ǥ��쥯�ȥ�˽��Ϥ���褦�ˤ�����</li>
-<li>Wiki�ڡ����Υ��󥫤�nopage��̤�����ˤ�wikipage�ʺ����ѡˤȤ���class°������Ϳ������</li>
-<li>���Ӥξ��ϥإå��ȥեå�����Ϥ��ʤ��褦�ˤ�����</ll>
+<li>ログはlogディレクトリに出力するようにした。</li>
+<li>Wikiページのアンカにnopage（未作成）とwikipage（作成済）というclass属性を付与した。</li>
+<li>携帯の場合はヘッダとフッタも出力しないようにした。</ll>
 </ul>
-<h3>2003/05/09 - Version 3.3.7��꡼��</h3>
+<h3>2003/05/09 - Version 3.3.7リリース</h3>
 <ul>
-<li>core�����äƤ����ץ饰������ʬ������</li>
-<li>���������ϥ�ɥ饯�饹�ȥ���饤��ϥ�ɥ饯�饹��ʬ���3.3.7��꡼���Ǥϥեå���ʬΥ��������</li>
-<li>ref2�ץ饰������ɲ�</li>
-<li>pluginhelp�ץ饰������ɲáʥ���饤��ץ饰����Υإ�פ�ɽ������ޤ���</li>
-<li>todolist�ץ饰����ϥǥե���ȤǤϥ����å��ܥå����ȥܥ����ɽ�����ʤ��褦�ѹ���form���ץ�����Ĥ��뤫������������Ǥ���н����̤�����å��ܥå����ȥܥ����ɽ����</li>
-<li>Comment��BBS��Attach�ΥХ�����</li>
-<li>�Хå����åץե����뤬�ʤ����֤Ǻ�ʬɽ����Ԥʤ��ȥ��顼��ȯ����������ν���</li>
-<li>�����ե�����ؤ�URL��img�����ˤ���褦�ˤ���</li>
-<li>ź�եե���������Ǥ���褦�ˤ���</li>
-<li>calendar�ǥ������Τߤ�ɽ������褦�ˤ����������Ǻ��������ڡ����Τ���1����ʬ��ɽ������monthcalendar�ץ饰������ɲä���</li>
-<li>������̤˥ڡ���̾�����Ǥʤ������Ԥ�ɽ������褦�ˤ����ʻŪ�����</li>
-<li>�Х��ȥ�å��ǥХ���ݡ��Ȥξ��֤�饸���ܥ�����ѹ��Ǥ���褦�ˤ���</ll>
+<li>coreに入っていたプラグインを細分化した</li>
+<li>アクションハンドラクラスとインラインハンドラクラスを分割（3.3.7リリースではフックも分離したい）</li>
+<li>ref2プラグインを追加</li>
+<li>pluginhelpプラグインを追加（インラインプラグインのヘルプが表示されます）</li>
+<li>todolistプラグインはデフォルトではチェックボックスとボタンは表示しないよう変更（formオプションをつけるか、ログイン中であれば従来通りチェックボックスとボタンを表示）</li>
+<li>Comment、BBS、Attachのバグ修正</li>
+<li>バックアップファイルがない状態で差分表示を行なうとエラーが発生する問題の修正</li>
+<li>画像ファイルへのURLをimgタグにするようにした</li>
+<li>添付ファイルを凍結できるようにした</li>
+<li>calendarでカレンダのみを表示するようにし、カレンダで作成したページのうち1ヶ月分を表示するmonthcalendarプラグインを追加した</li>
+<li>検索結果にページ名だけでなく該当行を表示するようにした（試験的かも）</li>
+<li>バグトラックでバグレポートの状態をラジオボタンで変更できるようにした</ll>
 </ul>
-<h3>2003/04/27 - Version 3.3.6��꡼��</h3>
+<h3>2003/04/27 - Version 3.3.6リリース</h3>
 <ul>
-<li>mailto�򥢥󥫤ˤ���褦�ˤ���</li>
-<li>ref�ץ饰����ǥ���������ɲ����ɽ�������褦�ˤ���</li>
-<li>�����ꥹ�Ȥ���ʸ��ʣ���Ե��ҤǤ���褦�ˤ���</li>
-<li>���ƥ���ץ饰����ΥХ�����</li>
-<li>TODO�ץ饰������ɲ�</li>
-<li>include�ץ饰����ǥѥ饰���̾������ɽ���Υ᥿ʸ�����ޤޤ�Ƥ��������Զ��ν���</li>
-<li>�Ū�˷������äؤ��б���Ԥä�<ul>
-<li>Shift_JIS�ǥ쥹�ݥ󥹤���褦�ˤ���</li>
-<li>�����ɥС���EditHelper��CSS�ʤɤ���Ϥ��ʤ��褦�ˤ���</li>
-<li>CGI.pm��Ѿ�����param�᥽�åɤ򥪡��С��饤�ɤ����ꥯ�����ȥѥ�᡼����EUC���Ѵ�����褦�ˤ���</li>
+<li>mailtoをアンカにするようにした</li>
+<li>refプラグインでダウンロード回数が表示されるようにした</li>
+<li>説明リストの本文を複数行記述できるようにした</li>
+<li>カテゴリプラグインのバグ修正</li>
+<li>TODOプラグインを追加</li>
+<li>includeプラグインでパラグラフ名に正規表現のメタ文字が含まれていた場合の不具合の修正</li>
+<li>試験的に携帯電話への対応を行った<ul>
+<li>Shift_JISでレスポンスするようにした</li>
+<li>サイドバー、EditHelper、CSSなどを出力しないようにした</li>
+<li>CGI.pmを継承してparamメソッドをオーバーライドし、リクエストパラメータをEUCに変換するようにした</li>
 </ul>
 </li>
-<li>XREA��todayslink�ץ饰���󤬤��ޤ�ư��ʤ��Զ�����</li>
-<li>recentcalendar�ץ饰������ɲä���calendar�ץ饰����ˤ�ȿ�Ǥ���</ll>
+<li>XREAでtodayslinkプラグインがうまく動作しない不具合を修正</li>
+<li>recentcalendarプラグインを追加し、calendarプラグインにも反映した</ll>
 </ul>
-<h3>2003/04/18 - Version 3.3.5��꡼��</h3>
+<h3>2003/04/18 - Version 3.3.5リリース</h3>
 <ul>
-<li>todayslink�ץ饰������ɲá�</li>
-<li>HTML::Template�ˤ�äƥإå��ȥեå���ƥ�ץ졼�Ȳ���</li>
-<li>category�ץ饰����attach�ץ饰����ΥХ�������</ll>
+<li>todayslinkプラグインを追加。</li>
+<li>HTML::Templateによってヘッダとフッタをテンプレート化。</li>
+<li>categoryプラグイン、attachプラグインのバグ修正。</ll>
 </ul>
-<h3>2003/04/13 - Version 3.3.4��꡼��</h3>
+<h3>2003/04/13 - Version 3.3.4リリース</h3>
 <ul>
-<li>���ƥ�������򥽡��Ȥ���褦������</li>
-<li>category_list�ץ饰����ΥХ�������</li>
-<li>Attach.pm�ΥХ�������</li>
-<li>setup.pl��wiki.cgi�Υե�����̾�����Ǥ���褦�ˤ�����</ll>
+<li>カテゴリ一覧をソートするよう修正。</li>
+<li>category_listプラグインのバグ修正。</li>
+<li>Attach.pmのバグ修正。</li>
+<li>setup.plでwiki.cgiのファイル名を指定できるようにした。</ll>
 </ul>
-<h3>2003/04/11 - Version 3.3.3��꡼��</h3>
+<h3>2003/04/11 - Version 3.3.3リリース</h3>
 <ul>
-<li>attach�ץ饰������ɲá�</li>
-<li>category_lisp�ץ饰������ɲá�</li>
-<li>�ѹ������ѥ᡼�륢�ɥ쥹�ȥեå�ɽ���ѤΥ᡼�륢�ɥ쥹���̡�������Ǥ���褦�ˤ�����</li>
-<li>�ե����������Ϥ˼��Ԥ����ݤ�die���ƥ��顼��å�������ɽ������褦�ˤ�����</li>
-<li>����¾���٤���������</ll>
+<li>attachプラグインを追加。</li>
+<li>category_lispプラグインを追加。</li>
+<li>変更通知用メールアドレスとフッタ表示用のメールアドレスを別々に設定できるようにした。</li>
+<li>ファイル入出力に失敗した際にdieしてエラーメッセージを表示するようにした。</li>
+<li>その他、細かい修正。</ll>
 </ul>
-<h3>2003/03/31 - Version 3.3.2��꡼��</h3>
+<h3>2003/03/31 - Version 3.3.2リリース</h3>
 <ul>
-<li>���������ζػ߻��˴����Ԥǥڡ�����������褦�Ȥ����ȯ�����륨�顼������</ll>
+<li>新規作成の禁止時に管理者でページを作成しようとすると発生するエラーを修正。</ll>
 </ul>
-<h3>2003/03/29 - Version 3.3.1��꡼��</h3>
+<h3>2003/03/29 - Version 3.3.1リリース</h3>
 <ul>
-<li>�����ե������ɽ������search�ץ饰������ɲá�</li>
-<li>�ڡ�������¸����PDF�ե�������������ʤ��褦�ˤ�����</li>
-<li>���ڡ���������Խ��ػߥ⡼�ɤǤϥե�����ź�դ���Ӻ����Ǥ��ʤ��褦�ˤ�����</li>
-<li>��������ɽ�������ڡ�����˥����ȥץ饰�����������ä����������ư��ʤ��Х�������</li>
-<li>�ץ饰����Υ��󥹥���������ư���ǤϤʤ��ץ饰������ѻ���ɬ�פʤ�ΤΤ߹Ԥ��褦���ѹ���������Ū�ʹ�®����Ԥä�</li>
-<li>PDF�����������ɽ�������褦�˽�����</ll>
+<li>検索フォームを表示するsearchプラグインを追加。</li>
+<li>ページの保存時にPDFファイルを生成しないようにした。</li>
+<li>凍結ページおよび編集禁止モードではファイル添付および削除をできないようにした。</li>
+<li>カレンダで表示されるページ内にコメントプラグイン等があった場合に正常に動作しないバグを修正。</li>
+<li>プラグインのインスタンス生成を起動時ではなくプラグイン使用時に必要なもののみ行うように変更し、全体的な高速化を行った</li>
+<li>PDFで段落が正しく表示されるように修正。</ll>
 </ul>
-<h3>2003/03/25 - Version 3.3.0��꡼��</h3>
+<h3>2003/03/25 - Version 3.3.0リリース</h3>
 <ul>
-<li>Keyword��ǽ�μ�����</li>
-<li>InterWiki�μ�����</li>
-<li>���Ϥ���HTML������ʤۤܡ˾�ʸ�������졣</li>
-<li>ʣ���Ԥΰ��Ѥ򵭽Ҥ�����硢���Ԥ���褦������</li>
-<li>Mozilla�Ǥ�outline���饸���פǤ���褦������</li>
-<li>ref�ץ饰�����png������ɽ�������褦�ˤ�����</li>
-<li>setup.pl�Ǵ����Ԥ�̾���ȥ᡼�륢�ɥ쥹�����ꤷ��Copyright��ɽ������褦�ˤ�����</li>
-<li>bbs��comment�ץ饰����ǤΥڡ�����������PDF����������ʤ��Х�������</li>
-<li>�ץ饰����Τ��Ȥ�³���Ƶ��Ҥ���ʸ�������Ԥ��Ƥ��ޤ��Х��ν�����</ll>
+<li>Keyword機能の実装。</li>
+<li>InterWikiの実装。</li>
+<li>出力するHTMLタグを（ほぼ）小文字に統一。</li>
+<li>複数行の引用を記述した場合、改行するよう修正。</li>
+<li>Mozillaでもoutlineからジャンプできるよう修正。</li>
+<li>refプラグインでpng画像も表示されるようにした。</li>
+<li>setup.plで管理者の名前とメールアドレスを設定し、Copyrightに表示するようにした。</li>
+<li>bbs、commentプラグインでのページ更新時にPDFが更新されないバグを修正。</li>
+<li>プラグインのあとに続けて記述した文字が改行してしまうバグの修正。</ll>
 </ul>
-<h3>2003/03/20 - Version 3.2.5��꡼��</h3>
+<h3>2003/03/20 - Version 3.2.5リリース</h3>
 <ul>
-<li>���Ϥ����HTML�򾯤������ޤȤ�ʤ�Τ˽�����</li>
-<li><span class="nopage">Google</span><a href="#">?</a>�Τ褦�ʥ�󥯤����������Ϥ����褦�ˤ�����</li>
-<li>calendar�ץ饰������������ʥ�����̾�ˤ�ɬ�ܤˤ�����</li>
-<li>PDF�˶��Ԥ���Ϥ���褦�ˤ�����</li>
-<li>��Ƭ������ޤ���Ϥ��ޤ���Τ�table�ˤʤ�褦�ˤ�����</li>
-<li>�ڡ���������Ǥ�դη�����Ȥ�ɽ���Ǥ���褦�ˤ�����</li>
-<li>���ڡ�����ź�եե����������ɽ���Ǥ���褦�ˤ�����</li>
-<li>include�ץ饰����ǥ��󥯥롼�ɤ��줿����ƥ�Ĥ�bbs�ץ饰�����comment�ץ饰�������äƤ������������ư���褦�ˤ�����</li>
-<li>recentdays�ץ饰������ɲá�</ll>
+<li>出力されるHTMLを少しだけまともなものに修正。</li>
+<li><span class="nopage">Google</span><a href="#">?</a>のようなリンクが正しく出力されるようにした。</li>
+<li>calendarプラグインの第一引数（カレンダ名）を必須にした。</li>
+<li>PDFに空行を出力するようにした。</li>
+<li>行頭がカンマからはじまる場合のみtableになるようにした。</li>
+<li>ページ一覧を任意の件数ごとに表示できるようにした。</li>
+<li>全ページの添付ファイル一覧を表示できるようにした。</li>
+<li>includeプラグインでインクルードされたコンテンツにbbsプラグインやcommentプラグインが入っている場合も正しく動作するようにした。</li>
+<li>recentdaysプラグインを追加。</ll>
 </ul>
-<h3>2003/03/15 - Version 3.2.4��꡼��</h3>
+<h3>2003/03/15 - Version 3.2.4リリース</h3>
 <ul>
-<li>EditHelper�ڡ���������Ȥ����Խ����̤˥إ�פȤ���ɽ������褦�ˤ�����</li>
-<li>PDF�������ΥХ�������</li>
-<li>���Ϥ���HTML������</li>
-<li>����¾���٤����Х��ν�����</ll>
+<li>EditHelperページがあるときは編集画面にヘルプとして表示するようにした。</li>
+<li>PDF生成時のバグを修正。</li>
+<li>出力するHTMLを修正。</li>
+<li>その他、細かいバグの修正。</ll>
 </ul>
-<h3>2003/03/05 - Version 3.2.3��꡼��</h3>
+<h3>2003/03/05 - Version 3.2.3リリース</h3>
 <ul>
-<li>RSS�ץ饰����ǿ����˥����Ȥ���ʤ��Х�������</li>
-<li>PDF�ץ饰�����PDF�ѡ���������Ƥ��ޤ��Х�������</ll>
+<li>RSSプラグインで新着順にソートされないバグを修正。</li>
+<li>PDFプラグインでPDFパーサが落ちてしまうバグを修正。</ll>
 </ul>
-<h3>2003/03/02 - Version 3.2.2��꡼��</h3>
+<h3>2003/03/02 - Version 3.2.2リリース</h3>
 <ul>
-<li>���ƥ���ץ饰����������</li>
-<li>�������ץ饰����������</li>
-<li>RSS�ץ饰����������</li>
-<li>setup.pl�ˤƥ����ȤΥ����ȥ������Ǥ���褦�ˤ�����</li>
-<li>WikiName���������setup.pl�ˤ�ON/OFF�����Ǥ���褦�ˤ�����</li>
-<li>include�ץ饰����Ǽ���������Ƥ�PDF�˽��Ϥ���褦�ˤ�����</ll>
+<li>カテゴリプラグインを実装。</li>
+<li>カレンダプラグインを実装。</li>
+<li>RSSプラグインを実装。</li>
+<li>setup.plにてサイトのタイトルを設定できるようにした。</li>
+<li>WikiNameを実装し、setup.plにてON/OFFを指定できるようにした。</li>
+<li>includeプラグインで取り込んだ内容もPDFに出力するようにした。</ll>
 </ul>
-<h3>2003/02/27 - Version 3.2.1��꡼��</h3>
+<h3>2003/02/27 - Version 3.2.1リリース</h3>
 <ul>
-<li>�Х��ȥ�å��ץ饰����������</li>
-<li>�ڡ����κ������PDF�ե������ź�եե�����������Ϣ�ե������������褦�ˤ�����</li>
-<li>ref�ץ饰�����MIME�����פ�text/*�ξ�硢�����ѥƥ����ȤȤ���Ž���դ���褦�ˤ�����</li>
-<li>edit�ץ饰������ɲá�</li>
-<li>Menu�ڡ������ʤ��Ȥ���&lt;div class=``main''&gt;����Ϥ��ʤ��褦������</ll>
+<li>バグトラックプラグインを実装。</li>
+<li>ページの削除時にPDFファイルや添付ファイル等、関連ファイルも削除するようにした。</li>
+<li>refプラグインでMIMEタイプがtext/*の場合、整形済テキストとして貼り付けるようにした。</li>
+<li>editプラグインを追加。</li>
+<li>Menuページがないときは&lt;div class=``main''&gt;を出力しないよう修正。</ll>
 </ul>
-<h3>2003/02/22 - Version 3.2.0��꡼��</h3>
+<h3>2003/02/22 - Version 3.2.0リリース</h3>
 <ul>
-<li>�ѡ��������̽񤭴���������С�����ѡ����ȥե����ޥå���ʬ����PDF��Ʊ��IF�Ǽ���������</li>
-<li>include�ץ饰������ɲá�</li>
-<li>setup.pl�ǥڡ����ο����������Խ���ػߤǤ���褦�ˤ�����</li>
-<li>�����ԥ���������ɲá������Ԥϥڡ�������뤵��Ƥ����ꡢsetup.pl�ǿ����������Խ����ػߤ���Ƥ��Ƥ⼫ͳ�˥ڡ����κ������Խ���Ԥ����Ȥ��Ǥ��ޤ���</li>
-<li>������AND��OR��������ǽ�ˤʤä���</ll>
+<li>パーサを全面書き換え。コンバータをパーサとフォーマッタに分け、PDFも同じIFで実装した。</li>
+<li>includeプラグインを追加。</li>
+<li>setup.plでページの新規作成、編集を禁止できるようにした。</li>
+<li>管理者ログインを追加。管理者はページが凍結されていたり、setup.plで新規作成や編集が禁止されていても自由にページの作成、編集を行うことができます。</li>
+<li>検索でAND、OR検索が可能になった。</ll>
 </ul>
-<h3>2003/02/18 - Version 3.1.2��꡼��</h3>
+<h3>2003/02/18 - Version 3.1.2リリース</h3>
 <ul>
-<li>PDF�ץ饰����ΥХ�����</li>
-<li>�ǥ��쥯�ȥ깽�����ѹ�</ll>
+<li>PDFプラグインのバグ修正</li>
+<li>ディレクトリ構成を変更</ll>
 </ul>
-<h3>2003/02/18 - Version 3.1.1��꡼��</h3>
+<h3>2003/02/18 - Version 3.1.1リリース</h3>
 <ul>
-<li>PDF�ץ饰�����������꡼��</li>
-<li>��ʬɽ����ǽ</li>
-<li>tDiary�Υơ��ޤ��б�</li>
-<li>�ڡ�������뵡ǽ</ll>
+<li>PDFプラグインを正式リリース</li>
+<li>差分表示機能</li>
+<li>tDiaryのテーマに対応</li>
+<li>ページの凍結機能</ll>
 </ul>
-<h3>2003/02/16 - Version 3.1.0��꡼��</h3>
+<h3>2003/02/16 - Version 3.1.0リリース</h3>
 <ul>
-<li>PDF�ץ饰����ʥ١����ǡˤ����</li>
-<li>����ե������ʬΥ</ll>
+<li>PDFプラグイン（ベータ版）を実装</li>
+<li>設定ファイルを分離</ll>
 </ul>
-<h3>2003/02/13 - Version 3.0.5��꡼��</h3>
+<h3>2003/02/13 - Version 3.0.5リリース</h3>
 <ul>
-<li>�Ǽ��ĥץ饰����ǵ������Ф����ֿ��ե��������Ϥ���褦�ˤ���</li>
-<li>Wiki�ڡ������Ф�����̾�ǥ��󥫤�����Ǥ���褦�ˤ���</li>
-<li>�����ޤ�ڡ���̾�����������Զ�礬������Х���������</ll>
+<li>掲示板プラグインで記事に対して返信フォームを出力するようにした</li>
+<li>Wikiページに対して別名でアンカを作成できるようにした</li>
+<li>空白を含むページ名を作成すると不具合が生じるバグを修正した</ll>
 </ul>
-<h3>2003/02/11 - Version 3.0.4��꡼��</h3>
+<h3>2003/02/11 - Version 3.0.4リリース</h3>
 <ul>
-<li>�񼰤ζ����ʲ��������ѡ�������</li>
-<li>�������ˤ϶���Ƕ��ڤä�ñ���AND������Ԥ��褦�ˤ���</li>
-<li>�������ͤ��Τ���褦�ˤ���</ll>
+<li>書式の強化（下線、引用、説明）</li>
+<li>検索時には空白で区切った単語でAND検索を行うようにした</li>
+<li>更新衝突を検知するようにした</ll>
 </ul>
-<h3>2003/02/03 - Version 3.0.3��꡼��</h3>
+<h3>2003/02/03 - Version 3.0.3リリース</h3>
 <ul>
-<li>�Ϥ���Ƥΰ��̸�����</ll>
+<li>はじめての一般公開。</ll>
 </ul>
 </body>
 </html>

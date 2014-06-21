@@ -6,91 +6,91 @@
 </head>
 <body>
 <h1>README</h1>
-<h2>����</h2>
-<p>FreeStyle Wiki��Perl�ˤ���ĥ��ǽ��Wiki��������Ǥ���FreeStyle Wiki�ϰʲ��Τ褦����ħ����äƤ��ޤ���</p>
+<h2>概要</h2>
+<p>FreeStyle WikiはPerlによる拡張可能なWikiクローンです。FreeStyle Wikiは以下のような特徴を持っています。</p>
 <ul>
-<li> Ű��Ū�˥⥸�塼�벽����Ƥ��ꡢ��ĥ�����⤤</li>
-<li> PurePerl�Ǽ�������Ƥ���DB����Ѥ��ʤ����ᡢ¿���Υ�󥿥륵���Ф����ֲ�ǽ</li>
-<li> ���ܸ�ǤΥɥ�����Ⱥ�����Ŭ����ʸˡ�ȵ�ǽ</li>
-<li> ���ڡ������̤Υإå����եå��������ɥС���ɽ����ǽ</li>
-<li> �ե������ź�դ���ǽ</li>
-<li> PDF����������ǽ</li>
-<li> tDiary�Υơ��ޤ���Ѳ�ǽ</li>
-<li> �����ȥƥ�ץ졼�ȵ�ǽ�ˤ��ǥ�������������ѹ����뤳�Ȥ���ǽ</li>
-<li> �ڡ�������뵡ǽ�˲ä�����ñ�ʥ桼��ǧ�ڵ�ǽ�������Ƥ���</li>
-<li> mod_perl�Ǥ�ʰ����ư���ǽ</ll>
+<li> 徹底的にモジュール化されており、拡張性が高い</li>
+<li> PurePerlで実装されておりDBを使用しないため、多くのレンタルサーバに設置可能</li>
+<li> 日本語でのドキュメント作成に適した文法と機能</li>
+<li> 全ページ共通のヘッダ、フッタ、サイドバーを表示可能</li>
+<li> ファイルの添付が可能</li>
+<li> PDFの生成が可能</li>
+<li> tDiaryのテーマを使用可能</li>
+<li> サイトテンプレート機能によりデザインを大幅に変更することが可能</li>
+<li> ページの凍結機能に加え、簡単なユーザ認証機能を備えている</li>
+<li> mod_perlでも（一応）動作可能</ll>
 </ul>
-<h2>���󥹥ȡ���</h2>
-<h3>�����Фؤ�����</h3>
-<p>���������֤�Ÿ���������ΤޤޤΥե������¤�ǥ����Ф˥��åץ����ɤ��ޤ���docs�ǥ��쥯�ȥ�����סˡ�wiki.cgi�ϥ֥饦�����鵯ư����륹����ץȤʤΤǥѡ��ߥå�����¹Բ�ǽ�ˤ��Ƥ����ޤ����ޤ������åץ����ɤ����ǥ��쥯�ȥ��ľ����backup��attach��pdf��log�ǥ��쥯�ȥ��������ޤ����ǥ��쥯�ȥ�Τ���data��backup��attach��pdf��log��config�ǥ��쥯�ȥ�ˤ�CGI����񤭹��ߤ��Ǥ���ѡ��ߥå����ˡ��ޤ���data��config�ǥ��쥯�ȥ���Υե������CGI����񤭹��߲�ǽ�ʤ褦�˥ѡ��ߥå������ѹ����Ƥ���������</p>
-<p>���Τι����ϰʲ��Τ褦�ˤʤ�ޤ��ʿ����ϥѡ��ߥå����ΰ���Ǥ��ˡ��ʤ��������о�ǥ����뤬���Ѳ�ǽ�ʾ��ϥ��󥹥ȡ���ǥ��쥯�ȥ��ľ���ˤ���setup.sh��¹Ԥ��뤳�Ȥ�ɬ�פʥǥ��쥯�ȥ�κ�����ѡ��ߥå�����������ưŪ�˹Ԥ����Ȥ��Ǥ��ޤ���</p>
-<pre>-+-/attach (ź�եե�����) 707
+<h2>インストール</h2>
+<h3>サーバへの設置</h3>
+<p>アーカイブを展開し、そのままのフォルダ構造でサーバにアップロードします（docsディレクトリは不要）。wiki.cgiはブラウザから起動されるスクリプトなのでパーミッションを実行可能にしておきます。また、アップロードしたディレクトリの直下にbackup、attach、pdf、logディレクトリを作成します。ディレクトリのうちdata、backup、attach、pdf、log、configディレクトリにはCGIから書き込みができるパーミッションに、また、data、configディレクトリ内のファイルもCGIから書き込み可能なようにパーミッションを変更してください。</p>
+<p>全体の構成は以下のようになります（数字はパーミッションの一例です）。なお、サーバ上でシェルが利用可能な場合はインストールディレクトリの直下にあるsetup.shを実行することで必要なディレクトリの作成やパーミッションの設定をを自動的に行うことができます。</p>
+<pre>-+-/attach (添付ファイル) 707
  |
- +-/pdf (PDF�ե�����) 707
+ +-/pdf (PDFファイル) 707
  |
- +-/tmpl (�ƥ�ץ졼��) 
+ +-/tmpl (テンプレート) 
  |
- +-/backup (�Хå����åץե�����) 707
+ +-/backup (バックアップファイル) 707
  |
- +-/data (�ǡ����ե�����) 707
+ +-/data (データファイル) 707
  |  |
- |  +-*.wiki (�ǥե���ȤΥǡ����ե�����) 606
+ |  +-*.wiki (デフォルトのデータファイル) 606
  |
- +-/log (�����ե�����) 707
+ +-/log (ログファイル) 707
  |
- +-/config (����ե�����) 707
+ +-/config (設定ファイル) 707
  |  |
- |  +-*.dat (�ǥե���Ȥ�����ե�����) 606
+ |  +-*.dat (デフォルトの設定ファイル) 606
  |
- +-/theme (�ơ���)
+ +-/theme (テーマ)
  |
- +-/plugin (�ץ饰����)
+ +-/plugin (プラグイン)
  |
- +-/lib (�饤�֥��)
+ +-/lib (ライブラリ)
  |
- +-wiki.cgi (CGI������ץ�����) 705
+ +-wiki.cgi (CGIスクリプト本体) 705
  |
- +-setup.dat (����ե�����)
+ +-setup.dat (設定ファイル)
 </pre>
-<p>���꤬��λ������֥饦������wiki.cgi��ƤӽФ��ƤߤƤ���������FrontPage��ɽ�������ФȤꤢ�������֤������Ǥ���</p>
-<h3>setup.dat������</h3>
-<p>�ǡ����ݴɾ��ʤ�FreeStyle Wiki�δ���Ū�������setup.dat���Խ����뤳�ȤǹԤ��ޤ���</p>
-<p>FreeStyle Wiki�Ǥϡ��ڡ������ѹ����줿���˴����Ԥ˥᡼������Τ��뵡ǽ������ޤ������ε�ǽ��ͭ���ˤ���ˤ�setup.dat���������Ƥ�sendmail�Υѥ���SMTP�����ФΥۥ���̾�����ꤷ�ޤ���</p>
-<p>�ޤ����ǥե���ȤǤϥХå����åפϰ�����ΤߤǤ�����backup�Ȥ����ѥ�᡼���˥Хå����åפ������������ꤹ�뤳�Ȥ��Ǥ��ޤ���0����ꤹ���̵���¤˥Хå����åפ�Ԥ��ޤ�������Хå����åפ�Ԥ���硢���̾����Ρֺ�ʬ�ץ�˥塼�����򤹤�Ȳ����Խ�����ɽ�����졢���줾��ˤĤ��Ƹ��ߤΥ������Ȥκ�ʬ��������뤳�Ȥ��Ǥ��ޤ���</p>
-<p>�ޤ���rss��amazon�ʤɡ������Υץ饰����ϥץ�������椫��HTTP�ǳ����Υ����Ф���³���ޤ����ץ���������Ѥ��Ƥ������proxy_host��proxy_port��proxy_user��proxy_pass�����ꤷ�Ƥ���ɬ�פ�����ޤ���proxy_user��proxy_pass��ǧ�ڤ�ɬ�פʾ��Τߡˡ�</p>
-<h3>�������ƥ�</h3>
-<p>�嵭�ǲ��⤷�����󥹥ȡ�����ˡ�Ǥ�setup.dat��Ƽ�ǡ�������¸���Ƥ���ǥ��쥯�ȥ��HTTP�ǻ��ȤǤ��Ƥ��ޤ��ޤ����������ƥ�������ˤʤ�褦�Ǥ����.htaccess����Ѥ��ƥ����������¤�ԤäƤ���������</p>
+<p>設定が完了したらブラウザからwiki.cgiを呼び出してみてください。FrontPageが表示されればとりあえず設置は成功です。</p>
+<h3>setup.datの設定</h3>
+<p>データ保管場所などFreeStyle Wikiの基本的な設定はsetup.datを編集することで行います。</p>
+<p>FreeStyle Wikiでは、ページが変更された場合に管理者にメールで通知する機能があります。この機能を有効にするにはsetup.datの設定内容にsendmailのパスかSMTPサーバのホスト名を設定します。</p>
+<p>また、デフォルトではバックアップは一世代のみですが、backupというパラメータにバックアップする世代数を指定することができます。0を指定すると無制限にバックアップを行います。世代バックアップを行う場合、画面上部の「差分」メニューを選択すると過去の編集履歴が表示され、それぞれについて現在のソースとの差分を閲覧することができます。</p>
+<p>また、rssやamazonなど、一部のプラグインはプログラム中からHTTPで外部のサーバに接続します。プロキシを使用している場合はproxy_host、proxy_port、proxy_user、proxy_passを設定しておく必要があります（proxy_userとproxy_passは認証が必要な場合のみ）。</p>
+<h3>セキュリティ</h3>
+<p>上記で解説したインストール方法ではsetup.datや各種データを保存しているディレクトリをHTTPで参照できてしまいます。セキュリティ上問題になるようであれば.htaccessを使用してアクセス制限を行ってください。</p>
 <pre>&lt;FilesMatch &quot;\.(pm|dat|wiki|log)$&quot;&gt;
   deny from all
 &lt;/FilesMatch&gt;
 </pre>
-<p>�ʤ����ǡ����ǥ��쥯�ȥ�˴ؤ��Ƥ�HTTP�Ǥϸ����ʤ��������֤��뤳�Ȥ��ǽ�Ǥ������ξ���setup.dat�Υǥ��쥯�ȥ������ʬ���ѹ����Ƥ���������</p>
-<h3>�С�����󥢥å׻���������ˡ</h3>
-<p>���֥ǥ��쥯�ȥ�ľ���ˤ���setup.dat��data�ǥ��쥯�ȥꡢbackup�ǥ��쥯�ȥꡢpdf�ǥ��쥯�ȥꡢlog�ǥ��쥯�ȥꡢconfig�ǥ��쥯�ȥ�ʳ��Υե����뤪��ӥǥ��쥯�ȥ�򤤤ä������������ۥե�������֤������Ƥ����������ޤ���data�ǥ��쥯�ȥ����help.wiki�ϥإ�פ�ɽ�������ڡ����Ǥ��ΤǤ����ǿ��ǤΥե�����Ǿ�񤭤��Ƥ���������</p>
-<p>setup.dat�ϤǤ�������С������֤����Τʤ��褦��θ���Ƥ��ޤ������ߤ�������С�����󥢥å׻������Ƥ��ѹ�����ɬ�פ������礬����ޤ����Ǥ���кǿ��Υե�����Ǿ�񤭤������ȡ��������Ƥ�������褦�ˤ��Ƥ���������</p>
-<p>�ޤ���3.4.0�ʹߤǤϥС�����󥢥åפˤ�äƴ������̤Ǥ�������ܤ��ɲä���Ƥ����礬����ޤ������ٴ����桼���ˤƥ������󤷡�����ι�����ԤäƤ���������</p>
-<h3>�ǡ����ΥХå����å���ˡ</h3>
-<p>data�ǥ��쥯�ȥꡢattach�ǥ��쥯�ȥꡢconfig�ǥ��쥯�ȥ�򥳥ԡ����Ƥ�����������ʬɽ����ɬ�פǤ����backup�ǥ��쥯�ȥꡢPDF��ɬ�פǤ����pdf�ǥ��쥯�ȥ�⥳�ԡ����Ƥ���������PDF�ե������PDF���󥫲��������������뤳�Ȥ��Ǥ���ΤǥХå����åפ��ʤ��Ƥ⹽���ޤ���ˡ�</p>
-<p>�����ϡ��ǥե���ȤǤ�log�ǥ��쥯�ȥ��access.log�ʥ������������ˡ�freeze.log������ѤΥ����ˡ�attach.log��ź�եե�����Υ����ˤ����Ϥ���Ƥ��ޤ��Τǡ�ɬ�פ˱����Ƥ����⥳�ԡ����Ƥ����Ƥ���������</p>
-<h3>mod_perl�ǻ��Ѥ�����</h3>
-<p>Ver3.4.1���mod_perl�ˤ��б����Ƥ��ޤ���wiki.cgi����Ƭ��ʬ���Խ�����chdir�ΰ�����FSWiki�Υ��󥹥ȡ���ǥ��쥯�ȥ����ꤷ�Ƥ����������㤨��FSWiki��C:/Apache/htdocs/fswiki�����֤������ϰʲ��Τ褦�ˤʤ�ޤ���</p>
+<p>なお、データディレクトリに関してはHTTPでは見えない場所に配置することも可能です。その場合はsetup.datのディレクトリ指定部分を変更してください。</p>
+<h3>バージョンアップ時の設置方法</h3>
+<p>設置ディレクトリ直下にあるsetup.dat、dataディレクトリ、backupディレクトリ、pdfディレクトリ、logディレクトリ、configディレクトリ以外のファイルおよびディレクトリをいったん削除し、配布ファイルで置き換えてください。また、dataディレクトリ内のhelp.wikiはヘルプで表示されるページですのでこれも最新版のファイルで上書きしてください。</p>
+<p>setup.datはできるだけバージョン間で相違のないよう配慮していますが、止むを得ずバージョンアップ時に内容を変更する必要がある場合があります。できれば最新のファイルで上書きしたあと、設定内容を修正するようにしてください。</p>
+<p>また、3.4.0以降ではバージョンアップによって管理画面での設定項目が追加されている場合があります。一度管理ユーザにてログインし、設定の更新を行ってください。</p>
+<h3>データのバックアップ方法</h3>
+<p>dataディレクトリ、attachディレクトリ、configディレクトリをコピーしてください。差分表示が必要であればbackupディレクトリ、PDFも必要であればpdfディレクトリもコピーしてください（PDFファイルはPDFアンカ押下時に生成することができるのでバックアップしなくても構いません）。</p>
+<p>ログは、デフォルトではlogディレクトリにaccess.log（アクセスログ）、freeze.log（凍結用のログ）、attach.log（添付ファイルのログ）が出力されていますので、必要に応じてこれらもコピーしておいてください。</p>
+<h3>mod_perlで使用する場合</h3>
+<p>Ver3.4.1よりmod_perlにも対応しています。wiki.cgiの先頭部分を編集し、chdirの引数にFSWikiのインストールディレクトリを指定してください。例えばFSWikiをC:/Apache/htdocs/fswikiに配置した場合は以下のようになります。</p>
 <pre>BEGIN {
   if(exists $ENV{MOD_PERL}){
-    # �����ȥǥ��쥯�ȥ���ѹ�
+    # カレントディレクトリの変更
     use Cwd;
     chdir(&quot;C:/Apache/htdocs/fswiki&quot;);
 </pre>
-<p>3.5.1�ʹߤ�Apache::Registory�Ķ����Ǥⴰ����ư��뤳�Ȥ��ǧ���Ƥ��ޤ�������������˥С������ǤϺ�ʬɽ����PDF�����ʤɰ����ε�ǽ��ư��˻پ㤬����ޤ�Apache::PerlRun�Ķ����Ǥ�������ꤢ��ޤ���</p>
-<h2>FSWiki�ε�ǽ</h2>
-<h3>ʸˡ</h3>
-<p>FreeStyleWiki��ʸˡ�ˤĤ��Ƥϥ��󥹥ȡ����˥�˥塼����إ�פ����򤹤뤳�Ȥ�ɽ�������Help�ڡ����򻲾Ȥ��Ƥ���������</p>
-<p>3.5.3����ϥץ饰����ˤ�ä�FSWiki�δ���ʸˡ�ʳ���ʸˡ�Ǥ��Խ�����ǽ�ˤʤäƤ��ޤ����������̤���format�ץ饰����򥢥��ƥ��١��Ȥ��������ɥС��ʤɤ�select_format�ץ饰���������ƤߤƤ����������Խ��Ԥ���ʬ�ι�����ʸˡ�����֤��Ȥ��Ǥ��ޤ���</p>
-<p>�����Ǥ�YukiWiki��Hiki��ʸˡ���б����Ƥ��ޤ����������ץ饰����ε�ˡ��ץ饰����̾�ˤĤ��Ƥ�FSWiki�Τ�Τ�Ȥ��ޤ��ΤǤ����դ���������</p>
-<h3>�ü�ʥڡ���̾</h3>
-<p>Header��Footer��Menu�Ȥ����ڡ������������Ȥ��줾��إå����եå��������ɥС���ɽ������ޤ����ޤ���EditHelper�Ȥ����ڡ������������ȥڡ����κ������Խ����̤�ɽ������ޤ��Τ��Խ����Υإ�פˤʤ�褦�����Ƥ򵭽Ҥ��Ƥ����Ȥ褤�Ǥ��礦��</p>
-<p>Template/�ǤϤ��ޤ�ڡ�����������Ƥ����ȡ��ڡ����κ������̤ǥ���ܥܥå�������ڡ����Υƥ�ץ졼�ȤȤ������򤹤뤳�Ȥ��Ǥ��ޤ����귿Ū�ʥڡ�����¿������������ʤɤϥƥ�ץ졼�Ȥ�������Ƥ����������Ǥ���</p>
-<h3>�ơ���</h3>
-<p>FreeStyleWiki��tDiary�Υơ��ޤ�ȤäƸ����ܤ��ѹ����뤳�Ȥ��Ǥ��ޤ���tDiary�Υơ��ޤ�tDiary��Web�����Ȥ��������ǽ�Ǥ����������ơ��ޤ򥤥󥹥ȡ��뤹���硢FreeStyleWiki�Υơ��ޥǥ��쥯�ȥ��۲��˰ʲ��Τ褦�ʴ��������֤��ޤ���</p>
+<p>3.5.1以降はApache::Registory環境下でも完全に動作することを確認していますが、それ以前にバージョンでは差分表示やPDF生成など一部の機能の動作に支障がありますApache::PerlRun環境下であれば問題ありません。</p>
+<h2>FSWikiの機能</h2>
+<h3>文法</h3>
+<p>FreeStyleWikiの文法についてはインストール後にメニューからヘルプを選択することで表示されるHelpページを参照してください。</p>
+<p>3.5.3からはプラグインによってFSWikiの基本文法以外の文法でも編集が可能になっています。管理画面からformatプラグインをアクティベートし、サイドバーなどにselect_formatプラグインを入れてみてください。編集者が自分の好きな文法を選ぶことができます。</p>
+<p>現状ではYukiWiki、Hikiの文法に対応しています。ただしプラグインの記法やプラグイン名についてはFSWikiのものを使いますのでご注意ください。</p>
+<h3>特殊なページ名</h3>
+<p>Header、Footer、Menuというページを作成するとそれぞれヘッダ、フッタ、サイドバーが表示されます。また、EditHelperというページを作成するとページの作成・編集画面に表示されますので編集時のヘルプになるような内容を記述しておくとよいでしょう。</p>
+<p>Template/ではじまるページを作成しておくと、ページの作成画面でコンボボックスからページのテンプレートとして選択することができます。定型的なページを多数作成する場合などはテンプレートを作成しておくと便利です。</p>
+<h3>テーマ</h3>
+<p>FreeStyleWikiはtDiaryのテーマを使って見た目を変更することができます。tDiaryのテーマはtDiaryのWebサイトから入手可能です。新しいテーマをインストールする場合、FreeStyleWikiのテーマディレクトリ配下に以下のような感じで配置します。</p>
 <pre>/theme
   |
   +-/default
@@ -101,10 +101,10 @@
       |
       +-hoge.css
 </pre>
-<p>���֤����ơ��ޤϴ������̤Ρ֥�����������פ����򤹤뤳�Ȥ��Ǥ��ޤ���</p>
-<h3>�����ȥƥ�ץ졼��</h3>
-<p>CSS�����Ǥϻפ��̤�Υǥ������¸��Ǥ��ʤ��Ȥ������Τ���˥����ȥƥ�ץ졼�ȵ�ǽ���󶡤���Ƥ��ޤ���</p>
-<p>�����ȥƥ�ץ졼�Ȥ�HTML::Template�Υƥ�ץ졼�Ȥ��ĥ������Τǡ�tmpl/site�۲������֤���Ƥ��ޤ����ǥե���ȤǤ� default�ǥ��쥯�ȥ�����äƤ����Τ����Ѥ���ޤ������������ȼ��Υƥ�ץ졼�Ȥ���������硢hoge.tmpl�� hoge_handyphone.tmpl�Ȥ���������Υƥ�ץ졼�Ȥ��Ѱդ���tmpl/site/hoge�ǥ��쥯�ȥ�������������������֤��ޤ���</p>
+<p>配置したテーマは管理画面の「スタイル設定」で選択することができます。</p>
+<h3>サイトテンプレート</h3>
+<p>CSSだけでは思い通りのデザインを実現できないという場合のためにサイトテンプレート機能が提供されています。</p>
+<p>サイトテンプレートはHTML::Templateのテンプレートを拡張したもので、tmpl/site配下に配置されています。デフォルトでは defaultディレクトリに入っているものが使用されますが、新たに独自のテンプレートを作成する場合、hoge.tmpl、 hoge_handyphone.tmplという２種類のテンプレートを用意し、tmpl/site/hogeディレクトリを作成し、その中に配置します。</p>
 <pre>/tmpl
   |
   +-/site
@@ -121,59 +121,59 @@
         |
         +-hoge_handyphone.tmpl
 </pre>
-<p>���֤��������ȥƥ�ץ졼�Ȥϴ������̤Ρ֥�����������פ����򤹤뤳�Ȥ��Ǥ��ޤ���</p>
-<h3>��������</h3>
-<p>���̾����Υ��������˥塼��������ԥ桼���ǥ������󤹤�ȴ������̤���Ѥ��뤳�Ȥ��Ǥ��ޤ����ǥե���Ȥδ����桼����ID:admin�� Pass:admin�ˤʤäƤ��ޤ�����������塢�ѥ���ɤ��ѹ����Ƥ����������������̤Ǥϥڡ��������������桼���δ�����Wiki��ư������ʤɤ�Ԥ����Ȥ��Ǥ��ޤ���</p>
-<p>�桼���ˤϴ����桼���Ȱ��̥桼��������ब¸�ߤ��ޤ��������桼���϶�����뤵�줿�ڡ������Խ���Ԥ����Ȥ��Ǥ��ޤ��������桼���Ȱ��̥桼���ϥڡ����κ������Խ���ػߤ���Ƥ�����Ǥ�������Խ���Ԥ����Ȥ��Ǥ��ޤ����ޤ����ץ饰�������ˤϥ������󤷤Ƥ�����Τߥ���ȥ�ե����बɽ�����줿�ꤹ���Τ⤢��ޤ������������������̤���Ѥ��뤳�Ȥ��Ǥ���Τϴ����桼�������Ǥ������̥桼���ϴ������̤���Ѥ��뤳�ȤϤǤ��ޤ���</p>
-<h3>�ץ饰����</h3>
-<p>FreeStyleWiki�Υǥ����ȥ�ӥ塼�����ˤ��͡��ʥץ饰���󤬴ޤޤ�Ƥ��ꡢ���󥹥ȡ���ľ��˻��Ѳ�ǽ�ʾ��֤ˤʤäƤ��ޤ����ܺ٤ˤĤ��Ƥ�pluginhelp��ɽ�������إ�פ򻲾Ȥ��Ƥ���������</p>
-<p>�������̤ǥѥå��������Ȥ˥ץ饰�������Ѥ��뤫�ɤ��������ꤹ�뤳�Ȥ��Ǥ��ޤ�����core�ѥå�����������ԲĤˤ����FSWiki���Τ�ư���Բ�ǽ�ʾ��֤ˤʤ�ޤ����ޤ���admin�ѥå�����������ԲĤˤ���ȥ�������ǽ��������ǽ�����ѤǤ��ʤ��ʤ�ޤ��������դ���������</p>
-<h3>WikiFarm�����ѤˤĤ���</h3>
-<p>FSWiki�Ǥϣ��Ĥ�Wiki��ʣ����Wiki�����Ȥ��Ѥ��뤳�Ȥ��Ǥ����WikiFarm�פȤ�����ǽ��������Ƥ��ޤ���FSWiki��WikiFarm�ϥǥե���Ȥ�Wiki�����Ȥ�롼�ȤȤ����ĥ꡼��¤��������ޤ���</p>
+<p>配置したサイトテンプレートは管理画面の「スタイル設定」で選択することができます。</p>
+<h3>管理画面</h3>
+<p>画面上部のログインメニューから管理者ユーザでログインすると管理画面を使用することができます。デフォルトの管理ユーザはID:admin、 Pass:adminになっています。ログイン後、パスワードを変更してください。管理画面ではページの凍結や削除、ユーザの管理、Wikiの動作設定などを行うことができます。</p>
+<p>ユーザには管理ユーザと一般ユーザの二種類が存在します。管理ユーザは共に凍結されたページの編集を行うことができます。管理ユーザと一般ユーザはページの作成や編集を禁止されている場合でも作成、編集を行うことができます。また、プラグインの中にはログインしている場合のみエントリフォームが表示されたりするものもあります。ただし、管理画面を使用することができるのは管理ユーザだけです。一般ユーザは管理画面を使用することはできません。</p>
+<h3>プラグイン</h3>
+<p>FreeStyleWikiのディストリビューションには様々なプラグインが含まれており、インストール直後に使用可能な状態になっています。詳細についてはpluginhelpで表示されるヘルプを参照してください。</p>
+<p>管理画面でパッケージごとにプラグインを使用するかどうかを設定することができますが、coreパッケージを使用不可にするとFSWiki自体が動作不可能な状態になります。また、adminパッケージを使用不可にするとログイン機能、管理機能が使用できなくなります。ご注意ください。</p>
+<h3>WikiFarmの利用について</h3>
+<p>FSWikiでは１つのWikiで複数のWikiサイトを運用することができる「WikiFarm」という機能を実装しています。FSWikiのWikiFarmはデフォルトのWikiサイトをルートとしたツリー構造を形成します。</p>
 <ul>
-<li>�롼�Ȥ�Wiki<ul>
-<li>��Wiki1</li>
-<li>��Wiki2<ul>
-<li>¹Wiki</ll>
+<li>ルートのWiki<ul>
+<li>子Wiki1</li>
+<li>子Wiki2<ul>
+<li>孫Wiki</ll>
 </ul>
 </ll>
 </ul>
 </ll>
 </ul>
-<p>���ε�ǽ�����Ѥ��뤿��ˤϴ������̤Ρ�WikiFarm������פ����Farm����Ѥ��뤫�ɤ����פǡֻ��Ѥ���פ����򤷤ޤ�(¾��Wiki�����Ȥκ�����ï�˵��Ĥ��뤫�Ȥ��ä������Ԥ����Ȥ�Ǥ��ޤ�)�����̾����Υ�˥塼�ˡ�Farm�פ�ɽ�������Τǡ������򥯥�å�����ȡ�</p>
+<p>この機能を利用するためには管理画面の「WikiFarmの設定」から「Farmを使用するかどうか」で「使用する」を選択します(他にWikiサイトの作成を誰に許可するかといった設定を行うこともできます)。画面上部のメニューに「Farm」と表示されるので、ここをクリックすると、</p>
 <ul>
-<li>���ߤ�Wiki�����Ȥ��۲���¸�ߤ���Wiki�����Ȥΰ���</li>
-<li>����Wiki�����Ȥκ����ե�����(�������¤���äƤ�����Τ�)</ll>
+<li>現在のWikiサイトの配下に存在するWikiサイトの一覧</li>
+<li>新規Wikiサイトの作成フォーム(作成権限を持っている場合のみ)</ll>
 </ul>
-<p>��ɽ������ޤ��������ե�����˿�����Wiki�����Ȥ�̾���ȡ������ԤΥ桼��ID���ѥ���ɤ����Ϥ���Wiki�����Ȥ�������뤳�Ȥ��Ǥ��ޤ����ǽ��FrontPage�κ������̤������Τ�Ǥ�դ����Ƥ򵭽Ҥ���FrontPage��������ޤ������Ȥ��̾��̤�����Ѥ��뤳�Ȥ��Ǥ��ޤ���</p>
-<h2>�ץ饰����ȯ</h2>
-<h3>�ץ饰����Υ��󥹥ȡ���</h3>
-<p>�ץ饰����ϥѥå��������Ȥ˥ǥ��쥯�ȥ���������plugin�ǥ��쥯�ȥ�����֤��ޤ����ץ饰�����ͭ���ˤ���ˤϴ������̤���֥ץ饰���������פǳ�������ץ饰����˥����å�������ޤ���</p>
-<p>�ץ饰�����ȯ�����硢�ѥå��������ȤˤޤȤ�ƥѥå�����̾::Install�Ȥ����⥸�塼�������������Υ⥸�塼����ǥ��󥹥ȡ��������Ԥ��褦�ˤ��ޤ���</p>
+<p>が表示されます。作成フォームに新たなWikiサイトの名前と、管理者のユーザID、パスワードを入力してWikiサイトを作成することができます。最初にFrontPageの作成画面が開くので任意の内容を記述してFrontPageを作成します。あとは通常通りに利用することができます。</p>
+<h2>プラグイン開発</h2>
+<h3>プラグインのインストール</h3>
+<p>プラグインはパッケージごとにディレクトリを作成し、pluginディレクトリに配置します。プラグインを有効にするには管理画面から「プラグインの設定」で該当するプラグインにチェックを入れます。</p>
+<p>プラグインを開発する場合、パッケージごとにまとめてパッケージ名::Installというモジュールを作成し、そのモジュール内でインストール処理を行うようにします。</p>
 <pre>package plugin::test::Install;
 sub install {
   my $wiki = shift;
   $wiki-&gt;add_inline_plugin(&quot;hello&quot;,&quot;plugin::test::TestPlugin&quot;);
 }
 </pre>
-<p>ͭ���ˤʤäƤ���ѥå������ϼ�ưŪ�ˤ�plugin::test::Install�⥸�塼���install�᥽�åɤ��ƤӽФ��졢�ץ饰����Υ��󥹥ȡ��뤬�Ԥ��ޤ���</p>
-<h3>���������ϥ�ɥ�</h3>
-<p>���������ϥ�ɥ�ץ饰�����action�Ȥ����ꥯ�����ȥѥ�᡼���ˤ�äƥ��饤����ȤؤΥ쥹�ݥ󥹤�Ԥ��ץ饰����Ǥ������������ϥ�ɥ�ץ饰�����do_action�᥽�åɤ�����������饹�Ǥʤ��ƤϤʤ�ޤ��󡣤ޤ�������ͤȤ��ơ�ɽ���������ơ�HTML�ˤ��֤��褦�ˤ��ޤ���</p>
+<p>有効になっているパッケージは自動的ににplugin::test::Installモジュールのinstallメソッドが呼び出され、プラグインのインストールが行われます。</p>
+<h3>アクションハンドラ</h3>
+<p>アクションハンドラプラグインはactionというリクエストパラメータによってクライアントへのレスポンスを行うプラグインです。アクションハンドラプラグインはdo_actionメソッドを実装したクラスでなくてはなりません。また、戻り値として、表示する内容（HTML）を返すようにします。</p>
 <pre>sub do_action {
   my $self = shift;
   my $wiki = shift;
-  return &quot;���������ϥ�ɥ�ץ饰���󤫤�ν���&quot;;
+  return &quot;アクションハンドラプラグインからの出力&quot;;
 }
 </pre>
-<p>���������ϥ�ɥ����Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#add_handler�᥽�åɤˤ�äƹԤ��ޤ���</p>
+<p>アクションハンドラの登録はインストールスクリプト中でWiki#add_handlerメソッドによって行います。</p>
 <pre>$wiki-&gt;add_handler(&quot;EDIT&quot;,&quot;plugin::core::EditPage&quot;);
 </pre>
-<p>�����ԤΤ߻��Ѳ�ǽ�ʥ��������ϥ�ɥ��Wiki#add_admin_handler�᥽�åɤˤ�ä���Ͽ���ޤ������Υ᥽�åɤˤ�ä���Ͽ���줿���������ϥ�ɥ�ϴ����ԤȤ��ƥ������󤷤Ƥ�����Τ߼¹Բ�ǽ�ˤʤꡢ����ʳ��ξ��ϥ��顼��å�������ɽ�����ޤ���</p>
+<p>管理者のみ使用可能なアクションハンドラはWiki#add_admin_handlerメソッドによって登録します。このメソッドによって登録されたアクションハンドラは管理者としてログインしている場合のみ実行可能になり、それ以外の場合はエラーメッセージを表示します。</p>
 <pre>$wiki-&gt;add_admin_handler(&quot;ADMINPAGE&quot;,&quot;plugin::admin::AdminPageHandler&quot;);
 </pre>
-<h3>�եå��ץ饰����</h3>
-<p>�եå��ץ饰����Ϥ������������Υ᥽�åɤ�¹Ԥ���ץ饰����Ǥ�����˥塼��ON/OFF�ڤ��ؤ��䡢�ڡ�����¸���ʤɤΥ����ߥ󥰤��ü�ʽ�����Ԥ����˻��Ѥ��ޤ����եå��ץ饰�����hook�᥽�åɤ�����������饹�Ǥʤ��ƤϤʤ�ޤ���</p>
-<p>hook�᥽�åɤ��裳�����ˤϵ�ư���줿�եå���̾�����Ϥ���ޤ������ĤΥ��饹��ʣ���ν��������������Ϥ����ѿ��򸫤ƽ�����ʬ���ޤ����ޤ����裴�����ʹߤˤ�Wiki#do_hook�᥽�åɸƤӽФ����˻��ꤵ�줿�ѥ�᡼���ʸƤӽФ�¦�˰�¸�ˤ��Ϥ���ޤ����ȼ��˥եå���������ƥѥ�᡼�����Ϥ��������˻��Ѥ��Ƥ���������</p>
+<h3>フックプラグイン</h3>
+<p>フックプラグインはある契機で特定のメソッドを実行するプラグインです。メニューのON/OFF切り替えや、ページ保存時などのタイミングで特殊な処理を行う場合に使用します。フックプラグインはhookメソッドを実装したクラスでなくてはなりません。</p>
+<p>hookメソッドの第３引数には起動されたフックの名前が渡されます。１つのクラスで複数の処理を実装する場合はこの変数を見て処理を分けます。また、第４引数以降にはWiki#do_hookメソッド呼び出し時に指定されたパラメータ（呼び出し側に依存）が渡されます。独自にフックを定義してパラメータを渡したい場合に使用してください。</p>
 <pre>sub hook {
   my $self   = shift;
   my $wiki   = shift;
@@ -182,33 +182,33 @@ sub install {
   ...
 }
 </pre>
-<p>�եå��ץ饰�������Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#add_hook�᥽�åɤˤ�äƹԤ��ޤ���</p>
+<p>フックプラグインの登録はインストールスクリプト中でWiki#add_hookメソッドによって行います。</p>
 <pre>$wiki-&gt;add_hook(&quot;show&quot;,&quot;plugin::core::BBS&quot;);
 </pre>
-<p>�եå��ˤϰʲ���Τ�¸�ߤ��ޤ���</p>
+<p>フックには以下ものが存在します。</p>
 <ul>
-<li>show - �ڡ�����ɽ�����˸ƤФ�ޤ���</li>
-<li>save_before - �ڡ�������¸�������˸ƤФ�ޤ���</li>
-<li>save_after - �ڡ�������¸��λ��˸ƤФ�ޤ��ʥڡ���������ϸƤФ�ޤ���ˡ�</li>
-<li>delete - �ڡ����κ����˸ƤФ�ޤ���</li>
-<li>create_wiki - WikiFarm�ǿ�����Wiki���������줿���˸ƤФ�ޤ���</li>
-<li>remove_wiki - WikiFarm��Wiki��������줿���˸ƤФ�ޤ���</li>
-<li>initialize - CGI�ε�ư���˸ƤФ�ޤ����ץ饰���󤴤Ȥ˽����������ɬ�פʾ��ʤɤϤ��Υեå�����Ͽ���Ƥ���������</ll>
+<li>show - ページの表示前に呼ばれます。</li>
+<li>save_before - ページの保存処理前に呼ばれます。</li>
+<li>save_after - ページの保存終了後に呼ばれます（ページ削除時は呼ばれません）。</li>
+<li>delete - ページの削除後に呼ばれます。</li>
+<li>create_wiki - WikiFarmで新しくWikiが作成された場合に呼ばれます。</li>
+<li>remove_wiki - WikiFarmでWikiが削除された場合に呼ばれます。</li>
+<li>initialize - CGIの起動時に呼ばれます。プラグインごとに初期化処理が必要な場合などはこのフックに登録してください。</ll>
 </ul>
-<p>�ޤ�������ʳ��˥ץ饰����ˤ�äƤ��ȼ��˥եå���������Ƥ����礬����ޤ���</p>
-<h3>����饤��</h3>
-<p>����饤��ץ饰�����Wikiʸ�����</p>
-<pre>{{�ץ饰����̾ [����1,����2...]}}
+<p>また、これ以外にプラグインによっては独自にフックを定義している場合があります。</p>
+<h3>インライン</h3>
+<p>インラインプラグインはWiki文書中に</p>
+<pre>{{プラグイン名 [引数1,引数2...]}}
 </pre>
-<p>�������ळ�Ȥǡ��ü�ʽ��Ϥ�Ԥ��ץ饰����Ǥ�������饤��ץ饰�����inline�᥽�åɤ�����������饹�Ǥʤ��ƤϤʤ�ޤ�������ͤȤ���Wiki������ʸ����ޤ���HTML���֤��褦�ˤ��ޤ���Wiki�����Υƥ����Ȥ��֤�����PDF�ˤ���Ϥ�ȿ�Ǥ���ޤ���</p>
-<p>�ʲ���HTML���֤��ץ饰�������򼨤��ޤ���</p>
+<p>で埋め込むことで、特殊な出力を行うプラグインです。インラインプラグインはinlineメソッドを実装したクラスでなくてはなりません。戻り値としてWiki形式の文字列またはHTMLを返すようにします。Wiki形式のテキストを返す場合はPDFにも出力が反映されます。</p>
+<p>以下にHTMLを返すプラグインの例を示します。</p>
 <pre>sub inline {
   my $self = shift;
   my $wiki = shift;
-  return &quot;&lt;B&gt;��ñ�ʥץ饰����Ǥ���&lt;/B&gt;&quot;;
+  return &quot;&lt;B&gt;簡単なプラグインです。&lt;/B&gt;&quot;;
 }
 </pre>
-<p>�ʲ���Wiki�����Υƥ����Ȥ��֤��ץ饰�������Ǥ���</p>
+<p>以下はWiki形式のテキストを返すプラグインの例です。</p>
 <pre>sub inline {
   my $self   = shift;
   my $wiki   = shift;
@@ -216,38 +216,38 @@ sub install {
   return &quot;[[FrontPage]]&quot;;
 }
 </pre>
-<p>����饤��ץ饰�������Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#add_inline_plugin�᥽�åɤˤ�äƹԤ��ޤ����������ˤϼºݤ�Wiki�ڡ����򵭽Ҥ���ݤ˥ץ饰�������ꤹ�뤿���ʸ������������ˤϥץ饰����Υ��饹̾���軰�����ˤϤ��Υץ饰������֤�ʸ����˱�����HTML�ޤ���WIKI����ꤷ�ޤ���</p>
+<p>インラインプラグインの登録はインストールスクリプト中でWiki#add_inline_pluginメソッドによって行います。第一引数には実際にWikiページを記述する際にプラグインを指定するための文字列、第二引数にはプラグインのクラス名、第三引数にはそのプラグインの返す文字列に応じてHTMLまたはWIKIを指定します。</p>
 <pre>$wiki-&gt;add_inline_plugin(&quot;edit&quot;,&quot;plugin::core::Edit&quot;,&quot;HTML&quot;);
 </pre>
-<h3>�ѥ饰���</h3>
-<p>�ѥ饰��եץ饰�����Wikiʸ�����</p>
-<pre>{{�ץ饰����̾ [����1,����2...]}}
+<h3>パラグラフ</h3>
+<p>パラグラフプラグインはWiki文書中に</p>
+<pre>{{プラグイン名 [引数1,引数2...]}}
 </pre>
-<p>�������ळ�Ȥǡ��ü�ʽ��Ϥ�Ԥ��ץ饰����Ǥ�������饤��ץ饰����Ȱ�äƣ��Ԥ˥ץ饰���󤷤����ҤǤ�����P�������䴰��Ԥ��ޤ��󡣥ơ��֥��ե����ࡢ�ꥹ�Ȥʤɤ���Ϥ���ץ饰�����ѥ饰��եץ饰����Ȥ��Ƽ������ޤ����ѥ饰��եץ饰�����paragraph�᥽�åɤ�����������饹�Ǥʤ��ƤϤʤ�ޤ���</p>
-<p>paragraph�᥽�åɤϼ�����ˡ���Τϥ���饤��ץ饰�����Ʊ�ͤǤ����ʲ���HTML���֤�������򼨤��ޤ���P�������䴰����ʤ��Τ�ɬ�פ˱����ƥץ饰����¦�ǤĤ��Ƥ��ɬ�פ�����ޤ���</p>
+<p>で埋め込むことで、特殊な出力を行うプラグインです。インラインプラグインと違って１行にプラグインしか記述できず、Pタグの補完も行われません。テーブルやフォーム、リストなどを出力するプラグインをパラグラフプラグインとして実装します。パラグラフプラグインはparagraphメソッドを実装したクラスでなくてはなりません。</p>
+<p>paragraphメソッドは実装方法自体はインラインプラグインと同様です。以下にHTMLを返す場合の例を示します。Pタグは補完されないので必要に応じてプラグイン側でつけてやる必要があります。</p>
 <pre>sub paragraph {
   my $self = shift;
   my $wiki = shift;
-  return &quot;&lt;p&gt;�ѥ饰��եץ饰����Ǥ���&lt;/p&gt;&quot;;
+  return &quot;&lt;p&gt;パラグラフプラグインです。&lt;/p&gt;&quot;;
 }
 </pre>
-<p>�ʲ���Wiki������ʸ������֤�������Ǥ���</p>
+<p>以下はWiki形式の文字列を返す場合の例です。</p>
 <pre>sub paragraph {
   my $self   = shift;
   my $wiki   = shift;
   return &quot;*[[FrontPage]]\n*[[Help]]\n&quot;;
 }
 </pre>
-<p>�ѥ饰��եץ饰�������Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#add_paragraph_plugin�᥽�åɤˤ�äƹԤ��ޤ����������ˤϼºݤ�Wiki�ڡ����򵭽Ҥ���ݤ˥ץ饰�������ꤹ�뤿���ʸ������������ˤϥץ饰����Υ��饹̾���軰�����ˤϤ��Υץ饰������֤�ʸ����˱�����HTML�ޤ���WIKI����ꤷ�ޤ���</p>
+<p>パラグラフプラグインの登録はインストールスクリプト中でWiki#add_paragraph_pluginメソッドによって行います。第一引数には実際にWikiページを記述する際にプラグインを指定するための文字列、第二引数にはプラグインのクラス名、第三引数にはそのプラグインの返す文字列に応じてHTMLまたはWIKIを指定します。</p>
 <pre>$wiki-&gt;add_paragraph_plugin(&quot;bbs&quot;,&quot;plugin::bbs::BBS&quot;,&quot;HTML&quot;);
 </pre>
-<h3>�֥��å�</h3>
-<p>�֥��å��ץ饰�����ʣ���Ԥΰ������뤳�Ȥ��Ǥ���ѥ饰��եץ饰����Ǥ����ʲ��Τ褦�ˤ��ƻ��Ѥ��ޤ�������3����ʬ��ʣ���Ԥ��ϤäƵ��Ҥ��뤳�Ȥ��Ǥ��ޤ���</p>
-<pre>{{�ץ饰����̾ ����1,����2,
-����3
+<h3>ブロック</h3>
+<p>ブロックプラグインは複数行の引数を取ることができるパラグラフプラグインです。以下のようにして使用します。引数3の部分は複数行に渡って記述することができます。</p>
+<pre>{{プラグイン名 引数1,引数2,
+引数3
 }}
 </pre>
-<p>�֥��å��ץ饰����Ǥ�paragraph()�᥽�åɤ������block()�᥽�åɤ�������ޤ���ʣ���Ԥΰ������������Ȥ��ơ�����ʳ��ΰ�������������ʹߤ��Ϥ���Ƥ��ޤ���</p>
+<p>ブロックプラグインではparagraph()メソッドの代わりにblock()メソッドを実装します。複数行の引数が第一引数として、それ以外の引数は第二引数以降に渡されてきます。</p>
 <pre>sub block {
   my $self = shift;
   my $wiki = shift;
@@ -255,92 +255,92 @@ sub install {
   return &quot;&lt;p&gt;&quot;.Util::escapeHTML($text).&quot;&lt;/p&gt;&quot;;
 }
 </pre>
-<p>�ѥ饰��եץ饰�������Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#add_block_plugin�᥽�åɤˤ�äƹԤ��ޤ����������ˤϼºݤ�Wiki�ڡ����򵭽Ҥ���ݤ˥ץ饰�������ꤹ�뤿���ʸ������������ˤϥץ饰����Υ��饹̾���軰�����ˤϤ��Υץ饰������֤�ʸ����˱�����HTML�ޤ���WIKI����ꤷ�ޤ���</p>
+<p>パラグラフプラグインの登録はインストールスクリプト中でWiki#add_block_pluginメソッドによって行います。第一引数には実際にWikiページを記述する際にプラグインを指定するための文字列、第二引数にはプラグインのクラス名、第三引数にはそのプラグインの返す文字列に応じてHTMLまたはWIKIを指定します。</p>
 <pre>$wiki-&gt;add_block_plugin(&quot;pre&quot;,&quot;plugin::core::PRE&quot;,&quot;HTML&quot;);
 </pre>
-<h3>���ǥ��åȥե�����</h3>
-<p>���ǥ��åȥե�����ץ饰����ϥڡ������Խ����̤�ɽ�������ץ饰����Ǥ������ǥ��åȥե�����ץ饰�����editform�᥽�åɤ�����������饹�Ǥʤ��ƤϤʤ�ޤ���editform�᥽�åɤ��Խ����̤�ɽ������HTML���ֵѤ���褦�������ޤ���</p>
-<p>���ǥ��åȥե�����ץ饰�������Ͽ�ϥ��󥹥ȡ��륹����ץ����Wiki#$wiki-&gt;add_editform_plugin�᥽�åɤˤ�äƹԤ��ޤ���</p>
+<h3>エディットフォーム</h3>
+<p>エディットフォームプラグインはページの編集画面に表示されるプラグインです。エディットフォームプラグインはeditformメソッドを実装したクラスでなくてはなりません。editformメソッドは編集画面に表示するHTMLを返却するよう実装します。</p>
+<p>エディットフォームプラグインの登録はインストールスクリプト中でWiki#$wiki-&gt;add_editform_pluginメソッドによって行います。</p>
 <pre>$wiki-&gt;add_editform_plugin(&quot;plugin::core::EditHelper&quot;,0);
 </pre>
-<p>�裳�����ˤϤ��Υץ饰�����ɽ��ͥ���٤���ꤷ�ޤ��������ͤ��礭���ۤɾ�̤�ɽ������ޤ���</p>
-<h3>�ե����ޥå�</h3>
-<p>�ե����ޥåȥץ饰�����FSWiki�ʳ���Wiki�ν񼰤Ǥ��Խ���Ԥʤ�����Υץ饰����Ǥ����ե����ޥåȥץ饰����ϰʲ��Υ᥽�åɤ�������Ƥ��ʤ��ƤϤ����ޤ���</p>
+<p>第３引数にはそのプラグインの表示優先度を指定します。この値が大きいほど上位に表示されます。</p>
+<h3>フォーマット</h3>
+<p>フォーマットプラグインはFSWiki以外のWikiの書式での編集を行なうためのプラグインです。フォーマットプラグインは以下のメソッドを実装していなくてはいけません。</p>
 <ul>
-<li>convert_from_fswiki�᥽�å� - FSWiki����ƥե����ޥåȤؤ��Ѵ�</li>
-<li>convert_from_fswiki_line�᥽�å� - FSWiki����ƥե����ޥåȤؤ��Ѵ��ʥ���饤�����ǤΤߡ�</li>
-<li>convert_to_fswiki�᥽�å� - �ƥե����ޥåȤ���FSWiki�����ؤ��Ѵ�</li>
-<li>convert_to_fswiki_line�᥽�å� - �ƥե����ޥåȤ���FSWiki�����ؤ��Ѵ��ʥ���饤�����ǤΤߡ�</ll>
+<li>convert_from_fswikiメソッド - FSWikiから各フォーマットへの変換</li>
+<li>convert_from_fswiki_lineメソッド - FSWikiから各フォーマットへの変換（インライン要素のみ）</li>
+<li>convert_to_fswikiメソッド - 各フォーマットからFSWiki形式への変換</li>
+<li>convert_to_fswiki_lineメソッド - 各フォーマットからFSWiki形式への変換（インライン要素のみ）</ll>
 </ul>
-<p>�ե����ޥåȥץ饰����ϥ��󥹥ȡ��륹����ץ���ǰʲ��Τ褦�ˤ�����Ͽ��Ԥʤ��ޤ���</p>
+<p>フォーマットプラグインはインストールスクリプト中で以下のようにして登録を行ないます。</p>
 <pre>$wiki-&gt;add_format_plugin(&quot;Hiki&quot;,&quot;plugin::format::HikiFormat&quot;);
 </pre>
-<h3>��˥塼�����ƥ�</h3>
-<p>Wiki���֥������Ȥ�add_menu�᥽�åɤǲ��̾����Υ�˥塼�����ƥ���ɲä��뤳�Ȥ��Ǥ��ޤ���</p>
-<pre>$wiki-&gt;add_menu(̾��,URL,ͥ����);
+<h3>メニューアイテム</h3>
+<p>Wikiオブジェクトのadd_menuメソッドで画面上部のメニューアイテムを追加することができます。</p>
+<pre>$wiki-&gt;add_menu(名称,URL,優先度);
 </pre>
-<p>�裳�����ˤϤ��Υץ饰�����ɽ��ͥ���٤���ꤷ�ޤ��������ͤ��礭���ۤɺ�¦��ɽ������ޤ����ޤ���URL���ά���뤫����ʸ��������ꤹ���̵���ʥ�˥塼����Ͽ����ޤ�������Ʊ��̾���Υ����ƥब��Ͽ����Ƥ������Ͼ�񤭤���ޤ���</p>
-<h3>�����ԥ�˥塼</h3>
-<p>Wiki���֥������Ȥ�add_admin_menu�᥽�åɤǴ����ԥ���������Υ�˥塼���ɲä��뤳�Ȥ��Ǥ��ޤ������Υ�˥塼��ɽ�������Τϴ����Ԥ��������󤷤����ΤߤǤ������̥桼�����������󤷤Ƥ�ɽ������ޤ��󡣤ޤ��������ԥ�˥塼����ƤӽФ���륢�������ϥ�ɥ��add_admin_handler����Ͽ���Ƥ����ȥ�����������å������¥����å�����ư������ޤ���</p>
-<pre>$wiki-&gt;add_admin_menu(̾��,URL);
+<p>第３引数にはそのプラグインの表示優先度を指定します。この値が大きいほど左側に表示されます。また、URLを省略するか、空文字列を設定すると無効なメニューが登録されます。既に同じ名前のアイテムが登録されていた場合は上書きされます。</p>
+<h3>管理者メニュー</h3>
+<p>Wikiオブジェクトのadd_admin_menuメソッドで管理者ログイン時のメニューを追加することができます。このメニューが表示されるのは管理者がログインした場合のみです。一般ユーザがログインしても表示されません。また、管理者メニューから呼び出されるアクションハンドラはadd_admin_handlerで登録しておくとログインチェック、権限チェックが自動化されます。</p>
+<pre>$wiki-&gt;add_admin_menu(名称,URL);
 </pre>
 <h2>THANKS</h2>
-<p>FreeStyle Wiki�Ǥϰʲ��Υ饤�֥�����Ѥ��Ƥ��ޤ��������ˤĤ��Ƥ�����ϸ���Ԥ������ޤ���ͭ�Ѥʥ饤�֥���̵�����󶡤��Ƥ������äƤ����Ԥγ��ͤ˴��դ��ޤ���</p>
+<p>FreeStyle Wikiでは以下のライブラリを使用しています。これらについての著作権は原作者が持ちます。有用なライブラリを無償で提供してくださっている作者の皆様に感謝します。</p>
 <dl>
 <dt><a href="http://hp1.jonex.ne.jp/~nakajima.yasushi/">PDFJ</a></dt>
-<dd>PDF��������PDFJ��Ȥ碌�Ƥ��������Ƥ��ޤ���Pure Perl�Ǽ�������Ƥ��ꡢ��ڤ�PDF���������뤳�Ȥ��Ǥ��������餷���饤�֥��Ǥ���</dd>
+<dd>PDFの生成にPDFJを使わせていただいています。Pure Perlで実装されており、手軽にPDFを生成することができる素晴らしいライブラリです。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/JANPAZ/TeX-Hyphen-0.140/">TeX::Hyphen</a></dt>
-<dd>PDFJ�ǲ�ʸ�Υϥ��ե͡�������Ԥ�����˻��Ѥ��Ƥ��뤽���Ǥ���</dd>
+<dd>PDFJで欧文のハイフネーションを行うために使用しているそうです。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/NEDKONZ/Algorithm-Diff-1.15/">Algorithm::Diff</a></dt>
-<dd>��ʬ��ɽ���˻��Ѥ��Ƥޤ���</dd>
+<dd>差分の表示に使用してます。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/SAMTREGAR/HTML-Template-2.6/">HTML::Template</a></dt>
-<dd>����ץ��HTML�ƥ�ץ졼�ȥ��󥸥�Ǥ���</dd>
+<dd>シンプルなHTMLテンプレートエンジンです。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/DANKOGAI/Jcode-0.83/">Jcode</a></dt>
-<dd>3.4.1���jcode.pl������˻��Ѥ��Ƥ��ޤ���</dd>
+<dd>3.4.1よりjcode.plの代わりに使用しています。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/GAAS/libwww-perl-5.69/">libwww</a></dt>
-<dd>RSS�μ����ʤ�HTTP�̿��˻��Ѥ��Ƥ��ޤ���Active Perl�Ǥ����פǤ���</dd>
+<dd>RSSの取得などHTTP通信に使用しています。Active Perlでは不要です。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/GBARR/libnet-1.16/">libnet</a></dt>
-<dd>Net::SMTP�ǤΥ᡼�������˻��Ѥ��Ƥ��ޤ���</dd>
+<dd>Net::SMTPでのメール送信に使用しています。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/GAAS/MIME-Base64-2.20/">MIME::Base64</a></dt>
-<dd>�᡼����������MIME���󥳡��ɤ˻��Ѥ��Ƥ��ޤ���Perl 5.8.0�ʹߤ����Active Perl�Ǥ����פǤ���</dd>
+<dd>メール送信時のMIMEエンコードに使用しています。Perl 5.8.0以降およびActive Perlでは不要です。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/GAAS/URI-1.23/">URI</a></dt>
-<dd>libwww������Ū�˻��Ѥ��Ƥ���褦�Ǥ���Active Perl�Ǥ����פǤ���</dd>
+<dd>libwwwが内部的に使用しているようです。Active Perlでは不要です。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/SHERZODR/CGI-Session-3.94/">CGI::Session</a></dt>
-<dd>��������ǽ�Υ��å����ݻ��˻��Ѥ��Ƥ��ޤ���</dd>
+<dd>ログイン機能のセッション維持に使用しています。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/GAAS/Digest-MD5-2.25/">Digest::MD5</a></dt>
-<dd>CGI::Session������Ū�˥��å����ID�������˻��Ѥ��Ƥ��ޤ���Perl 5.8.0�����Active Perl�Ǥ����פǤ���</dd>
+<dd>CGI::Sessionが内部的にセッションIDの生成に使用しています。Perl 5.8.0およびActive Perlでは不要です。</dd>
 </dl>
 <dl>
 <dt><a href="http://search.cpan.org/author/DELTA/Digest-Perl-MD5-1.5/">Digest::Perl::MD5</a></dt>
-<dd>Digest::MD5��Pure Perl�����Ǥ���Perl 5.8.0�����Active Perl�Ǥ����פǤ���</dd>
+<dd>Digest::MD5のPure Perl実装です。Perl 5.8.0およびActive Perlでは不要です。</dd>
 </dl>
 <dl>
 <dt><a href="http://www.tdiary.org/">tDiary</a></dt>
-<dd>�ͤù��ߡ��������롢�ץ饰����ʤɻ¿��ʵ�ǽ��¿����ܤ���Ruby�ˤ��Web���������ƥࡣtDiary�ѤΥ����������Ѥ����Ƥ��������Ƥޤ���</dd>
+<dd>突っ込み、スタイル、プラグインなど斬新な機能を多数搭載したRubyによるWeb日記システム。tDiary用のスタイルを使用させていただいてます。</dd>
 </dl>
-<h2>�饤����</h2>
-<p>FreeStyle Wiki��GNU GPL�饤���󥹤θ������ۡ����Ѥ���ǽ�Ǥ���FreeStyle Wiki���Ȥ߹���ץ饰�����������������GPL����ѥ��Υ饤���󥹤�侩���ޤ���������¾�Υ饤���󥹤��������Ƥ⹽���ޤ��󡣤ޤ����ѥå��˴ؤ��Ƥ����Τ����ɸ��ź�դΥץ饰����ˤ��Ƥ��Τ�GPL���ץ饰����ˤ��Ƥ��Τϥץ饰����Υ饤���󥹤ˤ���������ΤȤ��ޤ���</p>
-<h2>������</h2>
+<h2>ライセンス</h2>
+<p>FreeStyle WikiはGNU GPLライセンスの元で配布、改変が可能です。FreeStyle Wikiに組み込むプラグインを公開される方はGPLコンパチのライセンスを推奨しますが、その他のライセンスを宣言されても構いません。また、パッチに関しては本体および標準添付のプラグインにあてるものはGPL、プラグインにあてるものはプラグインのライセンスにしたがうものとします。</p>
+<h2>作成者</h2>
 <p>Copyright 2002 - 2010 FreeStyle Wiki Development Team</p>
 </body>
 </html>
