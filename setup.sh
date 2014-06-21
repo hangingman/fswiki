@@ -26,8 +26,8 @@ fi
 
 echo "  FSWIKI_HOME=$FSWIKI_HOME"
 PERM_DIR=777
-PERM_FILE=606
-PERM_EXE=705
+PERM_FILE=666
+PERM_EXE=755
 
 echo "  check $FSWIKI_HOME/wiki.cgi..."
 if test -e "$FSWIKI_HOME/wiki.cgi";
