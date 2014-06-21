@@ -41,7 +41,7 @@ fi
 echo "do..."
 
 chmod $PERM_EXE $FSWIKI_HOME/wiki.cgi || exit 1
-for dir in backup attach pdf log data config;
+for dir in backup attach pdf log data config theme tmpl tools;
 do
   echo "  check $FSWIKI_HOME/$dir..."
   test -d $FSWIKI_HOME/$dir || mkdir $FSWIKI_HOME/$dir || exit 1
