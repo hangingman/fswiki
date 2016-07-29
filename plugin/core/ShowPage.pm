@@ -64,12 +64,40 @@ sub write_log {
 	if(!defined($ref) || $ref eq ""){ $ref = "-"; }
 	if(!defined($ua)  || $ua  eq ""){ $ua  = "-"; }
 	
-	my $logfile = $wiki->config('log_dir')."/".$wiki->config('access_log_file');
-	Util::file_lock($logfile);
-	open(LOG,">>$logfile") or die $!;
-	print LOG Util::url_encode($page)." ".&log_date()." $ip $ref $ua\n";
-	close(LOG);
-	Util::file_unlock($logfile);
+	my $tmp = time.".".$$;	# 現在時刻＆プロセス番号
+	my $logname = $wiki->config('log_dir')."/".$wiki->config('access_log_file');
+	my $readtmpname = $wiki->config('log_dir')."/".$tmp.".0.tmp";	# テンポラリ名は重複しない一意の名前に
+	my $writetmpname = $wiki->config('log_dir')."/".$tmp.".1.tmp";	# 上に同じ
+
+	my $write_record = Util::url_encode($page)." ".&log_date()." $ip $ref $ua\n";
+	my $logsize = (stat($logname))[7];
+	my $limit_size = $wiki->config('access_log_limit_kbyte') * 1024;
+	my $seek = $limit_size - length($write_record);
+	my $tmp = 1;
+	until (rename $logname,$readtmpname) {				# 排他制御
+		die $! if (++$tmp > 6);
+		sleep ($tmp / 2);					# 混雑時は待ち時間を長くする
+	}
+#	rename $logname, $readtmpname;					# for DEBUG
+	if ($limit_size && $logsize > $seek) {				# (現在ログサイズ+追記量 > 限度サイズ)か判定
+		open(READTMP,"<".$readtmpname) or die $!;
+		seek(READTMP,- $seek,2);				# サイズ合わせのため(限度サイズ-追記量)だけシーク
+		open(WRITETMP,">".$writetmpname) or die $!;
+		my $readlinedata = <READTMP> ;				# 行の途中かも知れないので最初の一行は破棄
+		while ($readlinedata = <READTMP>){			# 旧ファイルから新ファイルにせっせとピーコ
+			print WRITETMP $readlinedata;
+		}
+		close(READTMP);
+		print WRITETMP $write_record;				# 最後に新しい行を追加
+		close(WRITETMP);
+		rename $writetmpname, $logname;				# 新ファイルをログファイルに改名
+		unlink $readtmpname;					# 旧ファイルは捨てます
+	} else {
+		open(LOG,">>".$readtmpname) or die $!;
+		print LOG $write_record;
+		close(LOG);
+		rename $readtmpname, $logname;
+	}
 }
 
 #===============================================================================

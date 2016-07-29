@@ -111,3 +111,6 @@ proxy_user =
 
 # プロキシ認証のパスワード
 proxy_pass = 
+
+# ログのサイズ上限値
+access_log_limit_kbyte = 1024
