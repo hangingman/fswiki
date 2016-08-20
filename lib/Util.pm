@@ -520,7 +520,7 @@ sub file_lock {
 	}
 	
 	while(!mkdir($lock,0777)){
-		die "Lock is busy." if(--$retry <= 0);
+		die "Lock is busy. FreeStyleWiki failed creating $lock" if(--$retry <= 0);
 		sleep(1);
 	}
 }
