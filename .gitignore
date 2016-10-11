@@ -1,3 +1,6 @@
 *.wiki
 log/
 backup/
+lib/perl5/
+man/
+bin/
