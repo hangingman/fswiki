@@ -17,9 +17,8 @@ BEGIN {
 # モジュールのインクルード
 #==============================================================================
 use Cwd;
-use lib ('./dev','./lib');
+use lib './lib';
 use strict;
-use CGI2;
 use Wiki;
 use Util;
 use Jcode;
@@ -30,14 +29,15 @@ if(exists $ENV{MOD_PERL}){
 	eval("use Digest::Perl::MD5;");
 	eval("use plugin::core::Diff;");
 	eval("use plugin::pdf::PDFMaker;");
-	&Jcode::load_module("Jcode::Unicode");
+	&Jcode::load_module("Jcode::Unicode") unless $Jcode::USE_ENCODE;
 }
 
 #==============================================================================
 # CGIとWikiのインスタンス化
 #==============================================================================
-my $cgi  = CGI2->new();
-my $wiki = Wiki->new($cgi,'setup.dat');
+my $wiki = Wiki->new('setup.dat');
+my $cgi = $wiki->get_CGI();
+
 # ストレージをデフォルトに変更する
 $wiki->{"storage"}->finalize();
 $wiki->{"storage"} = Wiki::DefaultStorage->new($wiki);
@@ -160,21 +160,20 @@ eval {
 	# ページのタイトルを決定
 	my $title = "Wiki Database Storage 作成ツール";
 	my $output = "";
-	my $tmpl = $wikidb->get_template($wiki);
-	my $template = HTML::Template->new(
-	                    scalarref => \$tmpl,
-	                    die_on_bad_params => 0,
-	                    loop_context_vars => 1,
-	                    global_vars => 1);
+	my $template = HTML::Template->new(filename => $wiki->config('tmpl_dir')."/wikidb.tmpl",
+					   die_on_bad_params => 0,
+					   case_sensitive => 1);
 
-	$template->param(TITLE => $title, CONTENTS => $content);
-	$output = $template->output();
+	$template->param(TITLE     => $title,
+			 CONTENTS  => $content,
+			 THEME_CSS => "$wiki->{config}->{theme_uri}/default/default.css");
+	$output = $template->output;
 
 	#------------------------------------------------------------------------------
 	# 出力処理
 	#------------------------------------------------------------------------------
 	# ヘッダの出力
-	print "Content-Type: text/html;charset=EUC-JP\n";
+	print "Content-Type: text/html;charset=UTF-8\n";
 	print "Pragma: no-cache\n";
 	print "Cache-Control: no-cache\n\n";
 
@@ -208,28 +207,6 @@ sub new {
 	my $self = {};
 
 	return bless $self,$class;
-}
-
-sub get_template {
-	my $self = shift;
-	my $wiki = shift;
-	return <<__EOD__;
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
-<meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="stylesheet" type="text/css" href="$wiki->{config}->{theme_uri}/default/default.css">
-<title><!--TMPL_VAR 'TITLE'--></title>
-</head>
-<body>
-<div style="">
-<!--TMPL_VAR 'MESSAGE'-->
-</div>
-<!--TMPL_VAR 'CONTENTS'-->
-</body>
-</html>
-__EOD__
 }
 
 sub get_logout_form {
