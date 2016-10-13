@@ -4,7 +4,7 @@
 #
 ######################################################################
 # 設置したサーバ
-server_host = 
+server_host =
 
 # データファイルを保存するディレクトリ
 data_dir = ./data
@@ -37,10 +37,10 @@ config_dir = ./config
 plugin_dir = .
 
 # sendmailのパス
-send_mail = 
+send_mail =
 
 # SMTPサーバ（sendmailが設定されている場合はそちらを優先します）
-smtp_server = 
+smtp_server =
 
 # タイムゾーン
 #time_zone = GMT-0
@@ -81,6 +81,12 @@ script_name = wiki.cgi
 
 # ストレージのクラス名
 storage = Wiki::DefaultStorage
+#storage = plugin::dbi::StandardDatabaseStorage
+
+# データベース接続情報
+db_driver = SQLite
+db_dir  = ./db
+db_name = wiki.db
 
 # バックアップ世代数（0だと無制限）
 backup = 1
@@ -101,16 +107,16 @@ diff_max = 1048576
 # プロキシサーバを使用する場合
 #=====================================================================
 # プロキシサーバのホスト名
-proxy_host = 
+proxy_host =
 
 # プロキシのポート番号
-proxy_port = 
+proxy_port =
 
 # プロキシ認証のユーザ名
-proxy_user = 
+proxy_user =
 
 # プロキシ認証のパスワード
-proxy_pass = 
+proxy_pass =
 
 # ログのサイズ上限値
 access_log_limit_kbyte = 1024
