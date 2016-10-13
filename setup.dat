@@ -83,6 +83,11 @@ script_name = wiki.cgi
 storage = Wiki::DefaultStorage
 #storage = plugin::dbi::StandardDatabaseStorage
 
+# データベース接続情報
+db_driver = SQLite
+db_dir  = ./db
+db_name = wiki.db
+
 # バックアップ世代数（0だと無制限）
 backup = 1
 

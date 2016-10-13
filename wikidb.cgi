@@ -167,6 +167,7 @@ eval {
 	$template->param(TITLE     => $title,
 			 CONTENTS  => $content,
 			 THEME_CSS => "$wiki->{config}->{theme_uri}/default/default.css");
+
 	$output = $template->output;
 
 	#------------------------------------------------------------------------------
@@ -267,8 +268,9 @@ sub make_db {
 	my $self = shift;
 	my $wiki = shift;
 	my $html = "";
+
 	eval {
-		my $wikifarm = $self->get_wikifarm_instance($wiki, $wiki->get_CGI()->param('farm'));
+		my $wikifarm = $self->get_wikifarm_instance();
 		if (defined($wikifarm)){
 			if (! -d $wiki->config('db_dir').$wikifarm->get_CGI->path_info() ) {
 				mkpath($wiki->config('db_dir').$wikifarm->get_CGI->path_info());
@@ -400,105 +402,113 @@ sub db_transition {
 # この関数は farmlink から流用しています。
 #===========================================================
 sub get_wikifarm_instance {
-	my $self = shift;
-	my $rwiki = shift;
-	my $farm  = shift;
 
-	# WikiFarm キャッシュから取得する
-	my $wiki = undef;
+	my $wiki = Wiki->new('setup.dat');
+	my $cgi = $wiki->get_CGI();
 
-	# InterWikiとKeyword情報のバックアップ
-	my $interwiki = $Wiki::Parser::interwiki;
-	my $keyword   = $Wiki::Parser::keyword;
+	# Session用ディレクトリはFarmでも共通に使用する
+	$wiki->config('session_dir',$wiki->config('log_dir'));
 
-	#-----------------------------------------------------------
-	# WikiFarm用のwikiインスタンス作成
-	#-----------------------------------------------------------
-	eval {
-		my $cgi  = CGI2->new();
+	#==============================================================================
+	# Farmとして動作する場合
+	#==============================================================================
+	my $path_info  = $cgi->path_info();
+	my $path_count = 0;
+	if(length($path_info) > 0){
+	  	# Farmがあるか確認する
+		unless($path_info =~ m<^(/[A-Za-z0-9]+)*/?$> and -d $wiki->config('data_dir').$path_info){
+			CORE::die("Wikiが存在しません。");
+		}
 
-		# ルートWikiへの相対パスの取得
-		my $relative_path = $cgi->path_info();
-		$relative_path =~ s/[^\/]*//g;
-		$relative_path =~ s/\//..\//g;
+		# PATH_INFOの最後が/だったら/なしのURLに転送する
+		if($path_info =~ m|/$|) {
+			$path_info =~ s|/$||;
+			$wiki->redirectURL($cgi->url().$path_info);
+		}
+		$path_info =~ m</([^/]+)$>;
+		$wiki->config('script_name', $1);
+		$wiki->config('data_dir'   , $wiki->config('data_dir'  ).$path_info);
+		$wiki->config('config_dir' , $wiki->config('config_dir').$path_info);
+		$wiki->config('backup_dir' , $wiki->config('backup_dir').$path_info);
+		$wiki->config('log_dir'    , $wiki->config('log_dir'   ).$path_info);
 
-		# PATH_INFOの上書き
-		$cgi->path_info($farm);
-
-		# pageの上書き
-		$cgi->param('page',"#farmlink");
-
-		$wiki = Wiki->new($cgi,'setup.dat');
-		# ストレージをデフォルトに変更する
-		$wiki->{"storage"}->finalize();
-		$wiki->{"storage"} = Wiki::DefaultStorage->new($wiki);
-
-		# 子Wiki呼出情報の引継ぎ
-		$wiki->{farmlink} = $rwiki->{farmlink};
-
-		# Session用ディレクトリはFarmでも共通に使用する
-		$wiki->config('session_dir',$wiki->config('log_dir'));
-		# Farmとして動作する設定
-		my $path_count = 0;
-		$wiki->config('script_name', $relative_path.$wiki->config('script_name').$farm);
-		$wiki->config('data_dir'   , $wiki->config('data_dir'  ).$farm);
-		$wiki->config('config_dir' , $wiki->config('config_dir').$farm);
-		$wiki->config('backup_dir' , $wiki->config('backup_dir').$farm);
-		$wiki->config('log_dir'    , $wiki->config('log_dir'   ).$farm);
 		if(!($wiki->config('theme_uri') =~ /^(\/|http:|https:|ftp:)/)){
-			my @paths = split(/\//,$farm);
+			my @paths = split(/\//,$path_info);
 			$path_count = $#paths;
 			for(my $i=0;$i<$path_count;$i++){
 				$wiki->config('theme_uri','../'.$wiki->config('theme_uri'));
 			}
 		}
-		# 設定を反映
-		my $config = &Util::load_config_hash($wiki,$wiki->config('config_file'));
-		foreach my $key (keys(%$config)){
-			$wiki->config($key,$config->{$key});
-		}
-		# 個別に設定が必要なものだけ上書き
-		$wiki->config('css'                  ,$wiki->config('theme_uri')."/".$config->{theme}."/".$config->{theme}.".css");
-		$wiki->config('site_tmpl'            ,$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}.".tmpl");
-		$wiki->config('site_handyphone_tmpl' ,$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}."_handyphone.tmpl");
-		# キャッシュの設定を反映
-		my $cache_config = &Util::load_config_hash($wiki,'cache.dat');
-		$wiki->config('use_cache'   ,$cache_config->{use_cache});
-		$wiki->config('no_cache'    ,$cache_config->{no_cache});
-		$wiki->config('remove_cache',$cache_config->{remove_cache});
-
-		# InterWikiとKeyword情報の再作成
-		$Wiki::Parser::interwiki = Wiki::InterWiki->new($wiki);
-		$Wiki::Parser::keyword   = Wiki::Keyword->new($wiki,$Wiki::Parser::interwiki);
-
-		# InterWikiとKeyword情報の保管
-		$wiki->{interwiki} = $Wiki::Parser::interwiki;
-		$wiki->{keyword}   = $Wiki::Parser::keyword;
-
-		# プラグインのインストールと初期化
-###		my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
-		# 最低限のプラグインのみインストールする
-		my @plugins = split(/,/,"admin,core,info");
-		my $plugin_error = '';
-		foreach(sort(@plugins)){
-			$plugin_error .= $wiki->install_plugin($_);
-		}
-		# プラグインごとの初期化処理を起動
-		$wiki->do_hook("initialize");
-	};
-
-	# InterWikiとKeyword情報のレストア
-	$Wiki::Parser::interwiki = $interwiki;
-	$Wiki::Parser::keyword   = $keyword;
-
-	if ( defined($wiki) ) {
-		# Wiki インスタンスのキャッシュ登録
-		$rwiki->{wikifarm}->{$farm} = $wiki;
-
-		# Wiki インスタンスのキャッシュ情報の引継ぎ
-		$wiki->{wikifarm} = $rwiki->{wikifarm};
 	}
 
+	#==============================================================================
+	# 設定を反映（もうちょっとスマートにやりたいね）
+	#==============================================================================
+	my $config = &Util::load_config_hash($wiki,$wiki->config('config_file'));
+	foreach my $key (keys(%$config)){
+		$wiki->config($key,$config->{$key});
+	}
+	# 個別に設定が必要なものだけ上書き
+	$wiki->config('css',
+		$wiki->config('theme_uri')."/".$config->{theme}."/".$config->{theme}.".css");
+	$wiki->config('site_tmpl',
+		$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}.".tmpl");
+	$wiki->config('site_handyphone_tmpl',
+		$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}."_handyphone.tmpl");
+	$wiki->config('site_smartphone_tmpl',
+		$wiki->config('tmpl_dir')."/site/".$config->{site_tmpl_theme}."/".$config->{site_tmpl_theme}."_smartphone.tmpl");
+
+	#==============================================================================
+	# タイムアウトしているセッションを破棄
+	#==============================================================================
+	$cgi->remove_session($wiki);
+
+	#==============================================================================
+	# ユーザ情報の読み込み
+	#==============================================================================
+	my $users = &Util::load_config_hash($wiki,$wiki->config('userdat_file'));
+	foreach my $id (keys(%$users)){
+		my ($pass,$type) = split(/\t/,$users->{$id});
+		$wiki->add_user($id,$pass,$type);
+	}
+
+	#==============================================================================
+	# プラグインのインストールと初期化
+	#==============================================================================
+	my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
+	my $plugin_error = '';
+	foreach(sort(@plugins)){
+		$plugin_error .= $wiki->install_plugin($_);
+	}
+	# プラグインごとの初期化処理を起動
+	$wiki->do_hook("initialize");
+
+	#==============================================================================
+	# アクションハンドラの呼び出し
+	#==============================================================================
+	my $action  = $cgi->param("action");
+	my $content = $wiki->call_handler($action);
+
+	# プラグインのインストールに失敗した場合
+	$content = $plugin_error . $content if $plugin_error ne '';
+
+	#==============================================================================
+	# レスポンス
+	#==============================================================================
+	my $output        = "";
+	my $is_handyphone = &Util::handyphone();
+	my $is_smartphone = &Util::smartphone();
+	my $template_name = "";
+
+	if ($is_handyphone) {
+		$template_name = 'site_handyphone_tmpl';
+	} elsif ($is_smartphone) {
+		$template_name = 'site_smartphone_tmpl';
+	} else {
+		$template_name = 'site_tmpl';
+	}
+
+	#print $wiki;
 	return $wiki;
 }
 
