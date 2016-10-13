@@ -12,6 +12,12 @@ $ heroku create --buildpack http://github.com/pnu/heroku-buildpack-perl.git
 $ git push heroku master
 ```
 
+* Remove build cache
+```:bash
+$ heroku plugins:install heroku-repo
+$ heroku repo:purge_cache -a appname
+```
+
 You will see FreeStyleWiki pages at https://xxxxxxxx.herokuapp.com/fswiki/wiki.cgi
 
 Setup with Apache
