@@ -1,11 +1,10 @@
-requires 'perl', '5.16.3';
-
 # test might be failed
 # ------------------------------------#
 # $ bin/cpanm -n -L . --installdeps . #
 # ====================================#
 
-requires 'Task::Plack';
-requires 'CGI::Compile';
-requires 'DBD::SQLite';
-requires 'DBI';
+requires 'perl'         => '5.16.0';
+requires 'Task::Plack'  => 0;
+requires 'CGI::Compile' => 0;
+requires 'DBD::SQLite'  => 0;
+requires 'DBI'          => 0;
