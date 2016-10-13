@@ -142,7 +142,9 @@ eval {
 	# 管理者ログイン時は移行画面を表示する
 	else {
 		if ( $action eq "MAKEDB" ){
-			$content .= $wikidb->make_db($wiki);
+		  	$content .= $wikidb->make_db($wiki);
+		  	# FIXME: Need to update config with 'Config::Simple'
+			# $wiki->config('storage', 'plugin::dbi::StandardDatabaseStorage');
 		}
 		else {
 			$content .= "<div align='right'>".$wikidb->get_logout_form($wiki)."\n</div>\n";
