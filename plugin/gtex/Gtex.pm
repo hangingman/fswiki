@@ -63,6 +63,8 @@ sub inline {
   
   my $gtex=$wiki->config('gtex');
   $gtex="https://chart.googleapis.com/chart?cht=tx&chl=" if !$gtex;
+  $param =~ s/([^ 0-9a-zA-Z])/"%".uc(unpack("H2",$1))/eg;
+  $param =~ s/ /+/g;
   my $url = $gtex.$param; 
   
   return "<img $style src=\"$url\" alt=\"$param\" />";
