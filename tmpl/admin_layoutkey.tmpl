@@ -1,0 +1,57 @@
+<form action="<!--TMPL_VAR 'SCRIPT_NAME'-->" method="post">
+<!--=========================================================================-->
+<!-- 管理画面（レイアウト変数の設定） -->
+<!--=========================================================================-->
+
+<h2>レイアウト変数の設定</h2>
+
+<h3>設定一覧</h3>
+<p>
+左から、「キー」、「値」です。<br>
+必要に応じて追加／修正／削除し、保存ボタンをクリックしてください。<br>
+<div style="margin-left:1em;">
+<!--TMPL_LOOP 'ITEM'-->
+<div id="item_<!--TMPL_VAR 'NUM'-->">
+  <span nowrap><input type="button" style="width:50px" value="削除" onclick="document.getElementById('item_<!--TMPL_VAR 'NUM'-->').innerHTML='';"></span>
+  <span nowrap><input type="text" style="width:120px" name="key" value="<!--TMPL_VAR 'KEY'-->"></span>
+  <span nowrap><input type="text" style="width:250px" name="value" value="<!--TMPL_VAR 'VALUE'-->"></span>
+</div>
+<!--/TMPL_LOOP-->
+<div id="add"></div>
+<script type="text/javascript">
+num=<!--TMPL_VAR 'NUM_ADD'-->;
+function add(){
+	id = document.getElementById('add');
+	src =
+ '<div id="item_'+num+'">\n'
++'  <span nowrap><input type="button" style="width:50px" value="削除" onclick="document.getElementById(\'item_'+num+'\').innerHTML=\'\';"></span>\n'
++'  <span nowrap><input type="text" style="width:120px" name="key" value=""></span>\n'
++'  <span nowrap><input type="text" style="width:250px" name="value" value=""></span>\n'
++'</div>\n'
++'<div id="add"></div>\n';
+	if (id.outerHTML) id.outerHTML = src;
+	else              id.innerHTML = src;
+	num++;
+}
+</script>
+<noscript>
+<div id="item_<!--TMPL_VAR 'NUM_ADD'-->">
+  <span nowrap><input type="button" style="width:50px" value="削除" onclick="document.getElementById('item_<!--TMPL_VAR 'NUM_ADD'-->').innerHTML='';"></span>
+  <span nowrap><input type="text" style="width:120px" name="key" value=""></span>
+  <span nowrap><input type="text" style="width:250px" name="value" value=""></span>
+</div>
+<div id="tradd"></div>
+</noscript>
+
+<script type="text/javascript">
+document.write('<input type="button" style="margin-top:.5em;width:50px" value="追加" onclick="add();">');
+</script>
+</div>
+
+</p>
+<p>
+  <input name="SAVE" value="設定を保存" type="submit">
+  <input value="リセット" type="reset">
+</p>
+<input name="action" value="ADMINLAYOUTKEY" type="hidden">
+</form>
