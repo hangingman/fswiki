@@ -35,7 +35,7 @@ BEGIN {
 #===============================================================================
 sub url_encode {
 	my $retstr = shift;
-	$retstr = Jcode->new($retstr)->utf8;
+	$retstr = Jcode->new($retstr,"utf8")->utf8;
 	
 	$retstr =~ s/([^ 0-9A-Za-z])/sprintf("%%%.2X", ord($1))/eg;
 	$retstr =~ tr/ /+/;
