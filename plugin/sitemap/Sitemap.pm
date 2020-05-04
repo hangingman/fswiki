@@ -19,14 +19,6 @@ sub new {
 # ページ保存後or削除後のフックメソッド
 #===========================================================
 sub hook {
-
-=pod
-    	my $file = '/home/app/www/test.txt';
-	open (FILE, ">$file") or die "$!";
-	printf FILE "Now I called!";
-	close(FILE);
-=cut
-
 	my $self = shift;
 	my $wiki = shift;
 
@@ -36,7 +28,7 @@ sub hook {
 	#"always"（常時）"hourly"（毎時）"daily"（毎日）"weekly"（毎週）"monthly"（毎月）"yearly"（毎年）"never"（不変）
 	my $changefreq ="weekly";
 	#サイトマップ格納ディレクトリ…はトップディレクトリ
-	my $file = 	"./sitemap.xml";
+	my $file = $wiki->config('sitemap_path');
 
 	#モジュール用変数
 	my $sitemapheader = <<END_OF_DATA;
@@ -53,7 +45,7 @@ END_OF_DATA
 	my @sitemap;
 
 	push (@sitemap, $sitemapheader);
-	
+
 	#ページリストから一覧を取得し、サイトマップ配列に保管
 	foreach (@list){
 		#もう少しスマートなやり方がきっとあるはず…
@@ -76,13 +68,10 @@ END_OF_DATA
 
 	push (@sitemap, $sitemapfooter);
 
-	Encode::from_to($file, 'Guess', 'utf8');
-	Util::file_lock($file);
 	#ファイルは上書き
 	open (DATA, ">$file") or die $!;
 	print DATA @sitemap;
 	close(DATA);
-	Util::file_unlock($file);
 }
 
 #==============================================================================
