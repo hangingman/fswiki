@@ -53,7 +53,7 @@ $output
 </table></div>
 __HTML__
 
-print $cgi->header(-type=>'text/html',-charset=>'EUC-JP',);
+print $cgi->header(-type=>'text/html',-charset=>'UTF-8',);
 print $data;
 
 exit;
