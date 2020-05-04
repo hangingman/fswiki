@@ -21,7 +21,7 @@ $DEBUG   = 0;
 sub new {
 	my $class = shift;
 	my $self  = {};
-	
+
 	# 設定を読み込み
 	my $setupfile = shift || 'setup.dat';
 	$self->{"config"} = &Util::load_config_hash(undef,$setupfile);
@@ -31,7 +31,7 @@ sub new {
 	unshift(@INC, $self->{"config"}->{"plugin_dir"});
 	$ENV{'TZ'} = $self->{"config"}->{"time_zone"};
 	$CGI::POST_MAX = $self->{"config"}->{"post_max"} if $self->{"config"}->{"post_max"} ne '';
-	
+
 	# インスタンス変数を初期化
 	$self->{"handler"}            = {};
 	$self->{"handler_permission"} = {};
@@ -48,7 +48,7 @@ sub new {
 	$self->{"format"}             = {};
 	$self->{"installed_plugin"}   = ();
 	$self->{"head_info"}          = ();
-	
+
 	# ストレージのインスタンスを生成
 	if($self->{config}->{"storage"} eq ""){
 		$self->{"storage"} = Wiki::DefaultStorage->new($self);
@@ -56,7 +56,7 @@ sub new {
 		eval ("use ".$self->{config}->{"storage"}.";");
 		$self->{"storage"} = $self->{config}->{"storage"}->new($self);
 	}
-	
+
 	return bless $self,$class;
 }
 
@@ -125,7 +125,7 @@ sub get_login_info {
 
 	my $cgi = $self->get_CGI();
 	return undef unless(defined($cgi));
-	
+
 	my $session = $cgi->get_session($self);
 	unless(defined($session)){
 		$self->{'login_info'} = undef;
@@ -141,7 +141,7 @@ sub get_login_info {
 	if(!defined($path     )){ $path       = ""; }
 	if(!defined($id       )){ $id         = ""; }
 	if(!defined($type     )){ $type       = ""; }
-	
+
 	if($path_info eq "" && $path ne ""){
 		$self->{'login_info'} = undef;
 		return undef;
@@ -149,13 +149,13 @@ sub get_login_info {
 		$self->{'login_info'} = undef;
 		return undef;
 	}
-	
+
 	# クッキーがセットされていない
 	if($id eq "" ||  $type eq ""){
 		$self->{'login_info'} = undef;
 		return undef;
 	}
-	
+
 	# ユーザ情報を返却
 	$self->{'login_info'} = {id=>$id,type=>$type,path=>$path};
 	return $self->{'login_info'};
@@ -232,7 +232,7 @@ sub add_admin_menu {
 	my $url    = shift;
 	my $weight = shift;
 	my $desc   = shift;
-	
+
 	push(@{$self->{"admin_menu"}},{label=>$label,url=>$url,weight=>$weight,desc=>$desc,type=>0});
 }
 
@@ -252,7 +252,7 @@ sub add_user_menu {
 	my $url    = shift;
 	my $weight = shift;
 	my $desc   = shift;
-	
+
 	push(@{$self->{"admin_menu"}},{label=>$label,url=>$url,weight=>$weight,desc=>$desc,type=>1});
 }
 
@@ -275,14 +275,14 @@ sub get_admin_menu {
 sub install_plugin {
 	my $self   = shift;
 	my $plugin = shift;
-	
+
 	if ($plugin =~ /\W/) {
 		return "<div class=\"error\">".Util::escapeHTML("${plugin}プラグインは不正なプラグインです。")."</div>";
 	}
-		
+
 	my $module = "plugin::${plugin}::Install";
 	eval 'require &Util::get_module_file($module);'.$module.'::install($self);';
-	
+
 	if($@){
 		return "<div class=\"error\">".Util::escapeHTML("${plugin}プラグインがインストールできません。$@")."</div>";
 	} else {
@@ -299,7 +299,7 @@ sub install_plugin {
 sub is_installed {
 	my $self   = shift;
 	my $plugin = shift;
-	
+
 	foreach (@{$self->{"installed_plugin"}}){
 		if($_ eq $plugin){
 			return 1;
@@ -327,7 +327,7 @@ sub add_menu {
 	my $href     = shift;
 	my $weight   = shift;
 	my $nofollow = shift;
-	
+
 	my $flag = 0;
 	foreach(@{$self->{"menu"}}){
 		if($_->{name} eq $name){
@@ -353,7 +353,7 @@ sub add_hook {
 	my $self = shift;
 	my $name = shift;
 	my $obj  = shift;
-	
+
 	push(@{$self->{"hook"}->{$name}},$obj);
 }
 
@@ -370,7 +370,7 @@ sub add_hook {
 sub do_hook {
 	my $self = shift;
 	my $name = shift;
-	
+
 	foreach my $class (@{$self->{"hook"}->{$name}}){
 		my $obj = $self->get_plugin_instance($class);
 		$obj->hook($self,$name,@_);
@@ -390,7 +390,7 @@ sub add_handler {
 	my $self   = shift;
 	my $action = shift;
 	my $class  = shift;
-	
+
 	$self->{"handler"}->{$action}=$class;
 	$self->{"handler_permission"}->{$action} = 1;
 }
@@ -409,7 +409,7 @@ sub add_user_handler {
 	my $self   = shift;
 	my $action = shift;
 	my $class  = shift;
-	
+
 	$self->{"handler"}->{$action}=$class;
 	$self->{"handler_permission"}->{$action} = 2;
 }
@@ -428,7 +428,7 @@ sub add_admin_handler {
 	my $self   = shift;
 	my $action = shift;
 	my $class  = shift;
-	
+
 	$self->{"handler"}->{$action}=$class;
 	$self->{"handler_permission"}->{$action} = 0;
 }
@@ -444,7 +444,7 @@ sub add_plugin {
 	my $self   = shift;
 	my $name   = shift;
 	my $class  = shift;
-	
+
 	$self->add_inline_plugin($name,$class,"HTML");
 }
 #==============================================================================
@@ -458,13 +458,13 @@ sub add_plugin {
 #==============================================================================
 sub add_inline_plugin {
 	my ($self, $name, $class, $format) = @_;
-	
+
 	if($format eq ""){
 		$format = "HTML";
 	} else {
 		$format = uc($format);
 	}
-	
+
 	$self->{"plugin"}->{$name} = {CLASS=>$class,TYPE=>'inline',FORMAT=>$format};
 }
 
@@ -479,13 +479,13 @@ sub add_inline_plugin {
 #==============================================================================
 sub add_paragraph_plugin {
 	my ($self, $name, $class, $format) = @_;
-	
+
 	if($format eq ""){
 		$format = "HTML";
 	} else {
 		$format = uc($format);
 	}
-	
+
 	$self->{"plugin"}->{$name} = {CLASS=>$class,TYPE=>'paragraph',FORMAT=>$format};
 }
 
@@ -500,13 +500,13 @@ sub add_paragraph_plugin {
 #==============================================================================
 sub add_block_plugin {
 	my ($self, $name, $class, $format) = @_;
-	
+
 	if($format eq ""){
 		$format = "HTML";
 	} else {
 		$format = uc($format);
 	}
-	
+
 	$self->{"plugin"}->{$name} = {CLASS=>$class,TYPE=>'block',FORMAT=>$format};
 }
 
@@ -524,7 +524,7 @@ sub add_block_plugin {
 sub get_plugin_info {
 	my $self = shift;
 	my $name = shift;
-	
+
 	return $self->{plugin}->{$name};
 }
 
@@ -540,29 +540,29 @@ sub get_plugin_info {
 sub call_handler {
 	my $self   = shift;
 	my $action = shift;
-	
+
 	if(!defined($action)){
 		$action = "";
 	}
-	
+
 	my $obj = $self->get_plugin_instance($self->{"handler"}->{$action});
-	
+
 	unless(defined($obj)){
 		return $self->error("不正なアクションです。");
 	}
-	
+
 	# 管理者用のアクション
 	if($self->{"handler_permission"}->{$action}==0){
 		my $login = $self->get_login_info();
 		if(!defined($login)){
 			return $self->error("ログインしていません。");
-			
+
 		} elsif($login->{type}!=0){
 			return $self->error("管理者権限が必要です。");
 		}
 		return $obj->do_action($self).
 		       "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
-	
+
 	# ログインユーザ用のアクション
 	} elsif($self->{"handler_permission"}->{$action}==2){
 		my $login = $self->get_login_info();
@@ -571,7 +571,7 @@ sub call_handler {
 		}
 		return $obj->do_action($self).
 		       "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
-		
+
 	# 普通のアクション
 	} else {
 		return $obj->do_action($self);
@@ -590,16 +590,16 @@ sub process_wiki {
 	my $self    = shift;
 	my $source  = shift;
 	my $mainflg = shift;
-	
+
 	if($self->{parse_times} >= 50){
 		return $self->error("Wiki::process_wikiの呼び出し回数が上限を越えました。");
 	}
-	
+
 	$self->{parse_times}++;
 	my $parser = Wiki::HTMLParser->new($self,$mainflg);
 	$parser->parse($source);
 	$self->{parse_times}--;
-	
+
 	return $parser->{html};
 }
 
@@ -614,7 +614,7 @@ sub process_plugin {
 	my $self   = shift;
 	my $plugin = shift;
 	my $parser = shift;
-	
+
 	if(defined($plugin->{error}) && $plugin->{error} ne ""){
 		return "<font class=\"error\">".$plugin->{error}."</font>";
 	}
@@ -626,7 +626,7 @@ sub process_plugin {
 
 	if(!defined($obj)){
 		return "<font class=\"error\">".&Util::escapeHTML($name)."プラグインは存在しません。</font>";
-		
+
 	} else {
 		if($info->{FORMAT} eq "WIKI"){
 			# 裏技用(プラグイン内部からパーサを使う場合)
@@ -684,10 +684,10 @@ sub get_current_parser {
 sub error {
 	my $self    = shift;
 	my $message = shift;
-	
+
 	$self->set_title("エラー");
 	$self->get_CGI->param("action","ERROR");
-	
+
 	return "<div class=\"error\">".Util::escapeHTML($message)."</div>";
 }
 
@@ -700,11 +700,11 @@ sub error {
 sub get_plugin_instance {
 	my $self  = shift;
 	my $class = shift;
-	
+
 	if($class eq ""){
 		return undef;
 	}
-	
+
 	if(!defined($self->{instance}->{$class})){
 		eval {
 			require &Util::get_module_file($class);
@@ -712,7 +712,7 @@ sub get_plugin_instance {
 		return undef if $@;
 		my $obj = $class->new();
 		$self->{instance}->{$class} = $obj;
-		
+
 		return $obj;
 	} else {
 		return $self->{instance}->{$class};
@@ -732,13 +732,13 @@ sub parse_inline_plugin {
 	if($cmd =~ s/}}(.*?)$//){
 		return { command=>$cmd, args=>[], post=>"$1 $args_txt"};
 	}
-	
+
 	my @ret_args;
 	my $tmp    = "";
 	my $escape = 0;
 	my $quote  = 0;
 	my $i      = 0;
-	
+
 	for($i = 0; $i<length($args_txt); $i++){
 		my $c = substr($args_txt,$i,1);
 		if($quote!=1 && $c eq ","){
@@ -784,17 +784,17 @@ sub parse_inline_plugin {
 			$escape = 0;
 		}
 	}
-	
+
 	if($quote!=3){
 		my $info = $self->get_plugin_info($cmd);
 		return undef if (defined($info->{TYPE}) && $info->{TYPE} ne 'block');
 	}
-	
+
 	if($tmp ne ""){
 		push(@ret_args,$tmp);
 	}
-	
-	return { command=>$cmd, args=>\@ret_args, 
+
+	return { command=>$cmd, args=>\@ret_args,
 		post=>substr($args_txt, $i + 1, length($args_txt) - $i)};
 }
 
@@ -812,7 +812,7 @@ sub add_format_plugin {
 	my $self  = shift;
 	my $name  = shift;
 	my $class = shift;
-	
+
 	$self->{'format'}->{$name} = $class;
 }
 
@@ -852,7 +852,7 @@ sub convert_to_fswiki {
 	my $source = shift;
 	my $type   = shift;
 	my $inline = shift;
-	
+
 	my $obj = $self->get_plugin_instance($self->{'format'}->{$type});
 	unless(defined($obj)){
 		return $source;
@@ -886,7 +886,7 @@ sub convert_from_fswiki {
 	my $source = shift;
 	my $type   = shift;
 	my $inline = shift;
-	
+
 	my $obj = $self->get_plugin_instance($self->{'format'}->{$type});
 	unless(defined($obj)){
 		return $source;
@@ -913,7 +913,7 @@ sub convert_from_fswiki {
 sub get_edit_format {
 	my $self = shift;
 	my $from = shift;
-	
+
 	# formatプラグインがアクティベートされていなければFSWikiフォーマットを返す
 	unless($self->is_installed("format")){
 		return "FSWiki";
@@ -951,7 +951,7 @@ sub get_edit_format {
 sub add_head_info {
 	my $self = shift;
 	my $info = shift;
-	
+
 	push(@{$self->{'head_info'}},$info);
 }
 
@@ -1010,12 +1010,12 @@ sub is_freeze {
 	my $self = shift;
 	my $page = shift;
 	my $path = undef;
-	
+
 	if($page =~ /(^.*?[^:]):([^:].*?$)/){
 		$path = $1;
 		$page = $2;
 	}
-	
+
 	return $self->{storage}->is_freeze($page,$path);
 }
 
@@ -1107,12 +1107,12 @@ sub get_page_level {
 	my $self  = shift;
 	my $page  = shift;
 	my $path  = undef;
-	
+
 	if($page =~ /(^.*?[^:]):([^:].*?$)/){
 		$path = $1;
 		$page = $2;
 	}
-	
+
 	$self->{"storage"}->get_page_level($page,$path);
 }
 
@@ -1228,7 +1228,7 @@ sub create_url {
 		$query .= Util::url_encode($key)."=".Util::url_encode($params->{$key});
 	}
 	if($query ne ''){
-		$url .= '?'.$query; 
+		$url .= '?'.$query;
 	}
 	return $url;
 }
@@ -1295,7 +1295,7 @@ sub get_title {
 sub get_page_list {
 	my $self = shift;
 	my $args = shift;
-	
+
 	return $self->{"storage"}->get_page_list($args);
 
 }
@@ -1343,14 +1343,14 @@ sub get_page {
 	my $page   = shift;
 	my $format = shift;
 	my $path   = undef;
-	
+
 	if($page =~ /(^.*?[^:]):([^:].*?$)/){
 		$path = $1;
 		$page = $2;
 	}
-	
+
 	my $content = $self->{"storage"}->get_page($page,$path);
-	
+
 	if($format eq "" || $format eq "FSWiki"){
 		return $content;
 	} else {
@@ -1404,7 +1404,7 @@ sub save_page {
 	my $pagename = shift;
 	my $content  = shift;
 	my $sage     = shift;
-	
+
 	# ページ名をチェック
 	if($pagename =~ /([\|\[\]])|^:|([^:]:[^:])/){
 		die "ページ名に使用できない文字が含まれています。";
@@ -1415,7 +1415,7 @@ sub save_page {
 	$self->do_hook("save_before");
 	# パラメータを読み込み直す
 	$content = $self->get_CGI()->param("content");
-	
+
 	if($self->{"storage"}->save_page($pagename,$content,$sage)){
 		if($content ne ""){
 			$self->do_hook("save_after");
@@ -1441,17 +1441,17 @@ sub page_exists {
 	my $self = shift;
 	my $page = shift;
 	my $path = undef;
-	
+
 	if($page =~ /(^.*?[^:]):([^:].*?$)/){
 		$path = $1;
 		$page = $2;
 	}
-	
+
 	# InterWiki形式の指定でドットを含むことはできない
 	if(defined($path) && index($path,".")!=-1){
 		return 0;
 	}
-	
+
 	return $self->{"storage"}->page_exists($page,$path);
 }
 
@@ -1508,7 +1508,7 @@ sub redirect {
 sub redirectURL {
 	my $self = shift;
 	my $url  = shift;
-	
+
 	# Locationタグでリダイレクト
 	if($self->config('redirect')==1){
 		my ($hoge,$param) = split(/\?/,$url);
@@ -1517,14 +1517,14 @@ sub redirectURL {
 			$url = "$url?$param";
 		}
 		print "Location: $url\n\n";
-		
+
 	# METAタグでリダイレクト
 	} else {
 		my $tmpl = HTML::Template->new(filename=>$self->config('tmpl_dir')."/redirect.tmpl",
 		                               die_on_bad_params => 0);
-		
+
 		$tmpl->param(URL=>$url);
-		
+
 		print "Content-Type: text/html\n\n";
 		print $tmpl->output();
 	}
@@ -1595,7 +1595,7 @@ sub create_wiki{
 	my $child = shift;
 	my $id    = shift;
 	my $pass  = shift;
-	
+
 	# data、backupディレクトリを掘る処理はStorageに任せたほうがいいかな？
 	unless($self->wiki_exists($child)){
 		eval {
@@ -1604,7 +1604,7 @@ sub create_wiki{
 			mkpath($self->config('backup_dir')."/$child") or die $!;
 			mkpath($self->config('config_dir')."/$child") or die $!;
 			mkpath($self->config('log_dir'   )."/$child") or die $!;
-			
+
 			# 設定のコピー
 			copy($self->config('config_dir')."/".$self->config('config_file'),
 			     $self->config('config_dir')."/$child/".$self->config('config_file')) or die $!;
@@ -1614,12 +1614,12 @@ sub create_wiki{
 			     $self->config('config_dir')."/$child/".$self->config('plugin_file')) or die $!;
 			copy($self->config('config_dir')."/".$self->config('mime_file'),
 			     $self->config('config_dir')."/$child/".$self->config('mime_file')) or die $!;
-			
+
 			# 管理ユーザの作成（ここで作るのはちょっとアレかも・・・）
 			open(USERDAT,">".$self->config('config_dir')."/$child/".$self->config('userdat_file')) or die $!;
 			print USERDAT "$id=".&Util::md5($pass,$id)."\t0\n";
 			close(USERDAT);
-			
+
 			# テンプレートからページのコピー
 			my $farm_config = &Util::load_config_hash($self,$self->config('farmconf_file'));
 			if($farm_config->{'use_template'}==1 && $child ne "template"){
@@ -1644,7 +1644,7 @@ sub create_wiki{
 			# create_wikiフックの呼び出し
 			$self->do_hook("create_wiki");
 		};
-		
+
 		# エラーが発生した場合クリーンアップ処理
 		if($@){
 			my $error = $@;
@@ -1683,13 +1683,13 @@ sub _get_wiki_depth {
 sub remove_wiki {
 	my $self = shift;
 	my $path = shift;
-	
+
 	# コアでサポートするディレクトリを削除
 	rmtree($self->config('data_dir'  ).$path) or die $!;
 	rmtree($self->config('backup_dir').$path) or die $!;
 	rmtree($self->config('config_dir').$path) or die $!;
 	rmtree($self->config('log_dir'   ).$path) or die $!;
-	
+
 	# remove_wikiフックの呼び出し
 	$self->get_CGI()->param('path',$path);
 	$self->do_hook("remove_wiki");
@@ -1737,7 +1737,7 @@ sub search_child {
 	my $dir  = shift;
 	my @dirs = ();
 	my @list = ();
-	
+
 	opendir(DIR,$dir) or die $!;
 	while(my $entry = readdir(DIR)){
 		if(-d "$dir/$entry" && $entry ne "." && $entry ne ".."){
@@ -1746,7 +1746,7 @@ sub search_child {
 	}
 	closedir(DIR);
 	@dirs = sort @dirs;
-	
+
 	foreach my $entry (@dirs){
 		push(@list,$entry);
 		my @child = $self->search_child("$dir/$entry");
@@ -1754,7 +1754,7 @@ sub search_child {
 			push(@list,\@child);
 		}
 	}
-	
+
 	return @list;
 }
 

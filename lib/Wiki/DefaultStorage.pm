@@ -28,11 +28,11 @@ sub new {
 	my $class  = shift;
 	my $wiki   = shift;
 	my $backup = $wiki->{config}->{'backup'};
-	
+
 	if(!defined($backup) || $backup eq ""){
 		$backup = 1;
 	}
-	
+
 	my $self = {};
 	$self->{wiki}          = $wiki;
 	$self->{backup}        = $backup;
@@ -50,12 +50,12 @@ sub get_page {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 	my $dir = $self->{wiki}->config('data_dir');
 	if($path ne ""){
 		$dir = "$dir/$path";
 	}
-	
+
 	my $content = "";
 	my $filename = &Util::make_filename($dir,&Util::url_encode($page),"wiki");
 	if(-e $filename){
@@ -66,7 +66,7 @@ sub get_page {
 		}
 		close(DATA);
 	}
-	
+
 	return $content;
 }
 
@@ -81,19 +81,19 @@ sub save_page {
 	my $content = shift;
 	my $sage    = shift;
 	my $wiki    = $self->{wiki};
-	
+
 	$content = '' if($content =~ /^[\r\n]+$/s); # added for opera
-	
+
 	# ページ名とページ内容の補正
 	$page = Util::trim($page);
 	$content =~ s/\r\n/\n/g;
 	$content =~ s/\r/\n/g;
-	
+
 	my $wikifile = &Util::make_filename($wiki->config('data_dir'),&Util::url_encode($page),"wiki");
 	my $tmpfile  = "$wikifile.tmp";
-	
+
 	Util::file_lock($wikifile,1);
-	
+
 	# バックアップ
 	my $BACKUP = $self->get_page($page);
 	if($BACKUP ne '' && $BACKUP eq $content){
@@ -159,7 +159,7 @@ sub save_page {
 		open(DATA,">$tmpfile") or die $!;
 		binmode(DATA);
 		print DATA $content;
-		close(DATA);		
+		close(DATA);
 		# sageでない場合は更新日時を更新
 		if($sage != 1){
 			my $modtime = &Util::load_config_hash($wiki,$MODTIME_FILE);
@@ -167,11 +167,11 @@ sub save_page {
 			&Util::save_config_hash($wiki,$MODTIME_FILE,$modtime);
 		}
 	}
-	
+
 	rename($tmpfile, $wikifile);
 	Util::file_unlock($wikifile);
 	delete $self->{exists_cache}->{":$page"}; # page_exists() のキャッシュをクリア。
-	
+
 	return 1;
 }
 
@@ -189,7 +189,7 @@ sub _create_page_list_file {
 	my $wiki = $self->{'wiki'};
 	my $file = $wiki->config('log_dir')."/".$PAGE_LIST_FILE;
 	my $buf = "";
-	
+
 	unless(-e $file){
 		opendir(DIR, $wiki->config('data_dir')) or die $!;
 		my ($entry,@list);
@@ -247,14 +247,14 @@ sub _rename_old_history {
 	my $self  = shift;
 	my $page  = shift;
 	my $wiki  = $self->{wiki};
-	
+
 	# 無制限の場合は何もしない
 	if($self->{backup}==0){
 		return;
 	}
-	
+
 	my @files = glob($wiki->config('backup_dir')."/".&Util::url_encode($page).".*.bak");
-	
+
 	@files = sort {
 		$a =~ /^.+\.([0-9]+)\.bak$/;
 		my $num_a = $1;
@@ -262,7 +262,7 @@ sub _rename_old_history {
 		my $num_b = $1;
 		return $num_a <=> $num_b;
 	} @files;
-	
+
 	my $count = 1;
 	for(my $i=0;$i<=$#files;$i++){
 		if($i > $#files - $self->{backup} + 1){
@@ -287,7 +287,7 @@ sub get_page_list {
 	my $sort   = "name";
 	my $permit = "all";
 	my $max    = 0;
-	
+
 	# 引数を解釈
 	if(defined($args)){
 		if(defined($args->{-sort})){
@@ -300,7 +300,7 @@ sub get_page_list {
 			$max = $args->{-max};
 		}
 	}
-	
+
 	# ページの一覧を取得
 	my $file  = $wiki->config('log_dir')."/".$PAGE_LIST_FILE;
 	$self->_create_page_list_file(undef, 'update') unless(-e $file);
@@ -313,16 +313,16 @@ sub get_page_list {
 			if($wiki->can_show($name)){
 				$flag = 1;
 			}
-			
+
 		} elsif($permit eq "modify"){
 			if($wiki->can_modify_page($name)){
 				$flag = 1;
 			}
-			
+
 		# 全てのページ
 		} elsif($permit eq "all"){
 			$flag = 1;
-		
+
 		# それ以外の場合はエラー
 		} else {
 			die "permitオプションの指定が不正です。";
@@ -331,22 +331,22 @@ sub get_page_list {
 			push(@list,$name);
 		}
 	}
-	
+
 	# 名前でソート
 	if($sort eq "name"){
 		@list = sort { $a cmp $b } @list;
-		
+
 	# 更新日時（新着順）にソート
 	} elsif($sort eq "last_modified"){
 		@list =  map  { $_->[0] }
 		         sort { $b->[1] <=> $a->[1] }
 		         map  { [$_, $wiki->get_last_modified2($_)] } @list;
-	
+
 	# それ以外の場合はエラー
 	} else {
 		die "sortオプションの指定が不正です。";
 	}
-	
+
 	return $max == 0 ? @list : splice(@list, 0, $max);
 }
 
@@ -359,7 +359,7 @@ sub get_last_modified {
 	my $self   = shift;
 	my $page   = shift;
 	my @status = stat(&Util::make_filename($self->{wiki}->config('data_dir'),&Util::url_encode($page),"wiki"));
-	
+
 	return $status[9];
 }
 
@@ -372,12 +372,12 @@ sub get_last_modified2 {
 	my $self    = shift;
 	my $page    = shift;
 	my $modtime = $self->{modtime_cache};
-	
+
 	unless(defined($modtime)){
 		$modtime = &Util::load_config_hash($self->{wiki},$MODTIME_FILE);
 		$self->{modtime_cache} = $modtime;
 	}
-	
+
 	if(defined($modtime->{$page})){
 		return $modtime->{$page};
 	} else {
@@ -394,19 +394,19 @@ sub page_exists {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 	if($self->{exists_cache} and defined($self->{exists_cache}->{"$path:$page"})){
 		return $self->{exists_cache}->{"$path:$page"};
 	}
-	
+
 	my $dir = $self->{wiki}->config('data_dir');
 	if(defined $path and $path ne ""){
 		$dir = "$dir/$path";
 	}
-	
+
 	my $exists = (-e &Util::make_filename($dir,&Util::url_encode($page),"wiki"));
 	$self->{exists_cache}->{"$path:$page"} = $exists;
-	
+
 	return $exists;
 }
 
@@ -419,7 +419,7 @@ sub page_exists {
 #==============================================================================
 sub backup_type {
 	my $self = shift;
-	
+
 	if($self->{backup}==1){
 		return "single";
 	} else {
@@ -436,7 +436,7 @@ sub delete_backup_files {
 	my $self = shift;
 	my $wiki = shift;
 	my $page = shift;
-	
+
 	my @files = glob($wiki->config('backup_dir')."/".Util::url_encode($page).".*.bak");
 	foreach my $file (@files){
 		unlink($file);
@@ -452,13 +452,13 @@ sub delete_backup_files {
 sub get_backup_list {
 	my $self = shift;
 	my $page = shift;
-	
+
 	if($self->{backup}==1){
 		return undef;
 	} else {
 		my $wiki = $self->{wiki};
 		my @files = glob($wiki->config('backup_dir')."/".Util::url_encode($page).".*.bak");
-		
+
 		@files = sort {
 			$a =~ /^.+\.([0-9]+)\.bak$/;
 			my $num_a = $1;
@@ -466,14 +466,14 @@ sub get_backup_list {
 			my $num_b = $1;
 			return $num_b <=> $num_a;
 		} @files;
-		
+
 		my @datelist;
-		
+
 		foreach my $file (@files){
 			my @status = stat($file);
 			push(@datelist, $status[9]);
 		}
-		
+
 		return @datelist;
 	}
 }
@@ -490,7 +490,7 @@ sub get_backup {
 	my $gen      = shift;
 	my $content  = "";
 	my $filename = "";
-	
+
 	if($self->{backup}!=1){
 		# 世代バックアップかつ世代指定がない場合は最新のバックアップを取得
 		if(!defined($gen) || $gen eq ""){
@@ -510,7 +510,7 @@ sub get_backup {
 		}
 		close(DATA);
 	}
-	
+
 	return $content;
 }
 
@@ -522,7 +522,7 @@ sub get_backup {
 sub freeze_page {
 	my $self     = shift;
 	my $pagename = shift;
-	
+
 	if(!$self->is_freeze($pagename)){
 		my $freeze_file = $self->{wiki}->config('log_dir')."/".$self->{wiki}->config('freeze_file');
 		Util::file_lock($freeze_file);
@@ -531,7 +531,7 @@ sub freeze_page {
 		print DATA $pagename."\n";
 		close(DATA);
 		Util::file_unlock($freeze_file);
-		
+
 		# リダイレクトすれば不要だけど…
 		push(@{$self->{freeze_list}},$pagename);
 	}
@@ -545,7 +545,7 @@ sub freeze_page {
 sub un_freeze_page {
 	my $self = shift;
 	my $pagename = shift;
-	
+
 	if($self->is_freeze($pagename)){
 		my $buf = "";
 		open(DATA,$self->{wiki}->config('log_dir')."/".$self->{wiki}->config('freeze_file')) or die $!;
@@ -556,12 +556,12 @@ sub un_freeze_page {
 			}
 		}
 		close(DATA);
-		
+
 		open(DATA,">".$self->{wiki}->config('log_dir')."/".$self->{wiki}->config('freeze_file')) or die $!;
 		binmode(DATA);
 		print DATA $buf;
 		close(DATA);
-		
+
 		# リダイレクトすれば不要だけど…
 		@{$self->{freeze_list}} = grep(!/^\Q$pagename\E$/,@{$self->{freeze_list}});
 	}
@@ -575,32 +575,32 @@ sub un_freeze_page {
 sub get_freeze_list {
 	my $self = shift;
 	my $path = shift;
-	
+
 	if(!defined($path)){
 		$path = "";
 	}
-	
+
 	if(defined($self->{"$path:freeze_list"})){
 		return @{$self->{"$path:freeze_list"}};
 	}
-	
+
 	my $logdir = $self->{wiki}->config('log_dir');
 	if($path ne ""){
 		$logdir .= "/$path";
 	}
-	
+
 	my @list;
 	if(!-e "$logdir/".$self->{wiki}->config('freeze_file')){
 		return @list;
 	}
-	
+
 	open(DATA,"$logdir/".$self->{wiki}->config('freeze_file')) or die $!;
 	while(<DATA>){
 		chomp $_;
 		push @list,$_;
 	}
 	close(DATA);
-	
+
 	$self->{"$path:freeze_list"} = \@list;
 	return @list;
 }
@@ -614,13 +614,13 @@ sub is_freeze {
 	my $self     = shift;
 	my $pagename = shift;
 	my $path     = shift;
-	
+
 	foreach my $freeze_page ($self->get_freeze_list($path)){
 		if($freeze_page eq $pagename){
 			return 1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -633,7 +633,7 @@ sub set_page_level {
 	my $self  = shift;
 	my $page  = shift;
 	my $level = shift;
-	
+
 	my $all = &Util::load_config_hash($self->{wiki},"showlevel.log");
 	if(defined($level)){
 		$all->{$page} = $level;
@@ -653,24 +653,24 @@ sub get_page_level {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 	if(!defined($path)){
 		$path = "";
 	}
-	
+
 	unless(defined($self->{"$path:show_level"})){
 		# config_dirを差し替えて実行
 		my $configdir = $self->{wiki}->config('config_dir');
 		if($path ne ""){
 			$self->{wiki}->config('config_dir',"$configdir/$path");
 		}
-		
+
 		$self->{"$path:show_level"} = &Util::load_config_hash($self->{wiki},"showlevel.log");
-		
+
 		# config_dirを元に戻す
 		$self->{wiki}->config('config_dir',$configdir);
 	}
-	
+
 	if(defined($page)){
 		if(defined($self->{"$path:show_level"}->{$page})){
 			return $self->{"$path:show_level"}->{$page};

@@ -1,3 +1,11 @@
 *.wiki
 log/
 backup/
+attach/
+config/
+layout/
+tmpl/
+
+
+.htaccess
+sitemap.xml

@@ -36,7 +36,7 @@ BEGIN {
 sub url_encode {
 	my $retstr = shift;
 	$retstr = Jcode->new($retstr,"utf8")->utf8;
-	
+
 	$retstr =~ s/([^ 0-9A-Za-z])/sprintf("%%%.2X", ord($1))/eg;
 	$retstr =~ tr/ /+/;
 	return $retstr;
@@ -86,7 +86,7 @@ sub make_filename {
 	my $dir  = shift;
 	my $file = shift;
 	my $ext  = shift;
-	
+
 	return $dir."/".$file.".".$ext;
 }
 
@@ -201,7 +201,7 @@ sub send_mail {
 	my $wiki    = shift;
 	my $subject = Jcode->new(shift)->mime_encode();
 	my $content = &Jcode::convert(shift,'jis');
-	
+
 	if(($wiki->config('send_mail') eq "" && $wiki->config('smtp_server') eq "") ||
 	   $wiki->config('admin_mail') eq ""){
 		return;
@@ -211,7 +211,7 @@ sub send_mail {
 	my $wday_str  = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat')[$wday];
 	my $mon_str   = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')[$mon];
 	my $date = sprintf("%s, %02d %s %4d %02d:%02d:%02d +0900", $wday_str, $day, $mon_str, $year+1900, $hour, $min, $sec);
-	
+
 	my $admin_mail = $wiki->config('admin_mail');
 	foreach my $to (split(/,/,$admin_mail)){
 		$to = trim($to);
@@ -224,13 +224,13 @@ sub send_mail {
 		           "Content-Type: text/plain; charset=\"ISO-2022-JP\"\n".
 		           "\n".
 		           $content;
-		
+
 		# sendmailコマンドで送信
 		if($wiki->config('send_mail') ne ""){
 			open(MAIL,"| ".$wiki->config('send_mail')." ".$to);
 			print MAIL $mail;
 			close(MAIL);
-			
+
 		# Net::SMTPで送信
 		} else {
 			eval("use Net::SMTP;");
@@ -304,7 +304,7 @@ sub smartphone {
 		my $value = shift;
 		$value =~ s/(\\[\\nr])/$table{$1}/go;
 		return $value;
-	} 
+	}
 }
 
 #===============================================================================
@@ -329,10 +329,10 @@ sub load_config_hash {
 		}
 		my ($name, @spl) = map {/^"(.*)"$/ ? scalar($_ = $1, s/\"\"/\"/g, $_) : $_}
 		                     ("=$line" =~ /=\s*(\"[^\"]*(?:\"\"[^\"]*)*\"|[^=]*)/g);
-		
+
 		$name  = &trim(_unescape($name));
 		my $value = &trim(_unescape(join('=', @spl)));
-		
+
 		if($name ne ''){
 			$hash->{$name} = $value;
 		}
@@ -356,11 +356,11 @@ sub load_config_text {
 	if(defined($wiki)){
 		$fullpath = $wiki->config('config_dir')."/$filename";
 	}
-	
+
 	if(defined($wiki->{config_cache}->{$fullpath})){
 		return $wiki->{config_cache}->{$fullpath};
 	}
-	
+
 	open(CONFIG,$fullpath) or return "";
 	binmode(CONFIG);
 	my $buf = "";
@@ -368,12 +368,12 @@ sub load_config_text {
 		$buf .= $line;
 	}
 	close(CONFIG);
-	
+
 	$buf =~ s/\r\n/\n/g;
 	$buf =~ s/\r/\n/g;
-	
+
 	$wiki->{config_cache}->{$fullpath} = $buf;
-	
+
 	return $buf;
 }
 
@@ -407,27 +407,27 @@ sub save_config_text {
 	my $wiki     = shift;
 	my $filename = shift;
 	my $text     = shift;
-	
+
 	$text =~ s/\r\n/\n/g;
 	$text =~ s/\r/\n/g;
-	
+
 	my $fullpath = $filename;
 	if(defined($wiki)){
 		$fullpath = $wiki->config('config_dir')."/$filename";
 	}
-	
+
 	my $tmpfile = "$fullpath.tmp";
-	
+
 	file_lock($fullpath);
-	
+
 	open(CONFIG,">$tmpfile") or die $!;
 	binmode(CONFIG);
 	print CONFIG $text;
 	close(CONFIG);
-	
+
 	rename($tmpfile, $fullpath);
 	file_unlock($fullpath);
-	
+
 	$wiki->{config_cache}->{$fullpath} = $text;
 }
 
@@ -442,7 +442,7 @@ sub save_config_text {
 #   ...
 #   return $hash;
 # }
-# 
+#
 # Util::sync_update_config($wiki, ファイル名, \&convert);
 # </pre>
 #===============================================================================
@@ -450,27 +450,27 @@ sub sync_update_config {
 	my $wiki     = shift;
 	my $filename = shift;
 	my $function = shift;
-	
+
 	my $fullpath = $filename;
 	if(defined($wiki)){
 		$fullpath = $wiki->config('config_dir')."/$filename";
 	}
-	
+
 	my $tmpfile = "$fullpath.tmp";
-	
+
 	file_lock($fullpath);
-	
+
 	my $hash = load_config_hash($wiki, $filename);
 	my $text = _make_quoted_text(&$function($hash));
-	
+
 	open(CONFIG,">$tmpfile") or die $!;
 	binmode(CONFIG);
 	print CONFIG $text;
 	close(CONFIG);
-	
+
 	rename($tmpfile, $fullpath);
 	file_unlock($fullpath);
-	
+
 	$wiki->{config_cache}->{$fullpath} = $text;
 }
 
@@ -482,17 +482,17 @@ sub _make_quoted_text {
 	my $text = "";
 	foreach my $key (sort(keys(%$hash))){
 		my $value = $hash->{$key};
-		
+
 		$key =~ s/"/""/g;
 		$key =~ s/\\/\\\\/g;
 		$key =~ s/\n/\\n/g;
 		$key =~ s/\r/\\r/g;
-		
+
 		$value =~ s/"/""/g;
 		$value =~ s/\\/\\\\/g;
 		$value =~ s/\n/\\n/g;
 		$value =~ s/\r/\\r/g;
-		
+
 		$text .= qq{"$key"="$value"\n};
 	}
 	return $text;
@@ -512,13 +512,13 @@ sub _make_quoted_text {
 sub file_lock {
 	my $lock  = shift() . ".lock";
 	my $retry = shift || 5;
-#	debug("file_lock($$): $lock");
-	
+	debug("file_lock($$): $lock");
+
 	if(-e $lock){
 		my $mtime = (stat($lock))[9];
 		rmdir($lock) if($mtime < time() - 60);
 	}
-	
+
 	while(!mkdir($lock,0777)){
 		die "Lock is busy. FreeStyleWiki failed creating $lock" if(--$retry <= 0);
 		sleep(1);
@@ -550,7 +550,7 @@ sub file_unlock {
 sub inline_error {
 	my $message = shift;
 	my $type    = shift;
-	
+
 	if(uc($type) eq "WIKI"){
 		return "<<$message>>";
 	} else {
@@ -569,7 +569,7 @@ sub inline_error {
 sub paragraph_error {
 	my $message = shift;
 	my $type    = shift;
-	
+
 	if(uc($type) eq "WIKI"){
 		return "<<$message>>";
 	} else {
@@ -596,20 +596,20 @@ sub get_response {
 
 	my $ua  = LWP::UserAgent->new();
 	my $req = HTTP::Request->new('GET',$url);
-	
+
 	# プロキシの設定
 	my $proxy_host = $wiki->config('proxy_host');
 	my $proxy_port = $wiki->config('proxy_port');
 	my $proxy_user = $wiki->config('proxy_user');
 	my $proxy_pass = $wiki->config('proxy_pass');
-	
+
 	if($proxy_host ne "" && $proxy_port ne ""){
 		$ua->proxy("http","http://$proxy_host:$proxy_port");
 		if($proxy_user ne "" && $proxy_pass ne ""){
 			$req->header('Proxy-Authorization'=>"Basic ".&MIME::Base64::encode("$proxy_user:$proxy_pass"));
 		}
 	}
-	
+
 	# リクエストを発行
 	my $res = $ua->request($req);
 	return $res->content();
@@ -636,6 +636,7 @@ sub get_module_file {
 #===============================================================================
 sub debug {
 	my $message = shift;
+	#$message = "FSwiki test !!!"
 	if($Wiki::DEBUG==1){
 		my $date = &Util::format_date(time());
 		my $lock = "debug.log.lock";
@@ -644,7 +645,7 @@ sub debug {
 			my $mtime = (stat($lock))[9];
 			rmdir($lock) if($mtime < time() - 60);
 		}
-		
+
 		while(!mkdir($lock,0777)){
 			die "Lock is busy." if(--$retry <= 0);
 			sleep(1);
@@ -669,13 +670,13 @@ sub debug {
 sub md5 {
 	my $pass = shift;
 	my $salt = shift;
-	
+
 	eval("use Digest::Perl::MD5;");
-	
+
 	my $md5 = Digest::Perl::MD5->new();
 	$md5->add($pass);
 	$md5->add($salt);
-	
+
 	return $md5->hexdigest;
 }
 
