@@ -8,7 +8,7 @@ setup
 =====
 
 automated script
-https://gist.github.com/Hiroyuki-Nagata/7b7df9ddcb25c43078e1
+https://gist.github.com//7b7df9ddcb25c43078e1
 
 Change root and exec scirpt.
 
