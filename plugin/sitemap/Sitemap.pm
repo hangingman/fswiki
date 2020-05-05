@@ -56,7 +56,7 @@ END_OF_DATA
 			$sitemapattr .= "<priority>" . "1.0" . "</priority>\n";
 			$sitemapattr .= "<changefreq>" . $changefreq . "</changefreq>\n";
 		} else {
-			$sitemapattr .= "<loc>" . $wiki->config('server_host').$wiki->create_page_url($_) . "</loc>\n";
+			$sitemapattr .= "<loc>" . $wiki->config('server_host') . "/" . $wiki->create_page_url($_) . "</loc>\n";
 			$sitemapattr .= "<lastmod>" . format_date($wiki->get_last_modified2($_)) . "</lastmod>\n";
 			$sitemapattr .= "<priority>" . $priority . "</priority>\n";
 			$sitemapattr .= "<changefreq>" . $changefreq . "</changefreq>\n";
