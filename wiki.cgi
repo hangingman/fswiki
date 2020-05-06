@@ -20,8 +20,7 @@ if(exists $ENV{MOD_PERL}){
 #==============================================================================
 use utf8;
 use Cwd;
-use lib './lib';
-use lib './local/lib/perl5';
+use lib ('./lib', './local/lib/perl5');
 # ModPerl::Registry(Prefork)では@INCが初期化されている場合がある
 unshift @INC, './lib' if(exists $ENV{MOD_PERL});
 unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
@@ -36,10 +35,9 @@ use HTML::Template;
 
 # これをやらないとApache::Registoryで動かない
 if(exists $ENV{MOD_PERL}){
-	eval("use Digest::Perl::MD5;");
+	eval("use Digest::MD5;");
 	eval("use plugin::core::Diff;");
 	eval("use plugin::pdf::PDFMaker;");
-	&Jcode::load_module("Jcode::Unicode") unless $Jcode::USE_ENCODE;
 }
 
 #==============================================================================
