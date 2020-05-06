@@ -27,18 +27,13 @@ sub new {
 
 	# ＤＢ設定
 	$self->{db_driver} = $wiki->{'config'}->{'db_driver'};
-	$self->{db_dir}    = $wiki->{'config'}->{'db_dir'};
+	$self->{db_host}   = $wiki->{'config'}->{'db_host'};
 	$self->{db_name}   = $wiki->{'config'}->{'db_name'};
 	$self->{db_user}   = $wiki->{'config'}->{'db_user'};
 	$self->{db_pass}   = $wiki->{'config'}->{'db_pass'};
 
 	# Farmでのパスの置換え
 	my $cgi = $wiki->{CGI};
-	my $path_info  = $cgi->path_info();
-	if(length($path_info) > 0){
-		$path_info =~ m</([^/]+)$>;
-		$self->{db_dir} = $self->{db_dir}.$path_info;
-	}
 
 	# 拡張機能の呼び出し
 	&_load_extension();
@@ -92,8 +87,14 @@ sub get_connection {
 	my $hDB = $self->{db}->{$farm}->{handle};
 
 	if ( !defined($self->{db}->{$farm}->{handle}) ) {
-		my $db_conn = "dbi:".$self->{db_driver}.":".$self->{db_dir}.$farm.'/'.$self->{db_name};
-		$hDB = DBI->connect($db_conn,$self->{db_user},$self->{db_pass},{PrintError=>1});
+		my $dbdriver = $self->{db_driver};
+		my $dbname = $self->{db_name};
+		my $dbhost = $self->{db_host};
+		my $user = $self->{db_user};
+		my $pass = $self->{db_pass};
+
+		my $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
+		$hDB = DBI->connect($dsn, $user, $pass, {PrintError=>0});
 		die "$DBI::errstr " if (!$hDB);
 		# キャッシュ
 		$self->{db}->{$farm}->{handle} = $hDB;
