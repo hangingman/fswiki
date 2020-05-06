@@ -36,6 +36,17 @@ DISTRIBUTIONS
       Module::Build 0.38
       Scalar::Util 0
       Test::More 0
+  DBD-mysqlPP-0.07
+    pathname: T/TS/TSUCCHI/DBD-mysqlPP-0.07.tar.gz
+    provides:
+      DBD::mysqlPP 0.07
+      DBD::mysqlPP::db 0.07
+      DBD::mysqlPP::dr 0.07
+      DBD::mysqlPP::st 0.07
+    requirements:
+      DBI 1
+      ExtUtils::MakeMaker 0
+      Net::MySQL 0.08
   DBI-1.643
     pathname: T/TI/TIMB/DBI-1.643.tar.gz
     provides:
@@ -138,6 +149,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
       perl 5.008001
+  Devel-CheckLib-1.14
+    pathname: M/MA/MATTN/Devel-CheckLib-1.14.tar.gz
+    provides:
+      Devel::CheckLib 1.14
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0.16
+      perl 5.00405
   Digest-MD5-2.55
     pathname: G/GA/GAAS/Digest-MD5-2.55.tar.gz
     provides:
@@ -147,6 +168,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       XSLoader 0
       perl 5.006
+  Digest-SHA1-2.13
+    pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
+    provides:
+      Digest::SHA1 2.13
+    requirements:
+      Digest::base 1.00
+      ExtUtils::MakeMaker 0
+      perl 5.004
   HTML-Parser-3.72
     pathname: G/GA/GAAS/HTML-Parser-3.72.tar.gz
     provides:
@@ -257,6 +286,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       MIME::Base64 2.1
+  Net-MySQL-0.11
+    pathname: T/TS/TSUCCHI/Net-MySQL-0.11.tar.gz
+    provides:
+      Net::MySQL 0.11
+      Net::MySQL::Password 0.11
+      Net::MySQL::Password32 0.11
+      Net::MySQL::RecordIterator 0.11
+      Net::MySQL::Util 0.11
+    requirements:
+      Digest::SHA1 0
+      ExtUtils::MakeMaker 0
+      IO::Socket 0
   Regexp-Assemble-0.38
     pathname: R/RS/RSAVAGE/Regexp-Assemble-0.38.tgz
     provides:

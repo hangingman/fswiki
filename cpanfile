@@ -10,3 +10,4 @@ requires 'Regexp::Assemble', '== 0.38';
 requires 'TeX::Hyphen', '== 1.18';
 requires 'Jcode', '== 2.07';
 requires 'DBI', '== 1.643';
+requires 'DBD::mysqlPP', '== 0.07';

@@ -27,7 +27,6 @@ unshift @INC, './lib' if(exists $ENV{MOD_PERL});
 unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
 
 use strict;
-#use CGI2;
 use Wiki;
 use Util;
 use Jcode;
@@ -267,7 +266,7 @@ sub get_db_config_form {
 <tr><th>設定項目</th><th width="250">設定値</th></tr>
 <tr><td>DBI</td><td>$drh->{'DBI'}&nbsp;</td></tr>
 <tr><td>DBドライバ</td><td>$wiki->{config}->{db_driver} - $drh->{'DBD::'.$driver}&nbsp;</td></tr>
-<tr><td>DBディレクトリ</td><td>$wiki->{config}->{db_dir}&nbsp;</td></tr>
+<tr><td>DBホスト</td><td>$wiki->{config}->{db_host}&nbsp;</td></tr>
 <tr><td>DB名</td><td>$wiki->{config}->{db_name}&nbsp;</td></tr>
 <tr><td>DBユーザー</td><td>$wiki->{config}->{db_user}&nbsp;</td></tr>
 <tr><td>DBパスワード</td><td>$wiki->{config}->{db_pass}&nbsp;</td></tr>
@@ -296,15 +295,13 @@ __EOD__
 }
 
 sub make_db {
+	Util::debug("exec make_db");
 	my $self = shift;
 	my $wiki = shift;
 	my $html = "";
 	eval {
 		my $wikifarm = $self->get_wikifarm_instance($wiki, $wiki->get_CGI()->param('farm'));
 		if (defined($wikifarm)){
-			if (! -d $wiki->config('db_dir').$wikifarm->get_CGI->path_info() ) {
-				mkpath($wiki->config('db_dir').$wikifarm->get_CGI->path_info());
-			}
 			$html .= $self->db_transition($wikifarm);
 		} else {
 			return "Wikiインスタンスの作成に失敗しました。"
@@ -318,6 +315,7 @@ sub make_db {
 }
 
 sub db_transition {
+	Util::debug("exec db_transition");
 	my $self = shift;
 	my $wiki = shift;
 	my $hDB  = shift;
@@ -325,11 +323,15 @@ sub db_transition {
 	my $html = "";
 	$html .= "<ul>\n";
 
-	my $pathinfo = $wiki->get_CGI->path_info();
-	my $dbname = $wiki->config('db_dir').$pathinfo."/".$wiki->config('db_name');
+	my $dbdriver = $wiki->config('db_driver');
+	my $dbname = $wiki->config('db_name');
+	my $dbhost = $wiki->config('db_host');
+	my $user = $wiki->config('db_user');
+	my $pass = $wiki->config('db_pass');
 
-	$html .= "<li>データベース接続[dbi:".$wiki->config('db_driver').":dbname=".$dbname."]";
-	$hDB = DBI->connect("dbi:".$wiki->config('db_driver').":dbname=".$dbname,"","",{PrintError=>0});
+	my $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
+	$html .= "<li>データベース接続[$dsn]";
+	$hDB = DBI->connect($dsn, $user, $pass, {PrintError=>0});
 	if (!$hDB) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; };  $html .= "<br>OK</li>\n";
 
 	eval {
@@ -447,7 +449,8 @@ sub get_wikifarm_instance {
 	# WikiFarm用のwikiインスタンス作成
 	#-----------------------------------------------------------
 	eval {
-		my $cgi  = CGI2->new();
+		$wiki = Wiki->new('setup.dat');
+		$cgi = $wiki->get_CGI();
 
 		# ルートWikiへの相対パスの取得
 		my $relative_path = $cgi->path_info();
@@ -459,8 +462,6 @@ sub get_wikifarm_instance {
 
 		# pageの上書き
 		$cgi->param('page',"#farmlink");
-
-		$wiki = Wiki->new($cgi,'setup.dat');
 		# ストレージをデフォルトに変更する
 		$wiki->{"storage"}->finalize();
 		$wiki->{"storage"} = Wiki::DefaultStorage->new($wiki);
