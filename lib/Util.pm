@@ -659,9 +659,9 @@ sub debug {
 
 #===============================================================================
 # <p>
-#   Digest::Perl::MD5を用いたパスワードの暗号化を行います。
+#   Digest::MD5を用いたパスワードの暗号化を行います。
 #   第一引数にパスワード、第二引数にアカウントを渡します。
-#   このメソッドを呼び出した時点でDigest::Perl::MD5がuseされます。
+#   このメソッドを呼び出した時点でDigest::MD5がuseされます。
 # </p>
 # <pre>
 # my $md5pass = Util::md5($pass,$account);
@@ -671,9 +671,9 @@ sub md5 {
 	my $pass = shift;
 	my $salt = shift;
 
-	eval("use Digest::Perl::MD5;");
+	eval("use Digest::MD5;");
 
-	my $md5 = Digest::Perl::MD5->new();
+	my $md5 = Digest::MD5->new();
 	$md5->add($pass);
 	$md5->add($salt);
 

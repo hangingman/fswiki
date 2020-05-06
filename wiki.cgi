@@ -21,8 +21,11 @@ if(exists $ENV{MOD_PERL}){
 use utf8;
 use Cwd;
 use lib './lib';
+use lib './local/lib/perl5';
 # ModPerl::Registry(Prefork)では@INCが初期化されている場合がある
 unshift @INC, './lib' if(exists $ENV{MOD_PERL});
+unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
+
 use strict;
 #use CGI::Carp qw(fatalsToBrowser);
 #use CGI2;
@@ -49,7 +52,7 @@ Util::override_die();
 eval {
 	# Session用ディレクトリはFarmでも共通に使用する
 	$wiki->config('session_dir',$wiki->config('log_dir'));
-	
+
 	#==============================================================================
 	# Farmとして動作する場合
 	#==============================================================================
@@ -60,7 +63,7 @@ eval {
 		unless($path_info =~ m<^(/[A-Za-z0-9]+)*/?$> and -d $wiki->config('data_dir').$path_info){
 			CORE::die("Wikiが存在しません。");
 		}
-		
+
 		# PATH_INFOの最後が/だったら/なしのURLに転送する
 		if($path_info =~ m|/$|) {
 			$path_info =~ s|/$||;
@@ -253,7 +256,7 @@ eval {
 	} else {
 		# パソコン用処理
 		my $usercss = &Util::load_config_text($wiki,$wiki->config('usercss_file'));
-		
+
 		if($config->{'theme'} eq ''){
 			# テーマが使用されておらず、外部CSSが指定されている場合はそれを使用
 			if($config->{'outer_css'} ne ''){
@@ -268,7 +271,7 @@ eval {
 		                 THEME_CSS     => $wiki->config('css'),
 		                 USER_CSS      => &Util::escapeHTML($usercss),
 		                 THEME_URI     => $wiki->config('theme_uri'));
-		
+
 		# ページ名をEXIST_PAGE_ページ名というパラメータにセット
 		# ただし、スラッシュを含むページ名はセットしない
 		my @pagelist = $wiki->get_page_list();
@@ -277,9 +280,9 @@ eval {
 				$template->param("EXIST_PAGE_".$page=>1);
 			}
 		}
-		
+
 		$output = $template->output;
-		
+
 		# インクルード命令
 		# <!--FSWIKI_INCLUDE PAGE="ページ名"-->
 		# ページ名でWikiNameを指定する。
@@ -292,7 +295,7 @@ eval {
 			}
 		}
 	}
-	
+
 	#------------------------------------------------------------------------------
 	# 出力処理
 	#------------------------------------------------------------------------------
@@ -304,7 +307,7 @@ eval {
 	}
 	print "Pragma: no-cache\n";
 	print "Cache-Control: no-cache\n\n";
-	 
+
 	# HTMLの出力
 	print $output;
 };

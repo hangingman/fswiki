@@ -2,10 +2,10 @@
 log/
 backup/
 attach/
-config/
+config/*
 layout/
 tmpl/
-
+local/
 
 .htaccess
 sitemap.xml
