@@ -1,7 +1,7 @@
 ############################################################
-# 
+#
 # SearchHandler Extension
-# 
+#
 ############################################################
 package plugin::search::SearchHandler;
 use plugin::search::SearchHandler;
@@ -15,13 +15,13 @@ sub do_action {
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
 	my $word = Util::trim($cgi->param("word"));
-	
+
 	my $buf = "";
-	
+
 	$wiki->set_title("検索");
 	$buf .= "<form method=\"GET\" action=\"".$wiki->config('script_name')."\">\n".
 	        "キーワード <input type=\"text\" name=\"word\" size=\"20\" value=\"".$cgi->escapeHTML($word)."\"> ";
-	
+
 	$buf .= "<input type=\"radio\" name=\"t\" id=\"and\" value=\"and\"";
 	$buf .= " checked" if($cgi->param("t") ne "or");
 	$buf .= "><label for=\"and\">AND</label>\n";
@@ -31,18 +31,18 @@ sub do_action {
 	$buf .= "<input type=\"checkbox\" id=\"contents\" name=\"c\" value=\"true\"";
 	$buf .= " checked" if($cgi->param("c") eq "true");
 	$buf .= "><label for=\"contents\">ページ内容も含める</label>\n";
-	
+
 	# 検索速度が速くなったから、並べ替え機能もつけてみる
 	$buf .= "<select name=\"sort\">";
 	$buf .= "<option value=\"page\"".(($cgi->param('sort') eq 'page')?' selected':'').">名前順</option>";
 	$buf .= "<option value=\"lastmodified\"".(($cgi->param('sort') eq 'lastmodified')?' selected':'').">更新日順</option>";
 	$buf .= "<option value=\"lastmodified DESC\"".(($cgi->param('sort') eq 'lastmodified DESC')?' selected':'').">更新日順（新着順）</option>";
 	$buf .= "</select>";
-	
+
 	$buf .=  "<input type=\"submit\" value=\" 検 索 \">".
 	         "<input type=\"hidden\" name=\"action\" value=\"SEARCH\">".
 	         "</form>\n";
-	
+
 	#---------------------------------------------------------------------------
 	# 検索実行
 	if($word ne ""){
@@ -50,7 +50,7 @@ sub do_action {
 		my @row = undef;
 		my @words = split(/ +|　+/,$word);
 		my $t = "";
-		$sql = 'SELECT * FROM data_tbl WHERE';
+		$sql = 'SELECT * FROM `data_tbl` WHERE';
 		foreach $word (@words){
 			$sql .= $t." (page LIKE '%".$word."%'";
 			# ページ名も検索対象にする？
@@ -80,7 +80,7 @@ sub do_action {
 				$page .= "\n".$row[1];
 			}
 			my $page2 = ($word =~ /[A-Za-z]/) ? Jcode->new($page)->tr('a-z','A-Z') : undef;
-			
+
 			if($cgi->param("t") eq "or"){
 				# OR検索 -------------------------------------------------------
 				foreach(@words){

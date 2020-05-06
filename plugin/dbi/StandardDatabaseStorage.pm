@@ -22,16 +22,16 @@ $VERSION = '0.0.3 - 2006/05/08';
 sub new {
 	my $class  = shift;
 	my $wiki   = shift;
-	
+
 	my $self = Wiki::DefaultStorage->new($wiki);
-	
+
 	# ＤＢ設定
 	$self->{db_driver} = $wiki->{'config'}->{'db_driver'};
 	$self->{db_dir}    = $wiki->{'config'}->{'db_dir'};
 	$self->{db_name}   = $wiki->{'config'}->{'db_name'};
 	$self->{db_user}   = $wiki->{'config'}->{'db_user'};
 	$self->{db_pass}   = $wiki->{'config'}->{'db_pass'};
-	
+
 	# Farmでのパスの置換え
 	my $cgi = $wiki->{CGI};
 	my $path_info  = $cgi->path_info();
@@ -39,10 +39,10 @@ sub new {
 		$path_info =~ m</([^/]+)$>;
 		$self->{db_dir} = $self->{db_dir}.$path_info;
 	}
-	
+
 	# 拡張機能の呼び出し
 	&_load_extension();
-	
+
 	return bless $self,$class;
 }
 
@@ -83,14 +83,14 @@ sub _load_extension {
 sub get_connection {
 	my $self = shift;
 	my $farm = shift;
-	
+
 	$farm =~ s/^\///;
 	if ( defined($farm) && $farm ne '' ) {
 		$farm = '/'.$farm;
 	}
 	$farm = '' if ( !defined($farm) );
 	my $hDB = $self->{db}->{$farm}->{handle};
-	
+
 	if ( !defined($self->{db}->{$farm}->{handle}) ) {
 		my $db_conn = "dbi:".$self->{db_driver}.":".$self->{db_dir}.$farm.'/'.$self->{db_name};
 		$hDB = DBI->connect($db_conn,$self->{db_user},$self->{db_pass},{PrintError=>1});
@@ -110,7 +110,7 @@ sub prepare {
 	my $self = shift;
 	my $sql  = shift;
 	my $farm = shift;
-	
+
 	my $hDB;
 	$hDB = $self->get_connection($farm);
 	return undef if (!defined($hDB));
@@ -126,19 +126,19 @@ sub get_page {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 #	return $self->SUPER::get_page($page, $path);
-	
+
 	if (!defined($self->{"$path:source"}->{$page})) {
 		my ($sql, $hst, $rslt) = undef;
 		my @row = undef;
-		
-		$sql = "SELECT source FROM data_tbl WHERE page = ?";
+
+		$sql = "SELECT `source` FROM `data_tbl` WHERE `page` = ?";
 		$hst = $self->prepare($sql,$path); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 		@row = $hst->fetchrow_array();
 		$hst->finish();
-		
+
 		# キャッシュ
 		$self->{"$path:source"}->{$page} = $row[0];
 	}
@@ -156,16 +156,16 @@ sub save_page {
 	my $content = shift;
 	my $sage    = shift;
 	my $wiki    = $self->{wiki};
-	
+
 	$self->SUPER::save_page($page, $content, $sage);
-	
+
 	$content = '' if($content =~ /^[\r\n]+$/s); # added for opera
-	
+
 	# ページ名とページ内容の補正
 	$page = Util::trim($page);
 	$content =~ s/\r\n/\n/g;
 	$content =~ s/\r/\n/g;
-	
+
 	# バックアップ
 	if ( !defined($self->backup($page)) ) {
 		# backupがない場合は、page_levelをデフォルト値に設定する。
@@ -185,14 +185,14 @@ sub save_page {
 	} else {
 		$self->_dbs_rename_old_history($page);
 	}
-	
+
 	# 書き込む
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
+
 	if($content eq ""){
 		# 削除処理
-		$sql = "DELETE FROM data_tbl WHERE page = ?";
+		$sql = "DELETE FROM `data_tbl` WHERE `page` = ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page);die "$DBI::errstr " if (!$rslt);
 		$hst->finish();
@@ -201,18 +201,18 @@ sub save_page {
 		$self->{':source'}->{$page} = undef;
 	} else {
 		# 更新処理
-		$sql = "SELECT COUNT(*) FROM data_tbl WHERE page = ?";
+		$sql = "SELECT COUNT(*) FROM `data_tbl` WHERE `page` = ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 		@row = $hst->fetchrow_array();
 		$hst->finish();
 		if ($row[0] gt 0) {
-			$sql = "UPDATE data_tbl SET source = ?, lastmodified = ? WHERE page = ?";
+			$sql = "UPDATE `data_tbl` SET `source` = ?, `lastmodified` = ? WHERE `page` = ?";
 			$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 			$rslt = $hst->execute($content, time(), $page); die "$DBI::errstr " if (!$rslt);
 			$hst->finish();
 		} else {
-			$sql = "INSERT INTO data_tbl VALUES(?, ?, ?)";
+			$sql = "INSERT INTO `data_tbl` VALUES(?, ?, ?)";
 			$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 			$rslt = $hst->execute($page, $content, time());die "$DBI::errstr " if (!$rslt);
 			$hst->finish();
@@ -230,13 +230,13 @@ sub save_page {
 sub backup {
 	my $self    = shift;
 	my $page    = shift;
-	
+
 	my $wiki = $self->{wiki};
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
+
 	# 更新前ソースの取得
-	$sql = "SELECT source FROM data_tbl WHERE page = ?";
+	$sql = "SELECT `source` FROM `data_tbl` WHERE `page` = ?";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	@row = $hst->fetchrow_array();
@@ -244,7 +244,7 @@ sub backup {
 	if ( $#row >= 0 ) {
 		my $contents = $row[0];
 		my @row = undef;
-		$sql = "INSERT INTO backup_tbl VALUES(?, ?, ?)";
+		$sql = "INSERT INTO `backup_tbl` VALUES(?, ?, ?)";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page, $contents, time()); die "$DBI::errstr " if (!$rslt);
 		$hst->finish();
@@ -262,15 +262,15 @@ sub _dbs_rename_old_history {
 	my $self  = shift;
 	my $page  = shift;
 	my $wiki  = $self->{wiki};
-	
+
 	# 無制限の場合は何もしない
 	if($self->{backup}==0){
 		return;
 	}
-	
+
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	$sql = "SELECT lastmodified FROM backup_tbl WHERE page = ? ORDER BY lastmodified DESC";
+	$sql = "SELECT `lastmodified` FROM `backup_tbl` WHERE `page` = ? ORDER BY `lastmodified` DESC";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	my $count = 0;
@@ -283,7 +283,7 @@ sub _dbs_rename_old_history {
 	$hst->finish();
 	# バックアップ数以上のバックアップデータを削除
 	if ($count > $self->{backup}) {
-		$sql = "DELETE FROM backup_tbl WHERE page = ? AND lastmodified <= ?";
+		$sql = "DELETE FROM `backup_tbl` WHERE `page` = ? AND `lastmodified` <= ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page,$lastmodified); die "$DBI::errstr " if (!$rslt);
 		$hst->finish();
@@ -302,11 +302,11 @@ sub get_page_list {
 	my $sort   = "name";
 	my $permit = "all";
 	my $max    = 0;
-	
+
 #	return $self->SUPER::get_page_list($args);
-	
+
 	my ($sql, $hst, $rslt) = undef;
-	
+
 	# 引数を解釈
 	if(defined($args)){
 		if(defined($args->{-sort})){
@@ -320,7 +320,7 @@ sub get_page_list {
 		}
 	}
 	# ページの一覧を取得
-	$sql = "SELECT page FROM data_tbl";
+	$sql = "SELECT `page` FROM `data_tbl`";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute(); die "$DBI::errstr " if (!$rslt);
 	my ($name, @list, @row) = undef;
@@ -332,16 +332,16 @@ sub get_page_list {
 			if($wiki->can_show($name)){
 				$flag = 1;
 			}
-			
+
 		} elsif($permit eq "modify"){
 			if($wiki->can_modify_page($name)){
 				$flag = 1;
 			}
-			
+
 		# 全てのページ
 		} elsif($permit eq "all"){
 			$flag = 1;
-		
+
 		# それ以外の場合はエラー
 		} else {
 			die "permitオプションの指定が不正です。";
@@ -351,22 +351,22 @@ sub get_page_list {
 		}
 	}
 	$hst->finish();
-	
+
 	# 名前でソート
 	if($sort eq "name"){
 		@list = sort { $a cmp $b } @list;
-		
+
 	# 更新日時（新着順）にソート
 	} elsif($sort eq "last_modified"){
 		@list =  map  { $_->[0] }
 		         sort { $b->[1] <=> $a->[1] }
 		         map  { [$_, $wiki->get_last_modified2($_)] } @list;
-	
+
 	# それ以外の場合はエラー
 	} else {
 		die "sortオプションの指定が不正です。";
 	}
-	
+
 	return $max == 0 ? @list : splice(@list, 0, $max);
 }
 
@@ -379,25 +379,25 @@ sub get_last_modified {
 	my $self   = shift;
 	my $page   = shift;
 	my $modtime = $self->{modtime_cache};
-	
+
 #	return $self->SUPER::get_last_modified($page);
-	
+
 	if(defined($modtime->{$page})){
 		return $modtime->{$page};
 	}
-	
+
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
-	$sql = "SELECT lastmodified FROM data_tbl WHERE page = ?";
+
+	$sql = "SELECT `lastmodified` FROM `data_tbl` WHERE `page` = ?";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	@row = $hst->fetchrow_array();
 	$hst->finish();
-		
+
 	# キャッシュ
 	$self->{modtime_cache}->{$page} = $row[0];
-	
+
 	return $row[0];
 }
 
@@ -409,9 +409,9 @@ sub get_last_modified {
 sub get_last_modified2 {
 	my $self   = shift;
 	my $page   = shift;
-	
+
 #	return $self->SUPER::get_last_modified2($page);
-	
+
 	return $self->get_last_modified($page);
 }
 
@@ -424,25 +424,25 @@ sub page_exists {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 #	return $self->SUPER::page_exists($page, $path);
-	
+
 	if($self->{exists_cache} and defined($self->{exists_cache}->{"$path:$page"})){
 		return $self->{exists_cache}->{"$path:$page"};
 	}
-	
+
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
-	$sql = "SELECT COUNT(*) FROM data_tbl WHERE page = ?";
+
+	$sql = "SELECT COUNT(*) FROM `data_tbl` WHERE `page` = ?";
 	$hst = $self->prepare($sql,$path); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	@row = $hst->fetchrow_array();
 	$hst->finish();
-	
+
 	my $exists = ($row[0] gt 0)?1:undef;
 	$self->{exists_cache}->{"$path:$page"} = $exists;
-	
+
 	return $exists;
 }
 
@@ -455,7 +455,7 @@ sub page_exists {
 #==============================================================================
 sub backup_type {
 	my $self = shift;
-	
+
 	return $self->SUPER::backup_type();
 }
 
@@ -468,16 +468,16 @@ sub backup_type {
 sub get_backup_list {
 	my $self = shift;
 	my $page = shift;
-	
+
 #	return $self->SUPER::get_backup_list($page);
-	
+
 	if($self->{backup}==1){
 		return undef;
 	} else {
 		my ($sql, $hst, $rslt) = undef;
 		my @row = undef;
-		
-		$sql = "SELECT lastmodified FROM backup_tbl WHERE page = ? ORDER BY lastmodified DESC";
+
+		$sql = "SELECT `lastmodified` FROM `backup_tbl` WHERE `page` = ? ORDER BY `lastmodified` DESC";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 		my @datelist;
@@ -506,22 +506,22 @@ sub get_backup {
 	my $gen      = shift;
 	my $content  = "";
 	my $filename = "";
-	
+
 #	return $self->SUPER::get_backup($page, $gen);
 
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
+
 	# 件数の取得
-	$sql = "SELECT COUNT(*) FROM backup_tbl WHERE page = ?";
+	$sql = "SELECT COUNT(*) FROM `backup_tbl` WHERE `page` = ?";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	@row = $hst->fetchrow_array();
 	$hst->finish();
 	my $max = $row[0];
-	
+
 	# 指定されたバックアップデータの取得
-	$sql = "SELECT source, lastmodified FROM backup_tbl WHERE page = ? ORDER BY lastmodified DESC";
+	$sql = "SELECT `source`, `lastmodified` FROM `backup_tbl` WHERE `page` = ? ORDER BY `lastmodified` DESC";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page); die "$DBI::errstr " if (!$rslt);
 	my $count = ($max < $self->{backup})?$max:$self->{backup};
@@ -548,27 +548,27 @@ sub get_backup {
 sub freeze_page {
 	my $self = shift;
 	my $page = shift;
-	
+
 	$self->SUPER::freeze_page($page);
 
 	if(!$self->is_freeze($page)){
 		my ($sql, $hst, $rslt) = undef;
 		my @row = undef;
-		
-		$sql = "SELECT COUNT(*) FROM attr_tbl WHERE page = ? AND key = ?";
+
+		$sql = "SELECT COUNT(*) FROM `attr_tbl` WHERE `page` = ? AND `key` = ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page, 'freeze'); die "$DBI::errstr " if (!$rslt);
 		@row = $hst->fetchrow_array();
 		$hst->finish();
 		if ( $row[0] > 0 ) {
 			# UPDATE
-			$sql = "UPDATE attr_tbl SET val = ?, lastmodified = ? WHERE page = ? AND key = ?";
+			$sql = "UPDATE `attr_tbl` SET `value` = ?, `lastmodified` = ? WHERE `page` = ? AND `key` = ?";
 			$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 			$rslt = $hst->execute('1',time(),$page,'freeze'); die "$DBI::errstr " if (!$rslt);
 			$hst->finish();
 		} else {
 			# INSERT
-			$sql = "INSERT INTO attr_tbl VALUES(?, ?, ?, ?)";
+			$sql = "INSERT INTO `attr_tbl` VALUES(?, ?, ?, ?)";
 			$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 			$rslt = $hst->execute($page,'freeze','1',time()); die "$DBI::errstr " if (!$rslt);
 			$hst->finish();
@@ -586,21 +586,21 @@ sub freeze_page {
 sub un_freeze_page {
 	my $self = shift;
 	my $page = shift;
-	
+
 	$self->SUPER::un_freeze_page($page);
-	
+
 	if($self->is_freeze($page)){
 		my ($sql, $hst, $rslt) = undef;
 		my @row = undef;
-		
-		$sql = "SELECT COUNT(*) FROM attr_tbl WHERE page = ? AND key = ?";
+
+		$sql = "SELECT COUNT(*) FROM `attr_tbl` WHERE `page` = ? AND `key` = ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page, 'freeze'); die "$DBI::errstr " if (!$rslt);
 		@row = $hst->fetchrow_array();
 		$hst->finish();
 		if ( $row[0] > 0 ) {
 			# DELETE
-			$sql = "DELETE FROM attr_tbl WHERE page = ? AND key = ?";
+			$sql = "DELETE FROM `attr_tbl` WHERE `page` = ? AND `key` = ?";
 			$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 			$rslt = $hst->execute($page,'freeze'); die "$DBI::errstr " if (!$rslt);
 			$hst->finish();
@@ -618,29 +618,29 @@ sub un_freeze_page {
 sub get_freeze_list {
 	my $self = shift;
 	my $path = shift;
-	
+
 #	return $self->SUPER::get_freeze_list($path);
-	
+
 	if(!defined($path)){
 		$path = "";
 	}
-	
+
 	if(defined($self->{"$path:freeze_list"})){
 		return @{$self->{"$path:freeze_list"}};
 	}
-	
+
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
 	my @list;
-	
-	$sql = "SELECT page FROM attr_tbl WHERE key = ?";
+
+	$sql = "SELECT `page` FROM `attr_tbl` WHERE `key` = ?";
 	$hst = $self->prepare($sql,$path); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute('freeze'); die "$DBI::errstr " if (!$rslt);
 	while ( @row = $hst->fetchrow_array() ) {
 		push @list,$row[0];
 	}
 	$hst->finish();
-	
+
 	$self->{"$path:freeze_list"} = \@list;
 	return @list;
 }
@@ -654,14 +654,14 @@ sub is_freeze {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 #	return $self->SUPER::is_freeze($page,$path);
 	foreach my $freeze_page ($self->get_freeze_list($path)){
 		if($freeze_page eq $page){
 			return 1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -674,26 +674,26 @@ sub set_page_level {
 	my $self  = shift;
 	my $page  = shift;
 	my $level = shift;
-	
+
 	$self->SUPER::set_page_level($page,$level);
-	
+
 	my ($sql, $hst, $rslt) = undef;
 	my @row = undef;
-	
-	$sql = "SELECT COUNT(*) FROM attr_tbl WHERE page = ? AND key = ?";
+
+	$sql = "SELECT COUNT(*) FROM `attr_tbl` WHERE `page` = ? AND `key` = ?";
 	$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 	$rslt = $hst->execute($page, 'page_level'); die "$DBI::errstr " if (!$rslt);
 	@row = $hst->fetchrow_array();
 	$hst->finish();
 	if ( $row[0] > 0 ) {
 		# UPDATE
-		$sql = "UPDATE attr_tbl SET val = ?, lastmodified = ? WHERE page = ? AND key = ?";
+		$sql = "UPDATE `attr_tbl` SET `value` = ?, `lastmodified` = ? WHERE `page` = ? AND `key` = ?";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($level,time(),$page,'page_level'); die "$DBI::errstr " if (!$rslt);
 		$hst->finish();
 	} else {
 		# INSERT
-		$sql = "INSERT INTO attr_tbl VALUES(?, ?, ?, ?)";
+		$sql = "INSERT INTO `attr_tbl` VALUES(?, ?, ?, ?)";
 		$hst = $self->prepare($sql); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute($page,'page_level',$level,time()); die "$DBI::errstr " if (!$rslt);
 		$hst->finish();
@@ -713,18 +713,18 @@ sub get_page_level {
 	my $self = shift;
 	my $page = shift;
 	my $path = shift;
-	
+
 #	return $self->SUPER::get_page_level($page,$path);
-	
+
 	if(!defined($path)){
 		$path = "";
 	}
-	
+
 	unless(defined($self->{"$path:show_level"})){
 		my ($sql, $hst, $rslt) = undef;
 		my @row = undef;
-		
-		$sql = "SELECT page, val FROM attr_tbl WHERE key = ?";
+
+		$sql = "SELECT `page`, `value` FROM `attr_tbl` WHERE `key` = ?";
 		$hst = $self->prepare($sql,$path); die "$DBI::errstr " if (!$hst);
 		$rslt = $hst->execute('page_level'); die "$DBI::errstr " if (!$rslt);
 		while (@row = $hst->fetchrow_array()) {
@@ -732,7 +732,7 @@ sub get_page_level {
 		}
 		$hst->finish();
 	}
-	
+
 	if(defined($page)){
 		if(defined($self->{"$path:show_level"}->{$page})){
 			return $self->{"$path:show_level"}->{$page};
@@ -752,7 +752,7 @@ sub get_page_level {
 #==============================================================================
 sub finalize {
 	my $self = shift;
-	
+
 	# DB接続の終了
 	foreach my $farm ( keys(%{$self->{db}}) ) {
 		if ( defined($self->{db}->{$farm}->{handle}) ) {
