@@ -1,4 +1,5 @@
 *.wiki
+*.log
 log/
 backup/
 attach/

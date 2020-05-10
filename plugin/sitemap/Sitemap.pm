@@ -29,6 +29,7 @@ sub hook {
 	my $changefreq ="weekly";
 	#サイトマップ格納ディレクトリ…はトップディレクトリ
 	my $file = $wiki->config('sitemap_path');
+	my $wiki_host = $wiki->config('server_host') . $wiki->config('wiki_dir') . "/";
 
 	#モジュール用変数
 	my $sitemapheader = <<END_OF_DATA;
@@ -56,7 +57,7 @@ END_OF_DATA
 			$sitemapattr .= "<priority>" . "1.0" . "</priority>\n";
 			$sitemapattr .= "<changefreq>" . $changefreq . "</changefreq>\n";
 		} else {
-			$sitemapattr .= "<loc>" . $wiki->config('server_host') . "/" . $wiki->create_page_url($_) . "</loc>\n";
+			$sitemapattr .= "<loc>" . $wiki_host . $wiki->create_page_url($_) . "</loc>\n";
 			$sitemapattr .= "<lastmod>" . format_date($wiki->get_last_modified2($_)) . "</lastmod>\n";
 			$sitemapattr .= "<priority>" . $priority . "</priority>\n";
 			$sitemapattr .= "<changefreq>" . $changefreq . "</changefreq>\n";
