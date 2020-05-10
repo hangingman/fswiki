@@ -20,3 +20,11 @@ Change root and exec scirpt.
 ```
 
 Here, you can see FreeStyleWiki page at http://hostname/fswiki/wiki.cgi
+
+setup with carton
+=================
+
+```
+$ carton install
+$ carton exec plackup -r -host 93.188.167.16 -p 80
+```

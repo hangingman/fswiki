@@ -11,3 +11,8 @@ requires 'TeX::Hyphen', '== 1.18';
 requires 'Jcode', '== 2.07';
 requires 'DBI', '== 1.643';
 requires 'DBD::mysqlPP', '== 0.07';
+
+requires 'Plack', '== 1.0047';
+requires 'CGI::Emulate::PSGI', '== 0.23';
+requires 'CGI::Compile', '== 0.24';
+requires 'Proclet', '== 0.35';
