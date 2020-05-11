@@ -155,6 +155,13 @@ DISTRIBUTIONS
       Class::Accessor::Lite 0.08
     requirements:
       ExtUtils::MakeMaker 6.36
+  Class-Data-Lite-0.0010
+    pathname: S/SO/SONGMU/Class-Data-Lite-0.0010.tar.gz
+    provides:
+      Class::Data::Lite 0.0010
+    requirements:
+      Module::Build::Tiny 0.035
+      perl 5.008001
   Class-Inspector-1.36
     pathname: P/PL/PLICEASE/Class-Inspector-1.36.tar.gz
     provides:
@@ -190,6 +197,25 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  DBD-SQLite-1.64
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.64.tar.gz
+    provides:
+      DBD::SQLite 1.64
+      DBD::SQLite::Constants undef
+      DBD::SQLite::GetInfo undef
+      DBD::SQLite::VirtualTable 1.64
+      DBD::SQLite::VirtualTable::Cursor 1.64
+      DBD::SQLite::VirtualTable::FileContent undef
+      DBD::SQLite::VirtualTable::FileContent::Cursor undef
+      DBD::SQLite::VirtualTable::PerlData undef
+      DBD::SQLite::VirtualTable::PerlData::Cursor undef
+    requirements:
+      DBI 1.57
+      ExtUtils::MakeMaker 0
+      File::Spec 0.82
+      Test::More 0.88
+      Tie::Hash 0
+      perl 5.006
   DBD-mysqlPP-0.07
     pathname: T/TS/TSUCCHI/DBD-mysqlPP-0.07.tar.gz
     provides:
@@ -303,6 +329,30 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
       perl 5.008001
+  DBIx-Tracer-0.03
+    pathname: T/TO/TOKUHIROM/DBIx-Tracer-0.03.tar.gz
+    provides:
+      DBIx::Tracer 0.03
+    requirements:
+      DBD::SQLite 1.48
+      DBI 0
+      Module::Build::Tiny 0.035
+      parent 0
+      perl 5.008008
+  Data-Dump-1.23
+    pathname: G/GA/GAAS/Data-Dump-1.23.tar.gz
+    provides:
+      Data::Dump 1.23
+      Data::Dump::FilterContext undef
+      Data::Dump::Filtered undef
+      Data::Dump::Trace 0.02
+      Data::Dump::Trace::Call 0.02
+      Data::Dump::Trace::Wrapper 0.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      Symbol 0
+      Test 0
+      perl 5.006
   Data-Validator-1.07
     pathname: G/GF/GFUJI/Data-Validator-1.07.tar.gz
     provides:
@@ -343,6 +393,49 @@ DISTRIBUTIONS
       File::Spec 0
       File::Temp 0.16
       perl 5.00405
+  Devel-KYTProf-0.9994
+    pathname: S/SO/SONGMU/Devel-KYTProf-0.9994.tar.gz
+    provides:
+      Devel::KYTProf 0.9994
+      Devel::KYTProf::Logger::LTSV undef
+      Devel::KYTProf::Profiler::Cache::Memcached::Fast undef
+      Devel::KYTProf::Profiler::DBI undef
+      Devel::KYTProf::Profiler::Furl::HTTP undef
+      Devel::KYTProf::Profiler::LWP::UserAgent undef
+      Devel::KYTProf::Profiler::MogileFS::Client undef
+    requirements:
+      Class::Data::Lite 0
+      Class::Inspector 0
+      DBIx::Tracer 0
+      Module::Build::Tiny 0.035
+      Module::Load 0
+      Term::ANSIColor 0
+      perl 5.008_001
+  Devel-NYTProf-6.06
+    pathname: T/TI/TIMB/Devel-NYTProf-6.06.tar.gz
+    provides:
+      Devel::NYTProf 6.06
+      Devel::NYTProf::Apache 4.00
+      Devel::NYTProf::Constants undef
+      Devel::NYTProf::Core 6.06
+      Devel::NYTProf::Data 4.02
+      Devel::NYTProf::FileHandle undef
+      Devel::NYTProf::FileInfo undef
+      Devel::NYTProf::ReadStream 4.00
+      Devel::NYTProf::Reader 4.06
+      Devel::NYTProf::Run undef
+      Devel::NYTProf::SubCallInfo undef
+      Devel::NYTProf::SubInfo undef
+      Devel::NYTProf::Util 4.00
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Which 1.09
+      Getopt::Long 0
+      JSON::MaybeXS 0
+      List::Util 0
+      Test::Differences 0.60
+      Test::More 0.84
+      XSLoader 0
   Devel-PPPort-3.58
     pathname: A/AT/ATOOMIC/Devel-PPPort-3.58.tar.gz
     provides:
@@ -503,6 +596,22 @@ DISTRIBUTIONS
       File::Spec 0
       Symbol 0
       Test::More 0.47
+  File-Remove-1.58
+    pathname: S/SH/SHLOMIF/File-Remove-1.58.tar.gz
+    provides:
+      File::Remove 1.58
+    requirements:
+      Cwd 3.29
+      ExtUtils::MakeMaker 0
+      File::Glob 0
+      File::Path 0
+      File::Spec 3.29
+      Module::Build 0.28
+      constant 0
+      perl 5.006
+      strict 0
+      vars 0
+      warnings 0
   File-ShareDir-1.116
     pathname: R/RE/REHSACK/File-ShareDir-1.116.tar.gz
     provides:
@@ -654,6 +763,14 @@ DISTRIBUTIONS
       Test::Deep 0
       Test::More 0.88
       perl 5.008001
+  HTTP-Parser-XS-0.17
+    pathname: K/KA/KAZUHO/HTTP-Parser-XS-0.17.tar.gz
+    provides:
+      HTTP::Parser::XS 0.17
+      HTTP::Parser::XS::PP undef
+    requirements:
+      ExtUtils::MakeMaker 6.36
+      Test::More 0.96
   HTTP-Tiny-0.076
     pathname: D/DA/DAGOLDEN/HTTP-Tiny-0.076.tar.gz
     provides:
@@ -901,6 +1018,82 @@ DISTRIBUTIONS
       XSLoader 0
       parent 0
       perl 5.008001
+  Module-Install-1.19
+    pathname: E/ET/ETHER/Module-Install-1.19.tar.gz
+    provides:
+      Module::AutoInstall 1.19
+      Module::Install 1.19
+      Module::Install::Admin 1.19
+      Module::Install::Admin::Bundle 1.19
+      Module::Install::Admin::Compiler 1.19
+      Module::Install::Admin::Find 1.19
+      Module::Install::Admin::Include 1.19
+      Module::Install::Admin::Makefile 1.19
+      Module::Install::Admin::Manifest 1.19
+      Module::Install::Admin::Metadata 1.19
+      Module::Install::Admin::ScanDeps 1.19
+      Module::Install::Admin::WriteAll 1.19
+      Module::Install::AutoInstall 1.19
+      Module::Install::Base 1.19
+      Module::Install::Base::FakeAdmin 1.19
+      Module::Install::Bundle 1.19
+      Module::Install::Can 1.19
+      Module::Install::Compiler 1.19
+      Module::Install::DSL 1.19
+      Module::Install::Deprecated 1.19
+      Module::Install::External 1.19
+      Module::Install::Fetch 1.19
+      Module::Install::Include 1.19
+      Module::Install::Inline 1.19
+      Module::Install::MakeMaker 1.19
+      Module::Install::Makefile 1.19
+      Module::Install::Metadata 1.19
+      Module::Install::PAR 1.19
+      Module::Install::Run 1.19
+      Module::Install::Scripts 1.19
+      Module::Install::Share 1.19
+      Module::Install::Win32 1.19
+      Module::Install::With 1.19
+      Module::Install::WriteAll 1.19
+      inc::Module::Install 1.19
+      inc::Module::Install::DSL 1.19
+    requirements:
+      Devel::PPPort 3.16
+      ExtUtils::Install 1.52
+      ExtUtils::MakeMaker 6.59
+      ExtUtils::ParseXS 2.19
+      File::Path 0
+      File::Remove 1.42
+      File::Spec 3.28
+      Module::Build 0.29
+      Module::CoreList 2.17
+      Module::ScanDeps 1.09
+      Parse::CPAN::Meta 1.4413
+      Test::Harness 3.13
+      Test::More 0.86
+      YAML::Tiny 1.38
+      autodie 0
+      perl 5.006
+  Module-Install-AuthorTests-0.002
+    pathname: R/RJ/RJBS/Module-Install-AuthorTests-0.002.tar.gz
+    provides:
+      Module::Install::AuthorTests 0.002
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Install 0
+  Module-ScanDeps-1.27
+    pathname: R/RS/RSCHUPP/Module-ScanDeps-1.27.tar.gz
+    provides:
+      Module::ScanDeps 1.27
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0
+      Getopt::Long 0
+      Module::Metadata 0
+      Text::ParseWords 0
+      perl 5.008001
+      version 0
   Mouse-v2.5.10
     pathname: S/SK/SKAJI/Mouse-v2.5.10.tar.gz
     provides:
@@ -951,6 +1144,40 @@ DISTRIBUTIONS
       Digest::SHA1 0
       ExtUtils::MakeMaker 0
       IO::Socket 0
+  Net-Server-2.009
+    pathname: R/RH/RHANDOM/Net-Server-2.009.tar.gz
+    provides:
+      Net::Server 2.009
+      Net::Server::Daemonize 0.06
+      Net::Server::Fork undef
+      Net::Server::HTTP undef
+      Net::Server::INET undef
+      Net::Server::INET::Handle undef
+      Net::Server::Log::Log::Log4perl undef
+      Net::Server::Log::Sys::Syslog undef
+      Net::Server::MultiType undef
+      Net::Server::Multiplex undef
+      Net::Server::Multiplex::MUX undef
+      Net::Server::PSGI undef
+      Net::Server::PreFork undef
+      Net::Server::PreForkSimple undef
+      Net::Server::Proto undef
+      Net::Server::Proto::SSL undef
+      Net::Server::Proto::SSLEAY undef
+      Net::Server::Proto::TCP undef
+      Net::Server::Proto::UDP undef
+      Net::Server::Proto::UNIX undef
+      Net::Server::Proto::UNIXDGRAM undef
+      Net::Server::SIG 0.03
+      Net::Server::Single undef
+      Net::Server::TiedHandle 2.009
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      File::Temp 0
+      IO::Socket 0
+      POSIX 0
+      Socket 0
+      Time::HiRes 0
   POSIX-strftime-Compiler-0.42
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.42.tar.gz
     provides:
@@ -1077,6 +1304,23 @@ DISTRIBUTIONS
       WWW::Form::UrlEncoded 0.23
       parent 0
       perl 5.008001
+  Plack-Middleware-Profiler-NYTProf-0.17
+    pathname: K/KI/KITANO/Plack-Middleware-Profiler-NYTProf-0.17.tar.gz
+    provides:
+      Plack::Middleware::Profiler::NYTProf 0.17
+    requirements:
+      Devel::NYTProf 5.06
+      Exporter 0
+      ExtUtils::MakeMaker 6.36
+      File::Spec 0
+      File::Temp 0
+      File::Which 0
+      Filter::Util::Call 0
+      Module::Install::AuthorTests 0
+      Plack 0
+      Test::More 0.98
+      Time::HiRes 0
+      parent 0
   Proc-Wait3-0.05
     pathname: C/CT/CTILMES/Proc-Wait3-0.05.tar.gz
     provides:
@@ -1123,6 +1367,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
+  Server-Starter-0.35
+    pathname: K/KA/KAZUHO/Server-Starter-0.35.tar.gz
+    provides:
+      Server::Starter 0.35
+      Server::Starter::Guard undef
+    requirements:
+      Module::Build 0.4005
+      perl 5.008
   Set-Crontab-1.03
     pathname: A/AM/AMS/Set-Crontab-1.03.tar.gz
     provides:
@@ -1141,6 +1393,24 @@ DISTRIBUTIONS
       POSIX 0
       strict 0
       warnings 0
+  Starman-0.4015
+    pathname: M/MI/MIYAGAWA/Starman-0.4015.tar.gz
+    provides:
+      HTTP::Server::PSGI::Net::Server::PreFork undef
+      Plack::Handler::Starman undef
+      Starman 0.4015
+      Starman::Server undef
+    requirements:
+      Data::Dump 0
+      HTTP::Date 0
+      HTTP::Parser::XS 0
+      HTTP::Status 0
+      Module::Build::Tiny 0.034
+      Net::Server 2.007
+      Plack 0.9971
+      Test::TCP 2.00
+      parent 0
+      perl 5.008001
   Stream-Buffered-0.03
     pathname: D/DO/DOY/Stream-Buffered-0.03.tar.gz
     provides:
@@ -1236,6 +1506,16 @@ DISTRIBUTIONS
       List::Util 1.09
       Scalar::Util 1.09
       Test::Builder 0
+  Test-Differences-0.67
+    pathname: D/DC/DCANTRELL/Test-Differences-0.67.tar.gz
+    provides:
+      Test::Differences 0.67
+    requirements:
+      Capture::Tiny 0.24
+      Data::Dumper 2.126
+      ExtUtils::MakeMaker 0
+      Test::More 0.88
+      Text::Diff 1.43
   Test-Harness-3.42
     pathname: L/LE/LEONT/Test-Harness-3.42.tar.gz
     provides:
@@ -1430,6 +1710,18 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Text-Diff-1.45
+    pathname: N/NE/NEILB/Text-Diff-1.45.tar.gz
+    provides:
+      Text::Diff 1.45
+      Text::Diff::Base 1.45
+      Text::Diff::Config 1.44
+      Text::Diff::Table 1.44
+    requirements:
+      Algorithm::Diff 1.19
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
   Text-Table-1.133
     pathname: S/SH/SHLOMIF/Text-Table-1.133.tar.gz
     provides:
@@ -1554,6 +1846,47 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  YAML-Tiny-1.73
+    pathname: E/ET/ETHER/YAML-Tiny-1.73.tar.gz
+    provides:
+      YAML::Tiny 1.73
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      Scalar::Util 0
+      perl 5.008001
+      strict 0
+      warnings 0
+  autodie-2.32
+    pathname: T/TO/TODDR/autodie-2.32.tar.gz
+    provides:
+      Fatal 2.32
+      autodie 2.32
+      autodie::Scope::Guard 2.32
+      autodie::Scope::GuardStack 2.32
+      autodie::Util 2.32
+      autodie::exception 2.32
+      autodie::exception::system 2.32
+      autodie::hints 2.32
+      autodie::skip 2.32
+    requirements:
+      B 0
+      Carp 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      POSIX 0
+      Scalar::Util 0
+      Tie::RefHash 0
+      constant 0
+      overload 0
+      parent 0
+      perl 5.008004
+      strict 0
+      warnings 0
   libwww-perl-5.837
     pathname: G/GA/GAAS/libwww-perl-5.837.tar.gz
     provides:
