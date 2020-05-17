@@ -9,5 +9,5 @@ setup with carton
 
 ```
 $ carton install
-$ carton exec proclet start &
+$ carton exec starman -r
 ```
