@@ -8,6 +8,21 @@ Local run with carton
 ======================
 
 ```sh
+// perlbrewの導入
+$ curl -L http://install.perlbrew.pl | bash
+$ echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc
+$ source ~/.bashrc
+$ perlbrew init
+
+// perl v5.30.2の導入
+$ perlbrew install 5.30.2
+$ perlbrew switch perl-5.30.2
+$ perl -v
+v5.30.2
+
+// carton
+$ cpanm Carton
+$ cpanm --local-lib=~/perl5 local::lib
 $ carton install
 $ carton exec starman -r
 ```
