@@ -125,12 +125,6 @@ DISTRIBUTIONS
       File::Spec 0.80
       base 0
       perl 5.008
-  Clone-0.45
-    pathname: A/AT/ATOOMIC/Clone-0.45.tar.gz
-    provides:
-      Clone 0.45
-    requirements:
-      ExtUtils::MakeMaker 0
   Cookie-Baker-0.11
     pathname: K/KA/KAZEBURO/Cookie-Baker-0.11.tar.gz
     provides:
@@ -341,15 +335,6 @@ DISTRIBUTIONS
       Digest::base 1.00
       ExtUtils::MakeMaker 0
       perl 5.004
-  Encode-Locale-1.05
-    pathname: G/GA/GAAS/Encode-Locale-1.05.tar.gz
-    provides:
-      Encode::Locale 1.05
-    requirements:
-      Encode 2
-      Encode::Alias 0
-      ExtUtils::MakeMaker 0
-      perl 5.008
   Exporter-Tiny-1.002002
     pathname: T/TO/TOBYINK/Exporter-Tiny-1.002002.tar.gz
     provides:
@@ -397,19 +382,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  File-Listing-6.04
-    pathname: G/GA/GAAS/File-Listing-6.04.tar.gz
-    provides:
-      File::Listing 6.04
-      File::Listing::apache 6.04
-      File::Listing::dosftp 6.04
-      File::Listing::netware 6.04
-      File::Listing::unix 6.04
-      File::Listing::vms 6.04
-    requirements:
-      ExtUtils::MakeMaker 0
-      HTTP::Date 6
-      perl 5.006002
   File-ShareDir-1.116
     pathname: R/RE/REHSACK/File-ShareDir-1.116.tar.gz
     provides:
@@ -523,17 +495,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0.82
       Scalar::Util 0
-  HTTP-Date-6.05
-    pathname: O/OA/OALDERS/HTTP-Date-6.05.tar.gz
-    provides:
-      HTTP::Date 6.05
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Time::Local 1.28
-      Time::Zone 0
-      perl 5.006002
-      strict 0
   HTTP-Entity-Parser-0.22
     pathname: K/KA/KAZEBURO/HTTP-Entity-Parser-0.22.tar.gz
     provides:
@@ -561,44 +522,6 @@ DISTRIBUTIONS
       HTTP::Date 0
       Module::Build::Tiny 0.035
       perl 5.008001
-  HTTP-Message-6.24
-    pathname: O/OA/OALDERS/HTTP-Message-6.24.tar.gz
-    provides:
-      HTTP::Config 6.24
-      HTTP::Headers 6.24
-      HTTP::Headers::Auth 6.24
-      HTTP::Headers::ETag 6.24
-      HTTP::Headers::Util 6.24
-      HTTP::Message 6.24
-      HTTP::Request 6.24
-      HTTP::Request::Common 6.24
-      HTTP::Response 6.24
-      HTTP::Status 6.24
-    requirements:
-      Carp 0
-      Clone 0
-      Compress::Raw::Zlib 0
-      Encode 3.01
-      Encode::Locale 1
-      Exporter 5.57
-      ExtUtils::MakeMaker 0
-      HTTP::Date 6
-      IO::Compress::Bzip2 2.021
-      IO::Compress::Deflate 0
-      IO::Compress::Gzip 0
-      IO::HTML 0
-      IO::Uncompress::Bunzip2 2.021
-      IO::Uncompress::Gunzip 0
-      IO::Uncompress::Inflate 0
-      IO::Uncompress::RawInflate 0
-      LWP::MediaTypes 6
-      MIME::Base64 2.1
-      MIME::QuotedPrint 0
-      URI 1.10
-      base 0
-      perl 5.008001
-      strict 0
-      warnings 0
   HTTP-MultiPartParser-0.02
     pathname: C/CH/CHANSEN/HTTP-MultiPartParser-0.02.tar.gz
     provides:
@@ -625,15 +548,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  IO-HTML-1.001
-    pathname: C/CJ/CJM/IO-HTML-1.001.tar.gz
-    provides:
-      IO::HTML 1.001
-    requirements:
-      Carp 0
-      Encode 2.10
-      Exporter 5.57
-      ExtUtils::MakeMaker 6.30
   IPC-Signal-1.00
     pathname: R/RO/ROSCH/IPC-Signal-1.00.tar.gz
     provides:
@@ -694,18 +608,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       MIME::Base64 2.1
-  LWP-MediaTypes-6.04
-    pathname: O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
-    provides:
-      LWP::MediaTypes 6.04
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      File::Basename 0
-      Scalar::Util 0
-      perl 5.006002
-      strict 0
   List-MoreUtils-0.428
     pathname: R/RE/REHSACK/List-MoreUtils-0.428.tar.gz
     provides:
@@ -1307,51 +1209,6 @@ DISTRIBUTIONS
       Module::Build 0.38
       Set::Crontab 1.03
       perl 5.008005
-  TimeDate-2.32
-    pathname: A/AT/ATOOMIC/TimeDate-2.32.tar.gz
-    provides:
-      Date::Format 2.24
-      Date::Format::Generic 2.24
-      Date::Language 1.10
-      Date::Language::Afar 0.99
-      Date::Language::Amharic 1.00
-      Date::Language::Austrian 1.01
-      Date::Language::Brazilian 1.01
-      Date::Language::Bulgarian 1.01
-      Date::Language::Chinese 1.00
-      Date::Language::Chinese_GB 1.01
-      Date::Language::Czech 1.01
-      Date::Language::Danish 1.01
-      Date::Language::Dutch 1.02
-      Date::Language::English 1.01
-      Date::Language::Finnish 1.01
-      Date::Language::French 1.04
-      Date::Language::Gedeo 0.99
-      Date::Language::German 1.02
-      Date::Language::Greek 1.00
-      Date::Language::Hungarian 1.01
-      Date::Language::Icelandic 1.01
-      Date::Language::Italian 1.01
-      Date::Language::Norwegian 1.01
-      Date::Language::Occitan 1.04
-      Date::Language::Oromo 0.99
-      Date::Language::Romanian 1.01
-      Date::Language::Russian 1.01
-      Date::Language::Russian_cp1251 1.01
-      Date::Language::Russian_koi8r 1.01
-      Date::Language::Sidama 0.99
-      Date::Language::Somali 0.99
-      Date::Language::Spanish 1.00
-      Date::Language::Swedish 1.01
-      Date::Language::Tigrinya 1.00
-      Date::Language::TigrinyaEritrean 1.00
-      Date::Language::TigrinyaEthiopian 1.00
-      Date::Language::Turkish 1.0
-      Date::Parse 2.32
-      Time::Zone 2.24
-      TimeDate 1.21
-    requirements:
-      ExtUtils::MakeMaker 0
   Try-Tiny-0.30
     pathname: E/ET/ETHER/Try-Tiny-0.30.tar.gz
     provides:

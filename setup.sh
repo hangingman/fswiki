@@ -49,6 +49,12 @@ do
   find "$FSWIKI_HOME/$dir" -type f -exec chmod $PERM_FILE {} \;
 done
 
+for logfile in access.log attach.log freeze.log download_count.log;
+do
+  echo "  check $FSWIKI_HOME/log/$logfile..."
+  test -e $FSWIKI_HOME/log/$logfile || touch $FSWIKI_HOME/log/$logfile || exit 1
+done
+
 echo "  check $FSWIKI_HOME/.htaccess..."
 if test -e "$FSWIKI_HOME/.htaccess";
 then

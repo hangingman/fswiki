@@ -24,6 +24,11 @@ v5.30.2
 $ cpanm Carton
 $ cpanm --local-lib=~/perl5 local::lib
 $ carton install
+
+// 初回起動の場合
+$ ./setup.sh
+
+// Perlのアプリケーションサーバを起動
 $ carton exec starman -r
 ```
 
