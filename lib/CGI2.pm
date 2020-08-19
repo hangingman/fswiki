@@ -103,7 +103,7 @@ sub param {
 		}
 	} else {
 		if(defined($name)) {
-			return $self->CGI::param($name, $value);
+			return scalar $self->CGI::param($name, $value);
 		} else {
 			return $self->CGI::param();
 		}

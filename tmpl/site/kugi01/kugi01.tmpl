@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<!--TMPL_IF NAME="EDIT_MODE"--><meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/><!--/TMPL_IF-->
+<!--TMPL_UNLESS NAME="CAN_SHOW"--><meta name="ROBOTS" content="NOARCHIVE"/><!--/TMPL_UNLESS-->
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta http-equiv="Content-Style-Type" content="text/css"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+
+<script type="text/javascript" src="<!--TMPL_VAR 'THEME_CSS'-->.js"></script>
+
+<!--TMPL_VAR NAME="HEAD_INFO"-->
+
+<!--TMPL_IF NAME="NONE_HAVE_USER_CSS"-->
+<style type="text/css">
+<!--
+<!--TMPL_VAR NAME="USER_CSS"-->
+-->
+</style>
+<!--/TMPL_IF-->
+
+<title><!--TMPL_VAR NAME="SITE_TITLE"--></title>
+</head>
+<body style="font-size: 0.75em;">
+<div id="header-container">
+	<div id="header-title"><!--TMPL_VAR NAME="SITE_NAME"--></div>
+	<div class="dropdown-menu sidebar-icon" style="float:left;">
+		<a title="サイドメニュー"><img class="theme_ic" data-value="ic_menu_white_36dp.png"></a>
+	</div>
+	<div class="dropdown-menu">
+		<a title="管理"><img class="theme_ic" data-value="ic_more_vert_white_36dp.png"></a>
+		<div class="dropdown-menu-area">
+		<!--TMPL_VAR NAME="MENU"-->
+		</div>
+	</div>
+	<div class="dropdown-menu">
+		<a title="検索"><img class="theme_ic" data-value="ic_search_white_36dp.png"></a>
+		<form class="dropdown-menu-area search-box" action="<!--TMPL_VAR 'SCRPIPT_NAME'-->" method="POST" role="search">
+			<input type="text" name="word" size="20" value="" placeholder="キーワード検索"><input type="submit" value=" 検索 ">
+			<input type="hidden" name="t" value="and">
+			<input type="hidden" name="c" value="true">
+			<input type="hidden" name="action" value="SEARCH">
+		</form>
+	</div>
+	<div class="dropdown-menu">
+		<a title="拡大縮小"><img class="theme_ic" data-value="ic_fontsize_white_36dp.png"></a>
+		<div class="dropdown-menu-area">
+			<ul style="list-style:none; margin:0px; padding:0 10px; text-align:center;">
+				<li><a href="javascript:void(0);" onclick="setZoom(1.00);" style="width:100%;">100%</a></li>
+				<li><a href="javascript:void(0);" onclick="setZoom(0.75);" style="width:100%;">75%</a></li>
+				<li><a href="javascript:void(0);" onclick="setZoom(0.50);" style="width:100%;">50%</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="dropdown-menu dropdown-menu-outline" style="display:none;">
+		<a title="アウトライン"><img class="theme_ic" data-value="ic_toc_white_36dp.png"/></a>
+		<div class="dropdown-menu-area"></div>
+	</div>
+</div>
+
+<h1><!--TMPL_VAR NAME="TITLE"--></h1>
+
+<!--TMPL_IF NAME="EXIST_PAGE_Menu"-->
+<div class="main">
+<!--/TMPL_IF-->
+
+<!--TMPL_UNLESS NAME="EDIT_MODE"-->
+<!--TMPL_IF NAME="EXIST_PAGE_Header"-->
+<div class="header">
+<!--FSWIKI_INCLUDE PAGE="Header"-->
+</div><!-- /header -->
+<!--/TMPL_IF-->
+<!--/TMPL_UNLESS-->
+
+<div class="day">
+<div class="body">
+<div class="section">
+<!--TMPL_VAR NAME="CONTENT"-->
+</div><!-- /section -->
+</div><!-- /body -->
+<!--TMPL_UNLESS NAME="EDIT_MODE"-->
+<!--TMPL_IF NAME="EXIST_PAGE_Footer"-->
+<div class="comment">
+<!--FSWIKI_INCLUDE PAGE="Footer"-->
+</div><!-- /comment -->
+<!--/TMPL_IF-->
+<!--/TMPL_UNLESS-->
+</div><!-- /day -->
+
+<!--TMPL_IF NAME="EXIST_PAGE_Menu"-->
+</div><!-- /main -->
+
+<div class="sidebar">
+<!--FSWIKI_INCLUDE PAGE="Menu"-->
+</div><!-- /sidebar -->
+</div>
+<!--/TMPL_IF-->
+
+<!--TMPL_VAR NAME="FOOTER"-->
+
+</body>
+</html>
