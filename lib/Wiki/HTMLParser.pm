@@ -5,7 +5,7 @@
 ###############################################################################
 package Wiki::HTMLParser;
 use Wiki::Parser;
-use vars qw(@ISA);
+our @ISA;
 use strict;
 
 @ISA = qw(Wiki::Parser);

@@ -11,7 +11,7 @@
 package Wiki::DefaultStorage;
 use File::Copy;
 use strict;
-use vars qw($MODTIME_FILE $PAGE_LIST_FILE);
+our ($MODTIME_FILE, $PAGE_LIST_FILE);
 
 # ページの最終更新日時を記録するファイル
 $MODTIME_FILE = "modtime.dat";

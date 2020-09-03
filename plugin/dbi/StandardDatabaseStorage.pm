@@ -6,11 +6,11 @@
 package plugin::dbi::StandardDatabaseStorage;
 use Wiki::DefaultStorage;
 use DBI;
-use vars qw(@ISA);
+our @ISA;
 use strict;
 
 # バージョン情報
-use vars qw($VERSION);
+our $VERSION;
 $VERSION = '0.0.3 - 2006/05/08';
 
 @ISA = qw(Wiki::DefaultStorage);

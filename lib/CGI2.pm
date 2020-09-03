@@ -6,7 +6,7 @@
 package CGI2;
 use CGI;
 use CGI::Session;
-use vars qw(@ISA);
+our @ISA;
 use strict;
 @ISA = qw(CGI);
 

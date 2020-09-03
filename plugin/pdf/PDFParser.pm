@@ -5,7 +5,7 @@
 ###############################################################################
 package plugin::pdf::PDFParser;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 use Wiki::Parser;
 use PDFJ 'EUC';
 use Image::Info qw(image_info dim);

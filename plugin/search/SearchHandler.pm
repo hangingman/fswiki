@@ -78,7 +78,6 @@ sub do_action {
 			}
 		} else {
 			# AND検索 ------------------------------------------------------
-			WORD:
 			foreach(@words){
 				next PAGE if (($index = index $$pageref, $_) == -1);
 			}

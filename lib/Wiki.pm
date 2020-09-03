@@ -10,7 +10,7 @@ use File::Copy;
 use File::Path;
 use Wiki::DefaultStorage;
 use Wiki::HTMLParser;
-use vars qw($VERSION $DEBUG);
+our ($VERSION, $DEBUG);
 $VERSION = '3.6.5';
 $DEBUG   = 0;
 #==============================================================================

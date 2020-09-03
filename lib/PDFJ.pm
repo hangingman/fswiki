@@ -7,7 +7,7 @@ use PDFJ::Unicode;
 use PDFJ::E2U;
 use Carp;
 use strict;
-use vars qw($VERSION @EXFUNC %Default);
+our ($VERSION, @EXFUNC, %Default);
 
 $VERSION = 0.7;
 
@@ -1279,7 +1279,7 @@ use strict;
 use Carp;
 use SelfLoader;
 use PDFJ::Object;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Font);
 
 sub new_std {
@@ -1394,7 +1394,7 @@ package PDFJ::JFont;
 use strict;
 use Carp;
 use PDFJ::Object;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Font);
 
 sub new_std {
@@ -1595,7 +1595,7 @@ sub float { "" }
 package PDFJ::Showable;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::BlockElement);
 
 sub show {
@@ -1688,7 +1688,7 @@ sub merge {
 package PDFJ::TextStyle;
 use strict;
 use Carp;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Style);
 
 sub TStyle { PDFJ::TextStyle->new(@_) }
@@ -1813,7 +1813,7 @@ sub new {
 package PDFJ::Text;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Showable);
 
 sub Text { PDFJ::Text->new(@_) }
@@ -3016,7 +3016,7 @@ sub splittext_SJIS {
 package PDFJ::ParagraphStyle;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Style);
 
 sub PStyle { PDFJ::ParagraphStyle->new(@_) }
@@ -3025,7 +3025,7 @@ sub PStyle { PDFJ::ParagraphStyle->new(@_) }
 package PDFJ::Paragraph;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Showable);
 
 sub Paragraph { PDFJ::Paragraph->new(@_) }
@@ -3285,7 +3285,7 @@ sub _showline {
 package PDFJ::NewBlock;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::BlockElement);
 
 sub NewBlock { PDFJ::NewBlock->new(@_) }
@@ -3299,7 +3299,7 @@ sub new {
 package PDFJ::BlockSkip;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::BlockElement);
 
 sub new {
@@ -3313,7 +3313,7 @@ sub size { $_[0]->{skip} || 0 }
 package PDFJ::BlockStyle;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Style);
 
 sub BStyle { PDFJ::BlockStyle->new(@_) }
@@ -3322,7 +3322,7 @@ sub BStyle { PDFJ::BlockStyle->new(@_) }
 package PDFJ::Block;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Showable);
 
 sub Block { PDFJ::Block->new(@_); }
@@ -3711,7 +3711,7 @@ package PDFJ::Image;
 use PDFJ::Object;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Showable);
 
 sub new {
@@ -3879,7 +3879,7 @@ sub stroke {
 package PDFJ::ShapeStyle;
 use strict;
 use Carp;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Style);
 
 sub SStyle { PDFJ::ShapeStyle->new(@_) }
@@ -3902,7 +3902,7 @@ sub pdf {
 package PDFJ::Shape;
 use Carp;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 @ISA = qw(PDFJ::Showable);
 
 sub Shape { PDFJ::Shape->new(@_) }

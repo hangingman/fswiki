@@ -5,7 +5,7 @@
 ###############################################################################
 package plugin::info::OutlineParser;
 use strict;
-use vars qw(@ISA);
+our @ISA;
 use Wiki::HTMLParser;
 
 @ISA = qw(Wiki::HTMLParser);

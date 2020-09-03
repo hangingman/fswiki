@@ -5,7 +5,7 @@
 ###############################################################################
 package plugin::admin::AdminDeletedPageHandler;
 use strict;
-use vars qw($DELETED_FILE);
+our $DELETED_FILE;
 
 $DELETED_FILE = "deleted.dat";
 
