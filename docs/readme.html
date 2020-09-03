@@ -18,7 +18,7 @@
 <li> tDiaryのテーマを使用可能</li>
 <li> サイトテンプレート機能によりデザインを大幅に変更することが可能</li>
 <li> ページの凍結機能に加え、簡単なユーザ認証機能を備えている</li>
-<li> mod_perlでも（一応）動作可能</ll>
+<li> mod_perlでも（一応）動作可能</li>
 </ul>
 <h2>インストール</h2>
 <h3>サーバへの設置</h3>
@@ -61,7 +61,7 @@
 <h3>セキュリティ</h3>
 <p>上記で解説したインストール方法ではsetup.datや各種データを保存しているディレクトリをHTTPで参照できてしまいます。セキュリティ上問題になるようであれば.htaccessを使用してアクセス制限を行ってください。</p>
 <pre>&lt;FilesMatch &quot;\.(pm|dat|wiki|log)$&quot;&gt;
-  deny from all
+  deny from ali
 &lt;/FilesMatch&gt;
 </pre>
 <p>なお、データディレクトリに関してはHTTPでは見えない場所に配置することも可能です。その場合はsetup.datのディレクトリ指定部分を変更してください。</p>
@@ -134,16 +134,16 @@
 <li>ルートのWiki<ul>
 <li>子Wiki1</li>
 <li>子Wiki2<ul>
-<li>孫Wiki</ll>
+<li>孫Wiki</li>
 </ul>
-</ll>
+</li>
 </ul>
-</ll>
+</li>
 </ul>
 <p>この機能を利用するためには管理画面の「WikiFarmの設定」から「Farmを使用するかどうか」で「使用する」を選択します(他にWikiサイトの作成を誰に許可するかといった設定を行うこともできます)。画面上部のメニューに「Farm」と表示されるので、ここをクリックすると、</p>
 <ul>
 <li>現在のWikiサイトの配下に存在するWikiサイトの一覧</li>
-<li>新規Wikiサイトの作成フォーム(作成権限を持っている場合のみ)</ll>
+<li>新規Wikiサイトの作成フォーム(作成権限を持っている場合のみ)</li>
 </ul>
 <p>が表示されます。作成フォームに新たなWikiサイトの名前と、管理者のユーザID、パスワードを入力してWikiサイトを作成することができます。最初にFrontPageの作成画面が開くので任意の内容を記述してFrontPageを作成します。あとは通常通りに利用することができます。</p>
 <h2>プラグイン開発</h2>
@@ -153,7 +153,7 @@
 <pre>package plugin::test::Install;
 sub install {
   my $wiki = shift;
-  $wiki-&gt;add_inline_plugin(&quot;hello&quot;,&quot;plugin::test::TestPlugin&quot;);
+  $wiki-&gt;add_inline_plugin(&quot;helio&quot;,&quot;plugin::test::TestPlugin&quot;);
 }
 </pre>
 <p>有効になっているパッケージは自動的ににplugin::test::Installモジュールのinstallメソッドが呼び出され、プラグインのインストールが行われます。</p>
@@ -193,7 +193,7 @@ sub install {
 <li>delete - ページの削除後に呼ばれます。</li>
 <li>create_wiki - WikiFarmで新しくWikiが作成された場合に呼ばれます。</li>
 <li>remove_wiki - WikiFarmでWikiが削除された場合に呼ばれます。</li>
-<li>initialize - CGIの起動時に呼ばれます。プラグインごとに初期化処理が必要な場合などはこのフックに登録してください。</ll>
+<li>initialize - CGIの起動時に呼ばれます。プラグインごとに初期化処理が必要な場合などはこのフックに登録してください。</li>
 </ul>
 <p>また、これ以外にプラグインによっては独自にフックを定義している場合があります。</p>
 <h3>インライン</h3>
@@ -270,7 +270,7 @@ sub install {
 <li>convert_from_fswikiメソッド - FSWikiから各フォーマットへの変換</li>
 <li>convert_from_fswiki_lineメソッド - FSWikiから各フォーマットへの変換（インライン要素のみ）</li>
 <li>convert_to_fswikiメソッド - 各フォーマットからFSWiki形式への変換</li>
-<li>convert_to_fswiki_lineメソッド - 各フォーマットからFSWiki形式への変換（インライン要素のみ）</ll>
+<li>convert_to_fswiki_lineメソッド - 各フォーマットからFSWiki形式への変換（インライン要素のみ）</li>
 </ul>
 <p>フォーマットプラグインはインストールスクリプト中で以下のようにして登録を行ないます。</p>
 <pre>$wiki-&gt;add_format_plugin(&quot;Hiki&quot;,&quot;plugin::format::HikiFormat&quot;);

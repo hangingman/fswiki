@@ -14,8 +14,8 @@
    dieとexitのオーバライド操作を行います。
 </p>
 <h2>url_encode </h2>
-	*CORE::GLOBAL::die = \&Util::_die;
-	*CORE::GLOBAL::exit = \&Util::_exit;
+	*CORE::GLOBAL::die = &amp;Util::_die;
+	*CORE::GLOBAL::exit = &amp;Util::_exit;
 <p>
    引数で渡された文字列をURLエンコードして返します。
 </p>
