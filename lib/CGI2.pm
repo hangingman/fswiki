@@ -4,8 +4,7 @@
 #
 ###############################################################################
 package CGI2;
-use CGI;
-use CGI::Session;
+use CGI::PSGI;
 our @ISA;
 use strict;
 @ISA = qw(CGI);
@@ -14,11 +13,11 @@ use strict;
 # コンストラクタ
 #==============================================================================
 sub new {
-	my $class = shift;
+	my $self = shift;
+	my $env  = shift;
 	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
-	my $self  = CGI->new();
-	
-	return bless $self,$class;
+	my $self = CGI::PSGI->new($env);
+	return bless $self, $env;
 }
 
 #==============================================================================

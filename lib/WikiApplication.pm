@@ -1,53 +1,51 @@
-#!/usr/bin/perl
+package WikiApplication;
 ###############################################################################
 #
-# FreeStyleWiki フロントエンドCGIスクリプト
+# FreeStyleWiki フロントエンドPSGIモジュール
 #
 ###############################################################################
-BEGIN {
-	if(exists $ENV{MOD_PERL}){
-		# カレントディレクトリの変更
-		chdir($ENV{FSWIKI_HOME});
-	}
-}
-# ModPerl::Registry(Prefork)では実行時に変更されている可能性がある
-if(exists $ENV{MOD_PERL}){
-	chdir($ENV{FSWIKI_HOME});
-}
 
 #==============================================================================
 # モジュールのインクルード
 #==============================================================================
 use utf8;
 use Cwd;
-use lib ('./lib', './local/lib/perl5');
-# ModPerl::Registry(Prefork)では@INCが初期化されている場合がある
-unshift @INC, './lib' if(exists $ENV{MOD_PERL});
-unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
-
+# use lib ('./lib', './local/lib/perl5');
 use strict;
-#use CGI::Carp qw(fatalsToBrowser);
-#use CGI2;
 use Wiki;
 use Util;
 use Jcode;
 use HTML::Template;
 
-# これをやらないとApache::Registoryで動かない
-if(exists $ENV{MOD_PERL}){
-	eval("use Digest::MD5;");
-	eval("use plugin::core::Diff;");
-	eval("use plugin::pdf::PDFMaker;");
-}
+# Util::override_die();
 
-#==============================================================================
-# CGIとWikiのインスタンス化
-#==============================================================================
-my $wiki = Wiki->new('setup.dat');
-my $cgi = $wiki->get_CGI();
+sub new {
+	my $self = shift;
+	# 	my $env  = shift;
+	# 	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
+	# 	my $self = CGI::PSGI->new($env);
+	# 	return bless $self, $env;
+	return $self;
+};
 
-Util::override_die();
-eval {
+sub run_psgi {
+	# 外部からのリクエスト
+	my ($self, $env) = @_;
+	return [
+		200,
+		[ 'Content-Type' => 'text/plain' ],
+		[ "Hello World" ],
+	];
+};
+1;
+
+=pod
+	#==============================================================================
+	# CGIとWikiのインスタンス化
+	#==============================================================================
+	my $wiki = Wiki->new('setup.dat');
+	my $cgi = $wiki->get_CGI($env);
+
 	# Session用ディレクトリはFarmでも共通に使用する
 	$wiki->config('session_dir',$wiki->config('log_dir'));
 
@@ -310,14 +308,18 @@ eval {
 	print $output;
 };
 
-my $msg = $@;
-$ENV{'PATH_INFO'} = undef;
-$wiki->_process_before_exit();
+# my $msg = $@;
+# $ENV{'PATH_INFO'} = undef;
+# $wiki->_process_before_exit();
 
-if($msg && index($msg, 'safe_die')<0){
-	$msg = Util::escapeHTML($msg);
-	print "Content-Type: text/html\n\n";
-	print "<html><head><title>Software Error</title></head>";
-	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
-}
-Util::restore_die();
+# if($msg && index($msg, 'safe_die')<0){
+# 	$msg = Util::escapeHTML($msg);
+# 	print "Content-Type: text/html\n\n";
+# 	print "<html><head><title>Software Error</title></head>";
+# 	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
+# }
+# Util::restore_die();
+
+1;
+
+=cut

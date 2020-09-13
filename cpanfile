@@ -1,7 +1,6 @@
 requires 'Algorithm::Diff', '== 1.1903';
 requires 'WWW::RobotRules', '== 5.832';
 requires 'Bundle::LWP', '== 5.835';
-requires 'CGI::Session', '== 4.48';
 requires 'Digest::MD5', '== 2.55';
 requires 'File::Listing';
 requires 'HTML::Template', '== 2.97';
@@ -14,6 +13,7 @@ requires 'DBD::mysqlPP', '== 0.07';
 
 requires 'Starman', '== 0.4015';
 requires 'Server::Starter', '== 0.35';
+requires 'CGI::PSGI', '== 0.15';
 requires 'CGI::Emulate::PSGI', '== 0.23';
 requires 'CGI::Compile', '== 0.24';
 requires 'Proclet', '== 0.35';

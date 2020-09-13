@@ -21,6 +21,7 @@ $DEBUG   = 0;
 sub new {
 	my $class = shift;
 	my $self  = {};
+	my $env   = shift;
 
 	# 設定を読み込み
 	my $setupfile = shift || 'setup.dat';
@@ -38,7 +39,7 @@ sub new {
 	$self->{"plugin"}             = {};
 	$self->{"title"}              = "";
 	$self->{"menu"}               = [];
-	$self->{"CGI"}                = CGI2->new();
+	$self->{"CGI"}                = CGI2->new($env);
 	$self->{"hook"}               = {};
 	$self->{"user"}               = ();
 	$self->{"admin_menu"}         = ();
@@ -1192,7 +1193,7 @@ sub can_show {
 # 上記のコードは通常、以下のURLを生成します。
 # </p>
 # <pre>
-# wiki.cgi?page=FrontPage
+# WikiApplication.pm?page=FrontPage
 # </pre>
 #==============================================================================
 sub create_page_url {
@@ -1213,7 +1214,7 @@ sub create_page_url {
 # 上記のコードは通常、以下のURLを生成します。
 # </p>
 # <pre>
-# wiki.cgi?action=HOGE&amp;type=1
+# WikiApplication.pm?action=HOGE&amp;type=1
 # </pre>
 #==============================================================================
 sub create_url {
