@@ -21,11 +21,10 @@ $DEBUG   = 0;
 sub new {
 	my $class = shift;
 	my $self  = {};
-	my $env   = shift;
-
 	# 設定を読み込み
 	my $setupfile = shift || 'setup.dat';
-	$self->{"config"} = &Util::load_config_hash(undef,$setupfile);
+	my $env   = shift;
+	$self->{"config"} = &Util::load_config_hash(undef, $setupfile);
 	die "setup file ${setupfile} not found" if (keys %{$self->{"config"}} == 0);
 	$self->{"config"}->{"plugin_dir"} = "."         unless exists($self->{"config"}->{"plugin_dir"});
 	$self->{"config"}->{"frontpage"}  = "FrontPage" unless exists($self->{"config"}->{"frontpage"});

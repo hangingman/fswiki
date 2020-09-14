@@ -10,7 +10,6 @@ package WikiApplication;
 #==============================================================================
 use utf8;
 use Cwd;
-# use lib ('./lib', './local/lib/perl5');
 use strict;
 use Wiki;
 use Util;
@@ -20,30 +19,18 @@ use HTML::Template;
 # Util::override_die();
 
 sub new {
-	my $self = shift;
-	# 	my $env  = shift;
-	# 	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
-	# 	my $self = CGI::PSGI->new($env);
-	# 	return bless $self, $env;
-	return $self;
+	my $class = shift;
+	my $self  = {};
+	return bless $self,$class;
 };
 
 sub run_psgi {
 	# 外部からのリクエスト
 	my ($self, $env) = @_;
-	return [
-		200,
-		[ 'Content-Type' => 'text/plain' ],
-		[ "Hello World" ],
-	];
-};
-1;
-
-=pod
 	#==============================================================================
 	# CGIとWikiのインスタンス化
 	#==============================================================================
-	my $wiki = Wiki->new('setup.dat');
+	my $wiki = Wiki->new('setup.dat', $env);
 	my $cgi = $wiki->get_CGI($env);
 
 	# Session用ディレクトリはFarmでも共通に使用する
@@ -305,7 +292,11 @@ sub run_psgi {
 	print "Cache-Control: no-cache\n\n";
 
 	# HTMLの出力
-	print $output;
+	return [
+		200,
+		[],
+		$output
+	];
 };
 
 # my $msg = $@;
@@ -321,5 +312,3 @@ sub run_psgi {
 # Util::restore_die();
 
 1;
-
-=cut

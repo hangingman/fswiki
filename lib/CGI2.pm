@@ -7,7 +7,7 @@ package CGI2;
 use CGI::PSGI;
 our @ISA;
 use strict;
-@ISA = qw(CGI);
+@ISA = qw(CGI::PSGI);
 
 #==============================================================================
 # コンストラクタ
@@ -16,8 +16,15 @@ sub new {
 	my $self = shift;
 	my $env  = shift;
 	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
-	my $self = CGI::PSGI->new($env);
-	return bless $self, $env;
+	return bless CGI::PSGI->new($env);
+}
+
+#==============================================================================
+# スクリプトからの追加パス情報を返します
+#==============================================================================
+sub path_info {
+	my $self = shift;
+	return $self->env->{PATH_INFO};
 }
 
 #==============================================================================

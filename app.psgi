@@ -5,16 +5,6 @@ use Plack::App::Directory;
 use lib ('./lib', './local/lib/perl5');
 use WikiApplication;
 
-my $app = sub {
-    my $env = shift;
-    return [
-        200,
-        [ "Content-Type", "text/plain" ],
-        [ "Hello $env->{REMOTE_ADDR}" ],
-	[ WikiApplication() ],
-    ];
-};
-
 builder {
     my $wiki = sub {
         my $app = WikiApplication->new;
