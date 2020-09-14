@@ -15,6 +15,8 @@ use Wiki;
 use Util;
 use Jcode;
 use HTML::Template;
+use HTTP::Headers;
+use Plack::Response;
 
 # Util::override_die();
 
@@ -282,21 +284,21 @@ sub run_psgi {
 	#------------------------------------------------------------------------------
 	# 出力処理
 	#------------------------------------------------------------------------------
+	my $res = Plack::Response->new(200);
+	$res->content_type('text/html');
+	$res->headers(HTTP::Headers->new(
+		Pragma        => 'no-cache',
+	 	Cache_Control => 'no-cache'
+	));
 	# ヘッダの出力
 	if($is_handyphone){
-		print "Content-Type: text/html;charset=Shift_JIS\n";
+		$res->content_encoding('Shift_JIS');
 	} else {
-		print "Content-Type: text/html;charset=UTF-8\n";
+		$res->content_encoding('UTF-8');
 	}
-	print "Pragma: no-cache\n";
-	print "Cache-Control: no-cache\n\n";
-
 	# HTMLの出力
-	return [
-		200,
-		[],
-		$output
-	];
+	$res->body($output);
+	return $res->finalize;
 };
 
 # my $msg = $@;

@@ -17,3 +17,4 @@ requires 'CGI::PSGI', '== 0.15';
 requires 'CGI::Emulate::PSGI', '== 0.23';
 requires 'CGI::Compile', '== 0.24';
 requires 'Proclet', '== 0.35';
+requires 'Plack::Response', '== 1.0047';
