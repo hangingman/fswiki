@@ -15,7 +15,7 @@ requires 'Sub::Util', '== 1.55';
 requires 'Starman', '== 0.4015';
 requires 'Server::Starter', '== 0.35';
 requires 'CGI::PSGI', '== 0.15';
-requires 'CGI::Emulate::PSGI', '== 0.23';
 requires 'CGI::Compile', '== 0.24';
 requires 'Proclet', '== 0.35';
 requires 'Plack::Response', '== 1.0047';
+requires 'Plack::Middleware::Session', '== 0.30';
