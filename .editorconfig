@@ -10,7 +10,7 @@ ij_wrap_on_typing = false
 end_of_line = lf
 insert_final_newline = true
 
-[*.{pl,pm,cgi}]
+[*.{pl,pm,cgi,psgi}]
 charset = utf-8
 indent_style = tab
 indent_size = 4
