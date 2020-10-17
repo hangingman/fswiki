@@ -17,8 +17,7 @@ use Jcode;
 use HTML::Template;
 use HTTP::Headers;
 use Plack::Response;
-
-# Util::override_die();
+use Scalar::Util qw(blessed);
 
 sub new {
 	my $class = shift;
@@ -115,16 +114,20 @@ sub run_psgi {
 	#==============================================================================
 	# アクションハンドラの呼び出し
 	#==============================================================================
-	my $action  = $cgi->param("action");
+	my $action = $cgi->param("action");
 	my $content = $wiki->call_handler($action);
 
 	# プラグインのインストールに失敗した場合
 	$content = $plugin_error . $content if $plugin_error ne '';
+	# プラグイン側でHTTP responseヘッダ等が設定されている場合はreturnする
+	if (blessed $content eq "Plack::Response") {
+		return $content->finalize();
+	}
 
 	#==============================================================================
 	# レスポンス
 	#==============================================================================
-	my $output        = "";
+	my $output = "";
 	my $is_handyphone = &Util::handyphone();
 	my $is_smartphone = &Util::smartphone();
 	my $template_name = "";

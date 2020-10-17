@@ -1,4 +1,4 @@
-!!!FreeStyle Wiki
+!!!FreeStyle Wikiだよ
 FreeStyle WikiはPerlによるWikiクローンです。以下のような特徴があります。
 *徹底されたモジュール化により、プラグインによる拡張が容易
 *Perlで書かれておりDBも使用しないため、CGIが動作するサーバであればほとんどのサーバに設置可能

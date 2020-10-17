@@ -38,20 +38,13 @@ sub do_action {
 	}
 	my $format = $wiki->get_edit_format();
 	$source = $wiki->convert_from_fswiki($source,$format);
-	
-	if(&Util::handyphone()){
-		print "Content-Type: text/plain;charset=Shift_JIS\n\n";
-		&Jcode::convert(\$source,"sjis");
-	} else {
-		print "Content-Type: text/plain;charset=UTF-8\n";
-		if($ENV{"HTTP_USER_AGENT"} =~ /MSIE/){
-			print Util::make_content_disposition("source.txt", "attachment");
-		} else {
-			print "\n";
-		}
-	}
-	print $source;
-	exit();
+
+	my $res = Plack::Response->new(200);
+	$res->content_type('text/html');
+    $res->content_encoding('UTF-8');
+	# HTMLの出力
+	$res->body($source);
+	return $res;
 }
 
 #==============================================================================
