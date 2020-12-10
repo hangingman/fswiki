@@ -258,7 +258,7 @@ sub send_mail {
 # </pre>
 #===============================================================================
 sub handyphone {
-    warnings::warnif("deprecated", "There is no people using legacy feature phone. This function should be removed.");
+	warnings::warnif("deprecated", "There is no people using legacy feature phone. This function should be removed.");
 	my $ua = $ENV{'HTTP_USER_AGENT'};
 	if(!defined($ua)){
 		return 0;

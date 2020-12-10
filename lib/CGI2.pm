@@ -5,6 +5,7 @@
 ###############################################################################
 package CGI2;
 use CGI::PSGI;
+use Plack::Session;
 our @ISA;
 use strict;
 @ISA = qw(CGI::PSGI);
@@ -65,7 +66,7 @@ sub get_session {
 			return undef;
 		}
 		# session管理はPlack::Middleware::Sessionにまかせるため、app.psgiに移動しました
-		my $session = $self->env->{'psgix.session'};
+		my $session = Plack::Session->new($self->env);
 		$self->{session_cache} = $session;
 		return $session;
 	} else {

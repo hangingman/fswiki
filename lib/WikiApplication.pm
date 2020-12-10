@@ -35,7 +35,7 @@ sub run_psgi {
 	my $cgi = $wiki->get_CGI($env);
 
 	# Session用ディレクトリはFarmでも共通に使用する
-	$wiki->config('session_dir',$wiki->config('log_dir'));
+	$wiki->config('session_dir', $wiki->config('log_dir'));
 
 	#==============================================================================
 	# Farmとして動作する場合
