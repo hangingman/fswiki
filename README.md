@@ -60,3 +60,18 @@ $ sudo cp ./etc/fswiki.ini /etc/supervisord.d/fswiki.ini
 $ sudo start supervisord
 $ sudo enable supervisord
 ```
+
+Docker env run for development
+==============================
+
+- デプロイの検証のため、dockerコンテナを起動する
+```sh
+$ docker-compose up -d --build
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                                                NAMES
+134d1cdaa242        fswiki_wiki         "/sbin/init"        3 seconds ago       Up 3 seconds        0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:5000->5000/tcp   fswiki_wiki_1
+b193836ae895        fswiki_mysql        "/sbin/init"        3 seconds ago       Up 3 seconds        22/tcp, 0.0.0.0:3306->3306/tcp                       fswiki_mysql_1
+
+// コンテナに入る
+$ docker exec -it fswiki_wiki_1 bash
+```
