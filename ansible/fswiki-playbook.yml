@@ -1,10 +1,15 @@
-- name: Install and configure nginx web server
+- name: Install common package and create users/groups
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: fswiki_common
+
+- name: Install and configure nginx for wiki server
   hosts: wiki
   collections:
     - nginxinc.nginx_controller
   gather_facts: true
   roles:
-    - role: fswiki_common
     - role: nginx
       vars:
         nginx_enable: true

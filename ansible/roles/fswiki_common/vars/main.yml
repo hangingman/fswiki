@@ -1,4 +1,5 @@
 packages:
+  - sudo
   - tmux
   - zip
   - unzip
@@ -8,3 +9,12 @@ packages:
   - make
   - git
   - python3-pip
+
+groups_to_add:
+  - name: wheel
+  - name: fswiki
+
+users_to_add:
+  - name: fswiki
+    group: fswiki
+    groups: wheel
