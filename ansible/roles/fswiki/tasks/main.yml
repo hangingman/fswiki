@@ -1,0 +1,33 @@
+---
+#
+# fswikiインストール
+#
+- name: Prepare freestylewiki source code
+  shell: |
+    perlbrew init
+
+- name: Create archive of current git HEAD source
+  delegate_to: localhost
+  shell: |
+    cd $(dirname {{ playbook_dir }} )
+    git archive HEAD --format=tar.gz --output={{ role_path }}/files/fswiki.tar.gz
+
+- name: Clean /tmp/deploy/ path
+  file:
+    state: absent
+    path: /tmp/deploy/
+  ignore_errors: yes
+
+- name: Ensures deploy dir exists
+  become: true
+  file:
+    path: /tmp/deploy/
+    state: directory
+    owner: fswiki
+    group: fswiki
+    recurse: yes
+
+- name: Unarchive files
+  unarchive:
+    src: files/fswiki.tar.gz
+    dest: /tmp/deploy/
