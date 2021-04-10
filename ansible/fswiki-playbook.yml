@@ -4,7 +4,7 @@
   roles:
     - role: fswiki_common
 
-- name: Install and configure nginx for wiki server
+- name: Install and configure nginx/perlbrew for wiki server
   hosts: wiki
   collections:
     - nginxinc.nginx_controller
@@ -14,3 +14,7 @@
       vars:
         nginx_enable: true
         nginx_start: true
+    - role: tobybro.perlbrew
+      perlbrew_user: fswiki
+      perl_version: perl-5.30.2
+      switch_to_new_perl: false

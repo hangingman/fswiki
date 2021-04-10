@@ -21,6 +21,7 @@
     group: "{{ item.group }}"
     groups: "{{ item.groups }}"
     state: "{{ (item.disabled is undefined or not item.disabled|bool)|ternary('present', 'absent') }}"
+    shell: /bin/bash
   with_items: "{{ users_to_add }}"
 
 - name: Allow wheel group to have pliviledge of sudo without password
