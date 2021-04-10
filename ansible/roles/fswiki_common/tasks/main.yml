@@ -1,0 +1,10 @@
+---
+#
+# fswikiインストール前の準備など
+#
+- name: Install required packages
+  apt:
+    name: "{{ packages }}"
+
+- name: Update cerrificate of python3
+  shell: pip3 install --upgrade certifi

@@ -2,7 +2,7 @@ FROM takeyamajp/debian-sshd
 
 # Debian9の最低限のモジュール、残りはansibleでインストールする
 RUN apt-get update -y
-RUN apt-get install -y init bash-completion
+RUN apt-get install -y init bash-completion python3
 RUN apt-get clean all
 
 EXPOSE 22

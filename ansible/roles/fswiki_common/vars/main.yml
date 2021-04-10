@@ -1,0 +1,10 @@
+packages:
+  - tmux
+  - zip
+  - unzip
+  - less
+  - rsync
+  - logrotate
+  - make
+  - git
+  - python3-pip
