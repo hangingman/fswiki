@@ -19,15 +19,31 @@
   ignore_errors: yes
 
 - name: Ensures deploy dir exists
-  become: true
+  become: yes
   file:
-    path: /tmp/deploy/
+    path: "{{ item }}"
     state: directory
     owner: fswiki
     group: fswiki
     recurse: yes
+  loop:
+    - /tmp/deploy/
+    - /home/fswiki/fswiki/
 
 - name: Unarchive files
   unarchive:
     src: files/fswiki.tar.gz
     dest: /tmp/deploy/
+    owner: fswiki
+    group: fswiki
+
+- name: Update sources can overwrite (docs, lib, plugin, ...)
+  become: yes
+  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} /home/fswiki/fswiki/
+  loop:
+    - docs
+    - lib
+    - plugin
+    - theme
+    - tmpl
+    - tools
