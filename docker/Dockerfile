@@ -1,11 +1,13 @@
-FROM debian:stretch-20210329
-USER root
+FROM takeyamajp/debian-sshd
 
 # Debian9の最低限のモジュール、残りはansibleでインストールする
 RUN apt-get update -y
-RUN apt-get install -y lsb-release lsb-core init bash-completion
+RUN apt-get install -y init bash-completion
 RUN apt-get clean all
-RUN /usr/bin/lsb_release -a
 
 EXPOSE 22
-CMD ["/sbin/init"]
+
+# https://github.com/Praqma/alpine-sshd/blob/master/Dockerfile
+# -D in CMD below prevents sshd from becoming a daemon. -e is to log everything to stderr.
+CMD ["/usr/sbin/sshd", "-D", "-e"]
+
