@@ -80,5 +80,5 @@ $ docker exec -it fswiki_wiki_1 bash
 
 ```shell
 $ chmod +x ./ansible-playbook.sh
-$ ./ansible-playbook.sh -i ansible/local/hosts ansible/fswiki-playbook.yml
+$ ./ansible-playbook.sh -i ansible/environments/local/hosts ansible/fswiki-playbook.yml
 ```

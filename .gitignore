@@ -1,13 +1,14 @@
 *.wiki
 *.log
-log/
-backup/
-attach/
-config/*
-layout/
-tmpl/
-local/
+./log/
+./backup/
+./attach/
+./config/*
+./layout/
+./tmpl/
+./local/
 
 .htaccess
 sitemap.xml
 .idea/
+
