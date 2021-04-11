@@ -19,18 +19,18 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: fswiki
+    owner: "{{ exec_user }}"
     group: fswiki
     recurse: yes
   loop:
     - /tmp/deploy/
-    - /home/fswiki/fswiki/
+    - "/home/{{ exec_user }}/fswiki/"
 
 - name: Unarchive files
   unarchive:
     src: files/fswiki.tar.gz
     dest: /tmp/deploy/
-    owner: fswiki
+    owner: "{{ exec_user }}"
     group: fswiki
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
@@ -56,12 +56,51 @@
 
 - name: Install dependency libraries
   become: yes
-  become_user: fswiki
+  become_user: "{{ exec_user }}"
   shell: /bin/bash -lci "{{ item }}"
   args:
     chdir: /home/fswiki/fswiki/
   loop:
-    - perlbrew switch perl-5.30.2
+    - perlbrew switch {{ perl_version }}
     - cpanm Carton
     - cpanm --local-lib=~/perl5 local::lib
     - carton install
+
+- name: Install supervisord
+  apt:
+    name: supervisor
+
+- name: Ensures supervisord dir exists
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ exec_user }}"
+    group: fswiki
+    recurse: yes
+  loop:
+    - /var/log/supervisor/
+    - /etc/supervisor/conf.d/
+
+- name: Copy supervisord config file
+  become: yes
+  template:
+    src: files/etc/supervisor/conf.d/fswiki.conf.j2
+    dest: /etc/supervisor/conf.d/fswiki.conf
+    owner: "{{ exec_user }}"
+    group: fswiki
+    mode: "0644"
+
+- name: Enable service supervisord, and stop it
+  become: yes
+  ansible.builtin.service:
+    name: supervisor
+    enabled: yes
+    state: stopped
+
+- name: Start supervisord
+  become: yes
+  ansible.builtin.service:
+    name: supervisor
+    enabled: yes
+    state: started
