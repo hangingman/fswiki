@@ -9,6 +9,7 @@ packages:
   - make
   - git
   - python3-pip
+  - vim
 
 groups_to_add:
   - name: wheel

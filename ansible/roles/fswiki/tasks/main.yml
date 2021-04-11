@@ -2,10 +2,6 @@
 #
 # fswikiインストール
 #
-- name: Prepare freestylewiki source code
-  shell: |
-    perlbrew init
-
 - name: Create archive of current git HEAD source
   delegate_to: localhost
   shell: |
@@ -37,7 +33,7 @@
     owner: fswiki
     group: fswiki
 
-- name: Update sources can overwrite (docs, lib, plugin, ...)
+- name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
   shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} /home/fswiki/fswiki/
   loop:
@@ -47,3 +43,25 @@
     - theme
     - tmpl
     - tools
+    - .perl-version
+    - LogSearch.js
+    - Procfile
+    - README.md
+    - app.psgi
+    - cpanfile
+    - cpanfile.snapshot
+    - get_accesslog.cgi
+    - release.sh
+    - wikidb.cgi
+
+- name: Install dependency libraries
+  become: yes
+  become_user: fswiki
+  shell: /bin/bash -lci "{{ item }}"
+  args:
+    chdir: /home/fswiki/fswiki/
+  loop:
+    - perlbrew switch perl-5.30.2
+    - cpanm Carton
+    - cpanm --local-lib=~/perl5 local::lib
+    - carton install

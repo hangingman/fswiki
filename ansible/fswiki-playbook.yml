@@ -18,3 +18,9 @@
       perlbrew_user: fswiki
       perl_version: perl-5.30.2
       switch_to_new_perl: false
+
+- name: Install freestylewiki into wiki server
+  hosts: wiki
+  remote_user: fswiki
+  roles:
+    - role: fswiki
