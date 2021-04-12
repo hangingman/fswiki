@@ -85,11 +85,19 @@
 - name: Copy supervisord config file
   become: yes
   template:
-    src: files/etc/supervisor/conf.d/fswiki.conf.j2
+    src: templates/etc/supervisor/conf.d/fswiki.conf.j2
     dest: /etc/supervisor/conf.d/fswiki.conf
     owner: "{{ exec_user }}"
     group: fswiki
     mode: "0644"
+
+- name: Copy freestylewiki setup.dat
+  become: yes
+  template:
+    src: templates/setup.dat.j2
+    dest: /home/fswiki/fswiki/setup.dat
+    owner: "{{ exec_user }}"
+    group: fswiki
 
 - name: Enable service supervisord, and stop it
   become: yes

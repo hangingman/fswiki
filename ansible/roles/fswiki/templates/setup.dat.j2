@@ -1,0 +1,120 @@
+######################################################################
+#
+# FreeStyle Wiki 基本設定
+#
+######################################################################
+# 設置したサーバ
+server_host = {{ server_host }}
+
+# データファイルを保存するディレクトリ
+data_dir = {{ data_dir }}
+
+# バックアップファイルを保存するディレクトリ
+backup_dir = {{ backup_dir }}
+
+# 添付ファイルを保存するディレクトリ
+attach_dir = {{ attach_dir }}
+
+# PDFを出力するディレクトリ
+pdf_dir = {{ pdf_dir }}
+
+# テンプレートを配置するディレクトリ
+tmpl_dir = {{ tmpl_dir }}
+
+# ログファイルを出力するディレクトリ
+log_dir = {{ log_dir }}
+
+# テーマを格納するディレクトリ
+theme_dir = {{ theme_dir }}
+
+# テーマを参照するためのURI
+theme_uri = {{ theme_uri }}
+
+# 設定ファイルを格納するディレクトリ
+config_dir = {{ config_dir }}
+
+# プラグインを格納するディレクトリ
+plugin_dir = {{ plugin_dir }}
+
+# sendmailのパス
+send_mail = {{ send_mail }}
+
+# SMTPサーバ（sendmailが設定されている場合はそちらを優先します）
+smtp_server = {{ smtp_server }}
+
+# タイムゾーン
+time_zone = {{ time_zone }}
+
+# アクセスログファイルのファイル名
+access_log_file = {{ access_log_file }}
+
+# 添付ファイル削除のログファイル
+attach_log_file = {{ attach_log_file }}
+
+# 凍結用ファイルのパス
+freeze_file = {{ freeze_file }}
+
+# ダウンロード数カウント用のログファイル
+download_count_file = {{ download_count_file }}
+
+# 設定ファイルのファイル名
+config_file  = {{ config_file }}
+
+# ユーザ定義スタイルのファイル名
+usercss_file = {{ usercss_file }}
+
+# ユーザ情報のファイル名
+userdat_file = {{ userdat_file }}
+
+# プラグイン情報のファイル名
+plugin_file = {{ plugin_file }}
+
+# MIMEタイプ情報のファイル名
+mime_file = {{ mime_file }}
+
+# WikiFarmの設定ファイル名
+farmconf_file = {{ farmconf_file }}
+
+# CGIスクリプトのファイル名
+script_name = {{ script_name }}
+
+# ストレージのクラス名
+storage = {{ storage }}
+
+# バックアップ世代数（0だと無制限）
+backup = {{ backup }}
+
+# トップページのページ名
+frontpage = {{ frontpage }}
+
+# POSTメソッドの最大サイズ（-1だと無制限）
+post_max = {{ post_max }}
+
+# ページの最大サイズ（0以下もしくは省略すると無制限）
+page_max = {{ page_max }}
+
+# 差分表示の最大サイズ（0以下もしくは省略すると無制限）
+diff_max = {{ diff_max }}
+
+# HMACSHA1を使用してセッションデータに署名するためのサーバー側シークレット
+# uuidgenコマンドで作るといい感じにランダム文字列が作れるのでおすすめ
+# TODO: デフォルトでUUIDが生成できる方法を探す
+secret = "5acd1907-3f28-43ef-89f9-2708f74a461a"
+
+#=====================================================================
+# プロキシサーバを使用する場合
+#=====================================================================
+# プロキシサーバのホスト名
+proxy_host = {{ proxy_host }}
+
+# プロキシのポート番号
+proxy_port = {{ proxy_port }}
+
+# プロキシ認証のユーザ名
+proxy_user = {{ proxy_user }}
+
+# プロキシ認証のパスワード
+proxy_pass = {{ proxy_pass }}
+
+# ログのサイズ上限値
+access_log_limit_kbyte = {{ access_log_limit_kbyte }}
