@@ -32,6 +32,19 @@
     - "/home/{{ exec_user }}/fswiki/layout/"
     - "/home/{{ exec_user }}/fswiki/log/"
 
+- name: Ensures default logs exist
+  become: yes
+  file:
+    path: "/home/{{ exec_user }}/fswiki/log/{{ item }}"
+    state: touch
+    owner: "{{ exec_user }}"
+    group: fswiki
+  loop:
+    - "{{ access_log_file }}"
+    - "{{ attach_log_file }}"
+    - "{{ freeze_file }}"
+    - "{{ download_count_file }}"
+
 - name: Unarchive files
   unarchive:
     src: files/fswiki.tar.gz
