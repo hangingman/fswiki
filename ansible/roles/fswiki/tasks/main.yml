@@ -14,7 +14,7 @@
     path: /tmp/deploy/
   ignore_errors: yes
 
-- name: Ensures deploy dir exists
+- name: Ensures deploy dir and fswiki default dirs exists
   become: yes
   file:
     path: "{{ item }}"
@@ -23,8 +23,13 @@
     group: fswiki
     recurse: yes
   loop:
-    - /tmp/deploy/
+    - "/tmp/deploy/"
     - "/home/{{ exec_user }}/fswiki/"
+    - "/home/{{ exec_user }}/fswiki/attach/"
+    - "/home/{{ exec_user }}/fswiki/backup/"
+    - "/home/{{ exec_user }}/fswiki/config/"
+    - "/home/{{ exec_user }}/fswiki/layout/"
+    - "/home/{{ exec_user }}/fswiki/log/"
 
 - name: Unarchive files
   unarchive:
@@ -32,6 +37,10 @@
     dest: /tmp/deploy/
     owner: "{{ exec_user }}"
     group: fswiki
+
+- name: Copy config files if not exists
+  become: yes
+  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/config/"
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
