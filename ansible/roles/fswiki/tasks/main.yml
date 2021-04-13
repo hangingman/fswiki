@@ -28,6 +28,7 @@
     - "/home/{{ exec_user }}/fswiki/attach/"
     - "/home/{{ exec_user }}/fswiki/backup/"
     - "/home/{{ exec_user }}/fswiki/config/"
+    - "/home/{{ exec_user }}/fswiki/data/"
     - "/home/{{ exec_user }}/fswiki/layout/"
     - "/home/{{ exec_user }}/fswiki/log/"
 
@@ -41,6 +42,10 @@
 - name: Copy config files if not exists
   become: yes
   shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/config/"
+
+- name: Copy data files if not exists
+  become: yes
+  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/data/"
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
