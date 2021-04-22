@@ -1,7 +1,7 @@
 ############################################################
-# 
+#
 # Commentプラグインのアクションハンドラ。
-# 
+#
 ############################################################
 package plugin::comment::CommentHandler;
 use strict;
@@ -21,13 +21,13 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $name    = $cgi->param("name");
 	my $message = $cgi->param("message");
 	my $count   = $cgi->param("count");
 	my $page    = $cgi->param("page");
 	my $option  = $cgi->param("option");
-	
+
 	if(!$wiki->can_show($page)){
 		return $wiki->error("ページの参照権限がありません。");
 	}
@@ -39,19 +39,19 @@ sub do_action {
 		my $cookie = $cgi->cookie(-name=>'fswiki_post_name',-value=>Util::url_encode($name),-expires=>'+1M',-path=>$path);
 		print "Set-Cookie: ",$cookie->as_string,"\n";
 	}
-	
+
 	# フォーマットプラグインへの対応
 	my $format = $wiki->get_edit_format();
 	$name    = $wiki->convert_to_fswiki($name   ,$format,1);
 	$message = $wiki->convert_to_fswiki($message,$format,1);
-	
+
 	if($page ne "" && $message ne "" && $count ne ""){
-		
+
 		my @lines = split(/\n/,$wiki->get_page($page));
 		my $flag       = 0;
 		my $form_count = 1;
 		my $content    = "";
-		
+
 		foreach(@lines){
 			# 新着順の場合
 			if($option eq "reverse"){
@@ -67,7 +67,7 @@ sub do_action {
 			# ページ末尾に追加の場合
 			} elsif($option eq "tail"){
 				$content = $content.$_."\n";
-				
+
 			# 投稿順の場合
 			} else {
 				if(/^{{comment\s*.*}}$/ && $flag==0){
@@ -81,20 +81,20 @@ sub do_action {
 				$content = $content.$_."\n";
 			}
 		}
-		
+
 		# ページ末尾に追加の場合は最後に追加
 		if($option eq "tail" && check_comment($wiki, 'Footer')){
 			$content = $content."*$message - $name (".Util::format_date(time()).")\n";
 			$flag = 1;
 		}
-		
+
 		if($flag==1){
 			$wiki->save_page($page,$content);
 		}
 	}
-	
+
 	# 元のページにリダイレクト
-	$wiki->redirect($page);
+	return $wiki->redirect($page);
 }
 
 #==================================================================

@@ -1,7 +1,7 @@
 ###############################################################################
-# 
+#
 # ページを編集するプラグイン
-# 
+#
 ###############################################################################
 package plugin::core::EditPage;
 use strict;
@@ -22,7 +22,7 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	my $format   = $wiki->get_edit_format();
 	my $content  = $cgi->param("content");
@@ -30,7 +30,7 @@ sub do_action {
 	my $template = $cgi->param("template");
 	my $artno    = $cgi->param("artno");
 	my $time     = $wiki->get_last_modified($pagename);
-	
+
 	my $buf = "";
 	my $login = $wiki->get_login_info();
 
@@ -43,7 +43,7 @@ sub do_action {
 	if(!$wiki->can_modify_page($pagename)){
 		return $wiki->error("ページの編集は許可されていません。");
 	}
-	
+
 	#--------------------------------------------------------------------------
 	# 保存処理
 	if($cgi->param("save") ne ""){
@@ -54,7 +54,7 @@ sub do_action {
 		}
 		if($wiki->page_exists($pagename) && $cgi->param("lastmodified") != $time){
 			$buf .= "<p><span class=\"error\">ページは既に別のユーザによって更新されています。最新版との差分を確認して再度編集を行ってください。</span></p>";
-			
+
 			my $mode = $wiki->get_edit_format();
 			my $orig_source = undef;
 			if($artno eq ""){
@@ -65,12 +65,12 @@ sub do_action {
 			my $your_source = $content;
 			$your_source =~ s/\r\n/\n/g;
 			$your_source =~ s/\r/\n/g;
-			
+
 			my $diff = plugin::core::Diff::_get_diff_html($wiki, $orig_source, $your_source);
 			$buf .= $diff."<br>";
-			
+
 			$content = $orig_source;
-			
+
 		} else {
 			#my $save_content = $content;
 			my $mode = $wiki->get_edit_format();
@@ -87,9 +87,9 @@ sub do_action {
 			# それ以外の場合は処理を実行してメッセージを返却
 			} else {
 				$wiki->save_page($pagename, $save_content, $sage);
-				
+
 				if($content ne ""){
-					$wiki->redirect($pagename, $artno);
+					return $wiki->redirect($pagename, $artno);
 				} else {
 					if($artno eq ""){
 						$wiki->set_title($pagename."を削除しました");
@@ -110,7 +110,7 @@ sub do_action {
 			}
 		}
 		$time = $cgi->param("lastmodified");
-		
+
 		my $mode = $wiki->get_edit_format();
 		my $orig_source = undef;
 		if($artno eq ""){
@@ -121,14 +121,14 @@ sub do_action {
 		my $your_source = $content;
 		$your_source =~ s/\r\n/\n/g;
 		$your_source =~ s/\r/\n/g;
-		
+
 		if($orig_source eq $your_source){
 			$buf .= '<p class="error">差分はありません。</p>';
 		} else {
 			my $diff = plugin::core::Diff::_get_diff_html($wiki, $your_source, $orig_source);
 			$buf .= $diff."<br>";
 		}
-		
+
 	#--------------------------------------------------------------------------
 	# プレビュー処理
 	} elsif($cgi->param("preview") ne ""){
@@ -164,7 +164,7 @@ sub do_action {
 		#テンプレートを指定された場合
 		$content = $wiki->get_page($template);
 	}
-	
+
 	#--------------------------------------------------------------------------
 	# 入力フォーム
 	$wiki->set_title($pagename."の編集",1);
@@ -179,7 +179,7 @@ sub do_action {
 				  ACTION        => 'EDIT',
 				  EXISTS_PAGE   => $wiki->page_exists($pagename),
 				  SAGE          => $sage});
-	
+
 	if($artno ne ""){
 		$tmpl->param(OPTIONAL_PARAMS=>[{NAME=>'artno', VALUE=>$artno}]);
 	}
@@ -188,7 +188,7 @@ sub do_action {
 
 	# プラグインを挿入
 	$buf .= $wiki->get_editform_plugin();
-	
+
 	return $buf;
 }
 
@@ -261,10 +261,10 @@ sub hook {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	my $login    = $wiki->get_login_info();
-	
+
 	# 編集メニューの制御
 	if($wiki->can_modify_page($pagename)){
 		$wiki->add_menu("編集",$wiki->create_url({ action=>"EDIT",page=>$pagename }));

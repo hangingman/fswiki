@@ -23,7 +23,7 @@ sub do_action {
 	my $source = $cgi->param("source");
 	my $state  = $cgi->param("state");
 	my $page   = $cgi->param("page");
-	
+
 	if($wiki->page_exists($source)){
 		if(!$wiki->can_modify_page($source)){
 			return $wiki->error("ページの編集は許可されていません。");
@@ -32,8 +32,8 @@ sub do_action {
 		$content =~ s/(\n\*状態：)\s+(.*)/$1 $state/;
 		$wiki->save_page($source,$content);
 	}
-	
-	$wiki->redirect($page);
+
+	return $wiki->redirect($page);
 }
 
 1;

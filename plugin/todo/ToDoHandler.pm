@@ -43,7 +43,7 @@ sub do_action {
 	$wiki->save_page($source,$content);
 
 	# もともと表示していたページを表示
-	$wiki->redirect($page);
+	return $wiki->redirect($page);
 }
 
 1;
