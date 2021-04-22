@@ -21,9 +21,9 @@ sub do_action {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $cgi   = $wiki->get_CGI;
-	
+
 	$wiki->set_title("プラグイン設定");
-	
+
 	if($cgi->param("SAVE") ne ""){
 		return $self->save_plugin_config($wiki);
 	} else {
@@ -35,14 +35,14 @@ sub plugin_config_form {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
-	
+
 	my $buf = "<h2>プラグインの設定</h2>\n".
 	          "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
 	          "<table>\n".
 	          "<tr><th><br></th><th>プラグイン</th><th>説明</th></tr>\n";
-	          
+
 	foreach(sort($self->list_plugins($wiki))){
 		$buf .= "<tr>";
 		$buf .= "<td><input type=\"checkbox\" name=\"plugin\" value=\"".Util::escapeHTML($_)."\"";
@@ -50,18 +50,18 @@ sub plugin_config_form {
 			if($_ eq $plugin){ $buf .= " checked"; }
 		}
 		$buf .= "></td>";
-		
+
 		$buf .= "<td>".Util::escapeHTML($_)."</td>";
 		$buf .= "<td>".$self->get_decription($wiki,$_)."</td>";
 		$buf .= "</tr>";
 	}
-	
+
 	$buf .= "</table>\n".
 	        "<input type=\"submit\" name=\"SAVE\" value=\" 保 存 \">\n".
 	        "<input type=\"reset\" value=\"リセット\">\n".
 	        "<input type=\"hidden\" name=\"action\" value=\"ADMINPLUGIN\">\n".
 	        "</form>\n";
-	
+
 	return $buf;
 }
 
@@ -70,11 +70,10 @@ sub plugin_config_form {
 #==============================================================================
 sub save_plugin_config {
 	my $self = shift;
-	my $wiki = shift;
-	my $cgi  = $wiki->get_CGI;
-	
-	my @plugins = $cgi->param("plugin");
-	
+	my Wiki $wiki = shift;
+	my CGI::PSGI $cgi  = $wiki->get_CGI();
+	my @plugins = $cgi->multi_param("plugin");
+
 	&Util::save_config_text($wiki,$wiki->config('plugin_file'),join("\n",@plugins));
 
 	return $wiki->redirectURL( $wiki->create_url({action=>"ADMINPLUGIN"}) );
@@ -98,7 +97,7 @@ sub list_plugins {
 		}
 	}
 	closedir(DIR);
-	
+
 	@list = sort(@list);
 	return @list;
 }
