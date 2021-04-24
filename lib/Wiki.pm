@@ -11,7 +11,7 @@ use File::Path;
 use Wiki::DefaultStorage;
 use Wiki::HTMLParser;
 our ($VERSION, $DEBUG);
-$VERSION = '3.6.5';
+$VERSION = '4.0.0';
 $DEBUG   = 0;
 #==============================================================================
 # <p>
