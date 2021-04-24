@@ -155,21 +155,19 @@ sub do_action {
 		}
 
 		my $contenttype = &get_mime_type($wiki,$file);
-		my $ua = $ENV{"HTTP_USER_AGENT"};
-		my $disposition = ($contenttype =~ /^image\// && $ua !~ /MSIE/ ? "inline" : "attachment");
-
-		open(DATA, $filepath) or die $!;
-		print "Content-Type: $contenttype\n";
-		print Util::make_content_disposition($file, $disposition);
-		binmode(DATA);
-		while(read(DATA,$_,16384)){ print $_; }
-		close(DATA);
 
 		# ログの記録
 		&write_log($wiki,"DOWNLOAD",$pagename,$file);
 		&count_up($wiki,$pagename,$file);
 
-		exit();
+		# 添付データをレスポンス
+		open my $data_fh, '<', $filepath or die $!;
+		binmode($data_fh);
+
+		my Plack::Response $res = Plack::Response->new(200);
+		$res->content_type("Content-Type: $contenttype");
+		$res->body($data_fh);
+		return $res;
 	}
 }
 
