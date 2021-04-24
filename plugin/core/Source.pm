@@ -1,7 +1,7 @@
 ###############################################################################
-# 
+#
 # ソースを表示するプラグイン
-# 
+#
 ###############################################################################
 package plugin::core::Source;
 use strict;
@@ -21,7 +21,7 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
@@ -39,8 +39,8 @@ sub do_action {
 	my $format = $wiki->get_edit_format();
 	$source = $wiki->convert_from_fswiki($source,$format);
 
-	my $res = Plack::Response->new(200);
-	$res->content_type('text/html');
+	my Plack::Response $res = Plack::Response->new(200);
+	$res->content_type('text/html;charset=UTF-8');
     $res->content_encoding('UTF-8');
 	# HTMLの出力
 	$res->body($source);
@@ -55,12 +55,12 @@ sub hook {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
 	}
-	
+
 	$wiki->add_menu("ソース",$wiki->create_url({ action=>"SOURCE",page=>$pagename }));
 }
 
