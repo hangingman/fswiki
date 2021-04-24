@@ -20,7 +20,7 @@ sub new {
 #==============================================================================
 sub get_headline {
 	my ($page_body) = @_;
-	
+
 	if ($page_body =~ m/\!{1,3}\s*(.+)/mo) {
 		return $1;
 	}
@@ -76,22 +76,20 @@ sub escapeXML {
 sub do_action {
 	my ($self, $wiki) = @_;
 	my $file = $wiki->config('log_dir')."/rss10.cache";
-	
+
 	# キャッシュファイルが存在しない場合は作成
 	unless(-e $file){
 		&make_rss($wiki,$file);
 	}
-	
+
 	# RSSをレスポンス
-	print "Content-Type: application/xml\n\n";
-	open(RSS,$file);
-	binmode(RSS);
-	while(<RSS>){
-		print $_;
-	}
-	close(RSS);
-	
-	exit();
+	open my $rss_fh, '<', $file or die $!;
+	binmode($rss_fh);
+
+	my Plack::Response $res = Plack::Response->new(200);
+	$res->content_type('Content-Type: application/xml');
+	$res->body($rss_fh);
+	return $res;
 }
 
 #==============================================================================
@@ -101,7 +99,7 @@ sub hook {
 	my $self = shift;
 	my $wiki = shift;
 	my $hook = shift;
-	
+
 	if($hook eq "initialize"){
 		$wiki->add_head_info("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"".$wiki->create_url({action=>"RSS"})."\">");
 	} else {
@@ -115,7 +113,7 @@ sub hook {
 sub make_rss {
 	my $wiki = shift;
 	my $file = shift;
-	
+
 	# URIを作成
 	my $uri = $wiki->config('server_host');
 	if($uri eq ""){
@@ -127,7 +125,7 @@ sub make_rss {
 	my $items;
 	my $links;
 	my %ch;
-	
+
 	$ch{item_max} = 15;
 	$ch{encoding} = 'UTF-8';
 	$ch{lang}     = 'ja';
@@ -149,7 +147,7 @@ sub make_rss {
 	foreach my $page (@list) {
 		# 公開されているページのみ
 		next if($wiki->get_page_level($page)!=0);
-		
+
 		my $page_body = $wiki->get_page($page);
 		my @subject = get_category($wiki,$wiki->get_page($page));
 		my $subjects;
