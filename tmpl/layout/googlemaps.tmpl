@@ -1,0 +1,52 @@
+<!--TMPL_IF--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : Google Maps を利用した地図表示を行う。
+-- PARAMETER   : w    , /^([0-9\.]+)(pt|px|em|%)?$/
+-- PARAMETER   : h    , /^([0-9\.]+)(pt|px|em|%)?$/
+-- PARAMETER   : p    , /^(\-?[0-9\.]+),[\t ]*(\-?[0-9\.]+)$/
+-- PARAMETER   : msg  , /^(.+)$/
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! 利用方法
+
+自サイト等で利用する場合は [Google Maps API Key|http://maps.google.com/apis/maps/signup.html] を取得する必要があります。
+
+!! 例）
+ {{ilayout googlemaps,w:200,h:200,"p:-122.1419,37.4419",msg:Hello!}}
+
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF-->
+
+<script src="http://maps.google.com/maps?file=api&v=1&key=<<ここに Google Maps API Key を書き込んでください。>>" type="text/javascript" charset="utf-8"></script>
+<script language="JavaScript">
+//<![CDATA[
+function makeGMap() {
+	var map = new GMap(document.getElementById("map"));
+	map.addControl(new GSmallMapControl());
+	map.addControl(new GMapTypeControl());
+	GEvent.addListener(map, "moveend", function() {
+		var center = map.getCenterLatLng();
+		var latLngStr = "(" + center.x + ", " + center.y + ")";
+		parent.document.getElementById("map_msg").innerHTML = latLngStr;
+	});
+	<!--TMPL_IF NAME="p"-->
+	map.centerAndZoom(new GPoint(<!--TMPL_VAR NAME="p"-->), 4);
+	<!--/TMPL_IF-->
+	<!--TMPL_IF NAME="msg"-->
+	var msg = "<!--TMPL_VAR NAME="msg" ESCAPE="HTML"-->";
+	msg = msg.replace(/\&lt\;br\&gt\;/g, "<br>");
+	map.openInfoWindowHtml(map.getCenterLatLng(),"<span style='white-space: nowrap;font-size:9pt;'>"+msg+"</span>");
+	<!--/TMPL_IF-->
+}
+//]]>
+if (window.addEventListener) {
+	window.addEventListener("load",makeGMap,true);
+}else{
+	window.attachEvent("onload", makeGMap);
+}
+</script>
+<div id="map" style="<!--TMPL_IF NAME="w"-->width:<!--TMPL_VAR NAME="w"-->;<!--/TMPL_IF--><!--TMPL_IF NAME="h"-->height:<!--TMPL_VAR NAME="h"-->;<!--/TMPL_IF-->border:#000000 1px solid;"></div>
+<div id="map_msg"></div>

@@ -1,0 +1,50 @@
+<!--TMPL_IF LAYOUT--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : 開閉機能
+-- PARAMETER   : title  , /^([^<>;,]+)$/
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! rollout
+簡単な開閉機能を付けることができます。
+閉じているときは、タイトルのみ表示されます。
+::例１）サンプル
+ {{layout rollout[,title:タイトル]
+ 〜 Wikiソース 〜
+ }}
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF LAYOUT-->
+
+<!--TMPL_IF NAME="IS_FIRST_TMPL"-->
+<!--FSWIKI_HEAD_INFO-->
+<script language="javascript">
+function rollout_box(_span,_img,_src) {
+	var span = document.getElementById(_span);
+	var img  = document.getElementById(_img);
+	var src  = document.getElementById(_src);
+	if (img.src.indexOf('<!--TMPL_VAR NAME="FSWIKI_HOME"-->/layout/rollout/close.png') > -1) {
+		span.title = 'クリックすれば閉じます';
+		img.src = '<!--TMPL_VAR NAME="FSWIKI_HOME"-->/layout/rollout/open.png';
+		src.style.display = '';
+	} else {
+		span.title = 'クリックすれば開きます';
+		img.src = '<!--TMPL_VAR NAME="FSWIKI_HOME"-->/layout/rollout/close.png';
+		src.style.display = 'none';
+	}
+}
+</script>
+<!--/FSWIKI_HEAD_INFO-->
+<!--/TMPL_IF-->
+<div class="layout_rollout" style="margin-left:1em;vertical-align:bottom;">
+<span id="rollout_<!--TMPL_VAR NAME="COUNT_TMPL"-->" title="クリックすれば開きます"
+	onmouseover="this.style.cursor='pointer';"
+	onclick="rollout_box('rollout_<!--TMPL_VAR NAME="COUNT_TMPL"-->','rollout_img_<!--TMPL_VAR NAME="COUNT_TMPL"-->','rollout_src_<!--TMPL_VAR NAME="COUNT_TMPL"-->');">
+<img id="rollout_img_<!--TMPL_VAR NAME="COUNT_TMPL"-->" src="<!--TMPL_VAR NAME="FSWIKI_HOME"-->/layout/rollout/close.png" style="border-width:0;">
+<u><!--TMPL_VAR NAME="title"--></u>
+</span>
+<div id="rollout_src_<!--TMPL_VAR NAME="COUNT_TMPL"-->" style="display:none;">
+<!--TMPL_VAR NAME="SOURCE"-->
+</div>
+</div>
