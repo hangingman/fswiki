@@ -1,7 +1,7 @@
 ################################################################################
 #
 # バグトラックプラグインのアクションハンドラ。
-# 
+#
 ################################################################################
 package plugin::bugtrack::BugTrackHandler;
 use strict;
@@ -21,7 +21,7 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $project  = $cgi->param("project");
 	my $name     = $cgi->param("name");
 	my $category = $cgi->param("category");
@@ -30,7 +30,7 @@ sub do_action {
 	my $content  = $cgi->param("content");
 	my $subject  = $cgi->param("subject");
 	my $time     = time();
-	
+
 	if($name eq ""){
 		return $wiki->error("名前が入力されていません。");
 	} elsif($subject eq ""){
@@ -38,12 +38,12 @@ sub do_action {
 	} elsif($content eq ""){
 		return $wiki->error("バグ内容が入力されていません。");
 	}
-	
+
 	# post_nameというキーでクッキーをセットする
 	my $path   = &Util::cookie_path($wiki);
 	my $cookie = $cgi->cookie(-name=>'fswiki_post_name',-value=>Util::url_encode($name),-expires=>'+1M',-path=>$path);
 	print "Set-Cookie: ",$cookie->as_string,"\n";
-	
+
 	# フォーマットプラグインへの対応
 	my $format = $wiki->get_edit_format();
 	$name     = $wiki->convert_to_fswiki($name    ,$format,1);
@@ -51,9 +51,9 @@ sub do_action {
 	$priority = $wiki->convert_to_fswiki($priority,$format,1);
 	$status   = $wiki->convert_to_fswiki($status  ,$format,1);
 	$content  = $wiki->convert_to_fswiki($content ,$format);
-	
+
 	my $page = $self->make_pagename($wiki,$project);
-	
+
 	$content = "!!!$subject\n".
 	           "*投稿者： $name\n".
 	           "*カテゴリ： $category\n".
@@ -63,9 +63,9 @@ sub do_action {
 	           "{{bugstate}}\n".
 	           "!!内容\n".$content."\n".
 	           "!!コメント\n{{comment}}";
-	
+
 	$wiki->save_page($page,$content);
-	$wiki->redirect($page);
+	return $wiki->redirect($page);
 }
 
 #==============================================================================
@@ -75,7 +75,7 @@ sub make_pagename {
 	my $self = shift;
 	my $wiki = shift;
 	my $project = shift;
-	
+
 	my @list = $wiki->get_page_list;
 	my $count = 0;
 	foreach(@list){

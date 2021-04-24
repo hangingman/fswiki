@@ -1,0 +1,55 @@
+<!--TMPL_IF LAYOUT--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : 開閉機能2
+-- PARAMETER   : summary  , /^([^<>;,]+)$/
+-- PARAMETER   : opened   , //
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! region
+簡単な開閉機能を付けることができます。
+閉じているときは、タイトルのみ表示されます。
+::例１）サンプル
+ {{layout region[,summary:タイトル][,opened]
+ 〜 Wikiソース 〜
+ }}
+openedを指定した場合は、初期表示で開いた状態になります。
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF LAYOUT-->
+
+<!--TMPL_IF NAME="IS_FIRST_TMPL"-->
+<!--FSWIKI_HEAD_INFO-->
+<style>
+<!--
+table.layout_region, table.layout_region td {
+	border-width:0px;
+}
+-->
+</style>
+<!--/FSWIKI_HEAD_INFO-->
+<!--/TMPL_IF-->
+<table class="layout_region" cellpadding=1 cellspacing=2><tr>
+<td valign=top>
+	<span id=rgn_button_<!--TMPL_VAR NAME="COUNT_TMPL"--> style="cursor:pointer;font:normal 10px MS Gothic;border:gray 1px solid;"
+	onclick="
+	if(document.getElementById('rgn_summary_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.display!='none'){
+		document.getElementById('rgn_summary_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.display='none';
+		document.getElementById('rgn_content_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.display='block';
+		document.getElementById('rgn_bracket_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.borderStyle='solid none solid solid';
+		document.getElementById('rgn_button_<!--TMPL_VAR NAME="COUNT_TMPL"-->').innerHTML='-';
+	}else{
+		document.getElementById('rgn_summary_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.display='block';
+		document.getElementById('rgn_content_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.display='none';
+		document.getElementById('rgn_bracket_<!--TMPL_VAR NAME="COUNT_TMPL"-->').style.borderStyle='none';
+		document.getElementById('rgn_button_<!--TMPL_VAR NAME="COUNT_TMPL"-->').innerHTML='+';
+	}
+	"><!--TMPL_IF 'opened'-->-<!--TMPL_ELSE-->+<!--/TMPL_IF--></span>
+</td>
+<td id=rgn_bracket_<!--TMPL_VAR NAME="COUNT_TMPL"--> style="font-size:1pt;border:gray 1px;border-style:<!--TMPL_IF 'opened'-->solid none solid solid<!--TMPL_ELSE-->none<!--/TMPL_IF-->;">&nbsp;</td>
+<td id=rgn_summary_<!--TMPL_VAR NAME="COUNT_TMPL"--> style="color:gray;border:gray 1px solid;display:<!--TMPL_IF 'opened'-->none<!--TMPL_ELSE-->block<!--/TMPL_IF-->;"><!--TMPL_VAR NAME="summary"--></td>
+<td valign=top id=rgn_content_<!--TMPL_VAR NAME="COUNT_TMPL"--> style="<!--TMPL_UNLESS 'opened'-->display:none;<!--/TMPL_UNLESS-->">
+<!--TMPL_VAR NAME="SOURCE"-->
+</td>
+</tr></table>

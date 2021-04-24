@@ -1,0 +1,141 @@
+---
+#
+# fswikiインストール
+#
+- name: Create archive of current git HEAD source
+  delegate_to: localhost
+  shell: |
+    cd $(dirname {{ playbook_dir }} )
+    git archive HEAD --format=tar.gz --output={{ role_path }}/files/fswiki.tar.gz
+
+- name: Clean /tmp/deploy/ path
+  file:
+    state: absent
+    path: /tmp/deploy/
+  ignore_errors: yes
+
+- name: Ensures deploy dir and fswiki default dirs exists
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ exec_user }}"
+    group: fswiki
+    recurse: yes
+  loop:
+    - "/tmp/deploy/"
+    - "/home/{{ exec_user }}/fswiki/"
+    - "/home/{{ exec_user }}/fswiki/attach/"
+    - "/home/{{ exec_user }}/fswiki/backup/"
+    - "/home/{{ exec_user }}/fswiki/config/"
+    - "/home/{{ exec_user }}/fswiki/data/"
+    - "/home/{{ exec_user }}/fswiki/layout/"
+    - "/home/{{ exec_user }}/fswiki/log/"
+
+- name: Ensures default logs exist
+  become: yes
+  file:
+    path: "/home/{{ exec_user }}/fswiki/log/{{ item }}"
+    state: touch
+    owner: "{{ exec_user }}"
+    group: fswiki
+  loop:
+    - "{{ access_log_file }}"
+    - "{{ attach_log_file }}"
+    - "{{ freeze_file }}"
+    - "{{ download_count_file }}"
+
+- name: Unarchive files
+  unarchive:
+    src: files/fswiki.tar.gz
+    dest: /tmp/deploy/
+    owner: "{{ exec_user }}"
+    group: fswiki
+
+- name: Copy config files if not exists
+  become: yes
+  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/config/"
+
+- name: Copy data files if not exists
+  become: yes
+  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/data/"
+
+- name: Update source and directories can overwrite (docs, lib, plugin, ...)
+  become: yes
+  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} /home/fswiki/fswiki/
+  loop:
+    - docs
+    - lib
+    - plugin
+    - theme
+    - tmpl
+    - tools
+    - .perl-version
+    - LogSearch.js
+    - Procfile
+    - README.md
+    - app.psgi
+    - cpanfile
+    - cpanfile.snapshot
+    - get_accesslog.cgi
+    - release.sh
+    - wikidb.cgi
+
+- name: Install dependency libraries
+  become: yes
+  become_user: "{{ exec_user }}"
+  shell: /bin/bash -lci "{{ item }}"
+  args:
+    chdir: /home/fswiki/fswiki/
+  loop:
+    - perlbrew switch {{ perl_version }}
+    - cpanm Carton
+    - cpanm --local-lib=~/perl5 local::lib
+    - carton install
+
+- name: Install supervisord
+  apt:
+    name: supervisor
+
+- name: Ensures supervisord dir exists
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ exec_user }}"
+    group: fswiki
+    recurse: yes
+  loop:
+    - /var/log/supervisor/
+    - /etc/supervisor/conf.d/
+
+- name: Copy supervisord config file
+  become: yes
+  template:
+    src: templates/etc/supervisor/conf.d/fswiki.conf.j2
+    dest: /etc/supervisor/conf.d/fswiki.conf
+    owner: "{{ exec_user }}"
+    group: fswiki
+    mode: "0644"
+
+- name: Copy freestylewiki setup.dat
+  become: yes
+  template:
+    src: templates/setup.dat.j2
+    dest: /home/fswiki/fswiki/setup.dat
+    owner: "{{ exec_user }}"
+    group: fswiki
+
+- name: Enable service supervisord, and stop it
+  become: yes
+  ansible.builtin.service:
+    name: supervisor
+    enabled: yes
+    state: stopped
+
+- name: Start supervisord
+  become: yes
+  ansible.builtin.service:
+    name: supervisor
+    enabled: yes
+    state: started

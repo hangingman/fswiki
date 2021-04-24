@@ -258,6 +258,7 @@ sub send_mail {
 # </pre>
 #===============================================================================
 sub handyphone {
+	warnings::warnif("deprecated", "There is no people using legacy feature phone. This function should be removed.");
 	my $ua = $ENV{'HTTP_USER_AGENT'};
 	if(!defined($ua)){
 		return 0;
@@ -690,7 +691,7 @@ sub make_content_disposition {
 	my ($filename, $disposition) = @_;
 	my $ua = $ENV{"HTTP_USER_AGENT"};
 	my $encoded = ($ua =~ /MSIE/ ? &Jcode::convert($filename, 'sjis') : Jcode->new($filename)->mime_encode(''));
-	return "Content-Disposition: $disposition;filename=\"".$encoded."\"\n\n";
+	return { "Content-Disposition" => "$disposition;filename=\".$encoded.\"" };
 }
 
 #===============================================================================

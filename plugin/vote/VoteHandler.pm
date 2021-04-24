@@ -1,7 +1,7 @@
 ############################################################
-# 
+#
 # voteプラグインのアクションハンドラ。
-# 
+#
 ############################################################
 package plugin::vote::VoteHandler;
 use strict;
@@ -24,7 +24,7 @@ sub do_action {
 	my $item     = $cgi->param("item");
 	my $votename = $cgi->param("vote");
 	my $page     = $cgi->param("page");
-	
+
 	if($page ne "" && $votename ne "" && $item ne ""){
 		my $filename = &Util::make_filename($wiki->config('log_dir'),
 		                                    &Util::url_encode($votename),"vote");
@@ -32,7 +32,7 @@ sub do_action {
 		$hash->{$item}++;
 		&Util::save_config_hash(undef,$filename,$hash);
 	}
-	$wiki->redirect($page);
+	return $wiki->redirect($page);
 }
 
 1;

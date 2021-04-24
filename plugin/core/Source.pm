@@ -1,7 +1,7 @@
 ###############################################################################
-# 
+#
 # ソースを表示するプラグイン
-# 
+#
 ###############################################################################
 package plugin::core::Source;
 use strict;
@@ -21,7 +21,7 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
@@ -38,20 +38,13 @@ sub do_action {
 	}
 	my $format = $wiki->get_edit_format();
 	$source = $wiki->convert_from_fswiki($source,$format);
-	
-	if(&Util::handyphone()){
-		print "Content-Type: text/plain;charset=Shift_JIS\n\n";
-		&Jcode::convert(\$source,"sjis");
-	} else {
-		print "Content-Type: text/plain;charset=UTF-8\n";
-		if($ENV{"HTTP_USER_AGENT"} =~ /MSIE/){
-			print Util::make_content_disposition("source.txt", "attachment");
-		} else {
-			print "\n";
-		}
-	}
-	print $source;
-	exit();
+
+	my Plack::Response $res = Plack::Response->new(200);
+	$res->content_type('text/html;charset=UTF-8');
+    $res->content_encoding('UTF-8');
+	# HTMLの出力
+	$res->body($source);
+	return $res;
 }
 
 #==============================================================================
@@ -62,12 +55,12 @@ sub hook {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
 	}
-	
+
 	$wiki->add_menu("ソース",$wiki->create_url({ action=>"SOURCE",page=>$pagename }));
 }
 

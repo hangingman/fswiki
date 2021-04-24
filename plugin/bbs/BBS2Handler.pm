@@ -21,14 +21,14 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $bbsname = $cgi->param("bbsname");
 	my $name    = $cgi->param("name");
 	my $subject = $cgi->param("subject");
 	my $message = $cgi->param("message");
 	my $page    = $cgi->param("page");
 	my $option  = $cgi->param("option");
-	
+
 	if($name    eq ""){
 		$name    = "名無しさん";
 	} else {
@@ -37,31 +37,31 @@ sub do_action {
 		my $cookie = $cgi->cookie(-name=>'fswiki_post_name',-value=>Util::url_encode($name),-expires=>'+1M',-path=>$path);
 		print "Set-Cookie: ",$cookie->as_string,"\n";
 	}
-	
+
 	if($subject eq ""){
 		$subject = "無題";
 	}
-	
+
 	if($bbsname eq ""){
 		return $wiki->error("パラメータが不正です。");
 	}
 	if($message eq ""){
 		return $wiki->error("本文を入力してください。");
 	}
-	
+
 	# フォーマットプラグインへの対応
 	my $format = $wiki->get_edit_format();
 	$name    = $wiki->convert_to_fswiki($name   ,$format,1);
 	$subject = $wiki->convert_to_fswiki($subject,$format,1);
 	$message = $wiki->convert_to_fswiki($message,$format);
-	
+
 	my $pagename = $self->get_page_name($wiki,$bbsname);
 	my $content = "!![[$subject|$pagename]] - $name (".&Util::format_date(time()).")\n".
 	              "$message\n";
-	
+
 	# no_commentオプション
 	if($option eq "no_comment"){
-		
+
 	# reverse_commentオプション
 	} elsif($option eq "reverse_comment"){
 		$content .= "{{comment reverse}}\n";
@@ -70,9 +70,9 @@ sub do_action {
 		$content .= "{{comment}}\n";
 	}
 	$wiki->save_page($pagename,$content);
-	
+
 	# 元のページにリダイレクト
-	$wiki->redirect($pagename);
+	return $wiki->redirect($pagename);
 }
 
 #===========================================================

@@ -1,0 +1,23 @@
+<!--TMPL_IF--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : 指定したテキストの色を指定する
+-- PARAMETER   : c    , /^#[0-9a-zA-Z]+$/
+-- PARAMETER   : RGB  , /^\([0-9]+,[0-9]+,[0-9]+\)$/
+-- PARAMETER   : name , /^[a-zA-Z]+$/
+-- PARAMETER   : text , /^([^<>;,]+)$/
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! 利用方法
+ {{ilayout fontcolor,c:#000000,text:サンプル}}
+ {{ilayout fontcolor,"rgb:(0,0,0)",text:サンプル}}
+ {{ilayout fontcolor,name:black,text:サンプル}}
+
+ {{layout fontcolor,c:#ff0000
+ 〜Wikiソース〜
+ }}
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF-->
+<span style="color:<!--TMPL_IF NAME="c"--><!--TMPL_VAR NAME="c"--><!--TMPL_ELSE--><!--TMPL_IF NAME="RGB"-->RGB(<!--TMPL_VAR NAME="RGB"-->)<!--TMPL_ELSE--><!--TMPL_IF NAME="name"--><!--TMPL_VAR NAME="name"--><!--/TMPL_IF--><!--/TMPL_IF--><!--/TMPL_IF-->;"><!--TMPL_VAR NAME='text' ESCAPE='HTML'--><!--TMPL_VAR NAME='SOURCE'--></span>

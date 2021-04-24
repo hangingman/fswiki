@@ -1,0 +1,21 @@
+<!--TMPL_IF--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : 新規ページを作成する為のフォームを表示します
+-- PARAMETER   : prefix   , /^([^<>;,]+)$/
+-- PARAMETER   : template , /^([^<>;,]+)$/
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!!利用方法
+ {{ilayout newpage,DEF:<初期表示>}}
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF-->
+<form action="<!--TMPL_VAR NAME="SCRIPT_NAME" -->" method="POST">
+<input type="hidden" name="action" value="EDIT">
+<input type="hidden" name="template" value="<!--TMPL_VAR 'template'-->">
+<p>
+ページ名：<input type="text" name="page" value="<!--TMPL_VAR 'prefix'-->" size="50"><input type="submit" value="作成">
+</p>
+</form>

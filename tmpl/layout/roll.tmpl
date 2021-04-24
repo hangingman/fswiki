@@ -1,0 +1,56 @@
+<!--TMPL_IF LAYOUT--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : 開閉機能
+-- PARAMETER   : title  , /^([^<>;,]+)$/
+-- PARAMETER   : htitle , /^([^<>;,]+)$/
+-- PARAMETER   : opened , //
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! roll
+簡単な開閉機能を付けることができます。
+閉じているときは、タイトルのみ表示されます。
+非表示タイトルを指定すれば、閉じているときのタイトルを別途指定できます。
+::例１）サンプル
+ {{layout roll[,title:タイトル][,htitle:非表示タイトル][,opened]
+ 〜 Wikiソース 〜
+ }}
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF LAYOUT-->
+<p>
+<div class="layout_roll" style="margin-left:1em;vertical-align:bottom;">
+<table border=0 style="border-width:0;padding:1px;">
+<tr id="roll_tr_<!--TMPL_VAR 'COUNT_TMPL'-->"
+	title="<!--TMPL_UNLESS 'IS_HANDYPHONE'--><!--TMPL_IF 'opened'-->クリックすれば閉じます<!--TMPL_ELSE-->クリックすれば開きます<!--/TMPL_IF--><!--/TMPL_UNLESS-->"
+	style="border-width:0;"
+	onmouseover="this.style.cursor='pointer';"
+	onclick="
+	if (document.getElementById('roll_src_<!--TMPL_VAR 'COUNT_TMPL'-->').style.display!='none'){
+		document.getElementById('roll_src_<!--TMPL_VAR 'COUNT_TMPL'-->').style.display='none';
+		document.getElementById('roll_title_<!--TMPL_VAR 'COUNT_TMPL'-->').innerHTML='<!--TMPL_VAR 'title' ESCAPE='HTML'-->';
+		document.getElementById('roll_img_<!--TMPL_VAR 'COUNT_TMPL'-->').innerHTML='+';
+		document.getElementById('roll_tr_<!--TMPL_VAR 'COUNT_TMPL'-->').title='クリックすれば開きます';
+	} else {
+		document.getElementById('roll_src_<!--TMPL_VAR 'COUNT_TMPL'-->').style.display='';
+		document.getElementById('roll_title_<!--TMPL_VAR 'COUNT_TMPL'-->').innerHTML='<!--TMPL_IF 'htitle'--><!--TMPL_VAR 'htitle' ESCAPE='HTML'--><!--TMPL_ELSE--><!--TMPL_VAR 'title' ESCAPE='HTML'--><!--/TMPL_IF-->';
+		document.getElementById('roll_img_<!--TMPL_VAR 'COUNT_TMPL'-->').innerHTML='-';
+		document.getElementById('roll_tr_<!--TMPL_VAR 'COUNT_TMPL'-->').title='クリックすれば閉じます';
+	}">
+	<td style="vertical-align:middle;text-align:center;border-width:0;width:1em;">
+		<span id="roll_img_<!--TMPL_VAR 'COUNT_TMPL'-->" style="background-color:#dddddd;border:#999999 1px solid;font:bold 1em 'Terminal';"><!--TMPL_UNLESS 'IS_HANDYPHONE'--><!--TMPL_IF 'opened'-->-<!--TMPL_ELSE-->+<!--/TMPL_IF--><!--/TMPL_UNLESS--></span>
+	</td>
+	<td colspan="2" style="border-width:0;">
+	<span id="roll_title_<!--TMPL_VAR 'COUNT_TMPL'-->" style="border-color:#777777;border-style:dotted;border-width:0 0 1 0;padding:0 .2em;"
+	      onmouseover="this.style.background='#dddddd';" onmouseout="this.style.background='none';"><!--TMPL_UNLESS 'IS_HANDYPHONE'--><!--TMPL_IF 'opened'--><!--TMPL_IF 'htitle'--><!--TMPL_VAR 'htitle' ESCAPE='HTML'--><!--TMPL_ELSE--><!--TMPL_VAR 'title' ESCAPE='HTML'--><!--/TMPL_IF--><!--TMPL_ELSE--><!--TMPL_VAR 'title' ESCAPE='HTML'--><!--/TMPL_IF--><!--/TMPL_UNLESS--></span>
+	</td>
+</tr>
+<tr id="roll_src_<!--TMPL_VAR 'COUNT_TMPL'-->" style="display:<!--TMPL_UNLESS 'IS_HANDYPHONE'--><!--TMPL_UNLESS 'opened'-->none<!--/TMPL_UNLESS--><!--/TMPL_UNLESS-->;border-width:0;">
+	<td style="border-width:0;"></td>
+	<td style="border-color:#777777;border-style:dotted;border-width:0 0 1 1;width:2px;">&nbsp;</td>
+	<td style="border-width:0;margin-top:2px;padding:.5em 1em 0 0;"><!--TMPL_VAR 'SOURCE'--></td>
+</tr>
+</table>
+</div>
+</p>

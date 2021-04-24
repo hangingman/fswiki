@@ -4,21 +4,28 @@
 #
 ###############################################################################
 package CGI2;
-use CGI;
-use CGI::Session;
+use CGI::PSGI;
+use Plack::Session;
 our @ISA;
 use strict;
-@ISA = qw(CGI);
+@ISA = qw(CGI::PSGI);
 
 #==============================================================================
 # コンストラクタ
 #==============================================================================
 sub new {
-	my $class = shift;
+	my $self = shift;
+	my $env  = shift;
 	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
-	my $self  = CGI->new();
-	
-	return bless $self,$class;
+	return bless CGI::PSGI->new($env);
+}
+
+#==============================================================================
+# スクリプトからの追加パス情報を返します
+#==============================================================================
+sub path_info {
+	my $self = shift;
+	return $self->env->{PATH_INFO};
 }
 
 #==============================================================================
@@ -27,10 +34,10 @@ sub new {
 sub remove_session {
 	my $self = shift;
 	my $wiki = shift;
-	
+
 	my $dir   = $wiki->config('session_dir');
 	my $limit = $wiki->config('session_limit');
-	
+
 	opendir(SESSION_DIR,$dir) or die "$!: $dir";
 	my $timeout = time() - (60 * $limit);
 	while(my $entry = readdir(SESSION_DIR)){
@@ -51,22 +58,17 @@ sub get_session {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $start = shift;
-	
+
 	# セッション開始フラグが立っておらず、CookieにセッションIDが
 	# 存在しない場合はセッションを生成しない
 	if(!defined($self->{session_cache})){
 		if((not defined $start or $start!=1) && $self->cookie(-name=>'CGISESSID') eq ""){
 			return undef;
 		}
-		my $dir   = $wiki->config('session_dir');
-		my $limit = $wiki->config('session_limit');
-		my $path  = &Util::cookie_path($wiki);
-		my $session = CGI::Session->new("driver:File",$self,{Directory=>$dir});
-		my $cookie  = CGI::Cookie->new(-name=>'CGISESSID',-value=>$session->id(),-expires=>"+${limit}m",-path=>$path);
-		print "Set-Cookie: ".$cookie->as_string()."\n";
+		# session管理はPlack::Middleware::Sessionにまかせるため、app.psgiに移動しました
+		my $session = Plack::Session->new($self->env);
 		$self->{session_cache} = $session;
 		return $session;
-		
 	} else {
 		return $self->{session_cache};
 	}
@@ -79,7 +81,7 @@ sub param {
 	my $self  = shift;
 	my $name  = shift;
 	my $value = shift;
-	
+
 	# 必ずUTF-8への変換を行う
 	if(Util::handyphone()){
 		if(defined($name)) {

@@ -1,0 +1,69 @@
+<!--TMPL_IF LAYOUT--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : Style Box ウィンドウ
+-- PARAMETER   : title  , /^([^<>;,]+)$/
+-- PARAMETER   : htitle , /^([^<>;,]+)$/
+-- PARAMETER   : style  , /^([^<>;,]+)$/
+-- PARAMETER   : theme  , //
+-- PARAMETER   : opened , //
+-- -------------------------------------------------------------------------
+-- HELP_START <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!! Style Box
+指定したスタイルを適用したウインドウ内に Wikiソースを表示します。
+指定したタイトルをウィンドウタイトルとして表示します。
+::例１）サンプル
+ {{layout box[,title:タイトル（開）][,htitle:タイトル（閉）][,style:スタイル][,theme][,opened]
+ 〜 Wikiソース 〜
+ }}
+* titleを指定すると、StyleBoxウィンドウのタイトルになります。
+* htitleがない場合は、titleを利用します。
+* Wikiソースの１行目に大見出し(!!!)を使用するとタイトルになります。
+** 但し、閉じているときには表示されません。この場合は、htitleを指定します。
+* theme が指定してある場合は、サイトスキーマ名を style として利用します。
+* theme, style の指定がない場合は default が適用されます。
+* opened を指定すると、開いた状態で初期表示されます。（デフォルトは閉じた状態です）
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF LAYOUT-->
+
+<!--TMPL_IF NAME="IS_FIRST_TMPL"-->
+<!--FSWIKI_HEAD_INFO-->
+<script language="javascript">
+function box_disp(img,count) {
+	box_id = document.getElementById('box_' + count);
+	title_id = document.getElementById('box_title_' + count);
+	htitle_id = document.getElementById('box_htitle_' + count);
+	if (img.className == "close") {
+		box_id.style.display = 'none';
+		if (title_id) title_id.style.display = 'none';
+		if (htitle_id) htitle_id.style.display = '';
+		img.className = "open";
+	} else {
+		box_id.style.display = '';
+		if (title_id) title_id.style.display = '';
+		if (htitle_id) htitle_id.style.display = 'none';
+		img.className = "close";
+	}
+}
+</script>
+<!--/FSWIKI_HEAD_INFO-->
+<!--/TMPL_IF-->
+<link rel="stylesheet" type="text/css" href="<!--TMPL_VAR 'FSWIKI_HOME'-->/layout/box/<!--TMPL_IF 'theme'--><!--TMPL_VAR 'SITE_THEME_NAME'--><!--TMPL_ELSE--><!--TMPL_IF 'style'--><!--TMPL_VAR 'style'--><!--TMPL_ELSE-->default<!--/TMPL_IF--><!--/TMPL_IF-->/style.css">
+<div id="box_<!--TMPL_IF 'theme'--><!--TMPL_VAR 'SITE_THEME_NAME'--><!--TMPL_ELSE--><!--TMPL_IF 'style'--><!--TMPL_VAR 'style'--><!--TMPL_ELSE-->default<!--/TMPL_IF--><!--/TMPL_IF-->">
+<div class="top_fill"><div class="fill_left"><div class="fill_right"><div class="bottom_fill">
+<div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
+<div class="boxbtn"><div class="<!--TMPL_IF 'opened'-->close<!--TMPL_ELSE-->open<!--/TMPL_IF-->" onmouseover="this.style.cursor='pointer';" onclick="box_disp(this,'<!--TMPL_VAR 'COUNT_TMPL'-->');" >&nbsp;</div></div>
+<div class="fill">
+<!--TMPL_IF 'title'--><h2 id="box_title_<!--TMPL_VAR 'COUNT_TMPL'-->"<!--TMPL_UNLESS 'opened'--> style="display:none;"<!--/TMPL_UNLESS-->><!--TMPL_VAR 'title'--></h2><!--/TMPL_IF-->
+<!--TMPL_IF 'htitle'--><h2 id="box_htitle_<!--TMPL_VAR 'COUNT_TMPL'-->"<!--TMPL_IF 'opened'--> style="display:none;"<!--/TMPL_IF-->><!--TMPL_VAR 'htitle'--></h2><!--TMPL_ELSE--><!--TMPL_IF 'title'--><h2 id="box_htitle_<!--TMPL_VAR 'COUNT_TMPL'-->"<!--TMPL_IF 'opened'--> style="display:none;"<!--/TMPL_IF-->><!--TMPL_VAR 'title'--></h2><!--/TMPL_IF--><!--/TMPL_IF-->
+<div id="box_<!--TMPL_VAR 'COUNT_TMPL'-->"<!--TMPL_UNLESS 'opened'--> style="display:none;"<!--/TMPL_UNLESS-->>
+<!--TMPL_VAR 'SOURCE'-->
+</div>
+&nbsp;
+</div>
+</div></div></div></div>
+</div></div></div></div>
+</div><!--id="box_<!--TMPL_IF 'theme'--><!--TMPL_VAR 'SITE_THEME_NAME'--><!--TMPL_ELSE--><!--TMPL_IF 'style'--><!--TMPL_VAR 'style'--><!--TMPL_ELSE-->default<!--/TMPL_IF--><!--/TMPL_IF-->"-->
+<p></p>

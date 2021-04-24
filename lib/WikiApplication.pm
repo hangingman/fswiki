@@ -1,55 +1,41 @@
-#!/usr/bin/perl
+package WikiApplication;
 ###############################################################################
 #
-# FreeStyleWiki フロントエンドCGIスクリプト
+# FreeStyleWiki フロントエンドPSGIモジュール
 #
 ###############################################################################
-BEGIN {
-	if(exists $ENV{MOD_PERL}){
-		# カレントディレクトリの変更
-		chdir($ENV{FSWIKI_HOME});
-	}
-}
-# ModPerl::Registry(Prefork)では実行時に変更されている可能性がある
-if(exists $ENV{MOD_PERL}){
-	chdir($ENV{FSWIKI_HOME});
-}
 
 #==============================================================================
 # モジュールのインクルード
 #==============================================================================
 use utf8;
 use Cwd;
-use lib ('./lib', './local/lib/perl5');
-# ModPerl::Registry(Prefork)では@INCが初期化されている場合がある
-unshift @INC, './lib' if(exists $ENV{MOD_PERL});
-unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
-
 use strict;
-#use CGI::Carp qw(fatalsToBrowser);
-#use CGI2;
 use Wiki;
 use Util;
 use Jcode;
 use HTML::Template;
+use HTTP::Headers;
+use Plack::Response;
+use Scalar::Util qw(blessed);
 
-# これをやらないとApache::Registoryで動かない
-if(exists $ENV{MOD_PERL}){
-	eval("use Digest::MD5;");
-	eval("use plugin::core::Diff;");
-	eval("use plugin::pdf::PDFMaker;");
-}
+sub new {
+	my $class = shift;
+	my $self  = {};
+	return bless $self,$class;
+};
 
-#==============================================================================
-# CGIとWikiのインスタンス化
-#==============================================================================
-my $wiki = Wiki->new('setup.dat');
-my $cgi = $wiki->get_CGI();
+sub run_psgi {
+	# 外部からのリクエスト
+	my ($self, $env) = @_;
+	#==============================================================================
+	# CGIとWikiのインスタンス化
+	#==============================================================================
+	my $wiki = Wiki->new('setup.dat', $env);
+	my $cgi = $wiki->get_CGI($env);
 
-Util::override_die();
-eval {
 	# Session用ディレクトリはFarmでも共通に使用する
-	$wiki->config('session_dir',$wiki->config('log_dir'));
+	$wiki->config('session_dir', $wiki->config('log_dir'));
 
 	#==============================================================================
 	# Farmとして動作する場合
@@ -128,16 +114,20 @@ eval {
 	#==============================================================================
 	# アクションハンドラの呼び出し
 	#==============================================================================
-	my $action  = $cgi->param("action");
+	my $action = $cgi->param("action");
 	my $content = $wiki->call_handler($action);
 
 	# プラグインのインストールに失敗した場合
 	$content = $plugin_error . $content if $plugin_error ne '';
+	# プラグイン側でHTTP responseヘッダ等が設定されている場合はreturnする
+	if (blessed $content eq "Plack::Response") {
+		return $content->finalize();
+	}
 
 	#==============================================================================
 	# レスポンス
 	#==============================================================================
-	my $output        = "";
+	my $output = "";
 	my $is_handyphone = &Util::handyphone();
 	my $is_smartphone = &Util::smartphone();
 	my $template_name = "";
@@ -297,27 +287,33 @@ eval {
 	#------------------------------------------------------------------------------
 	# 出力処理
 	#------------------------------------------------------------------------------
+	my $res = Plack::Response->new(200);
+	$res->content_type('text/html;charset=UTF-8');
+	$res->headers(HTTP::Headers->new(
+		Pragma        => 'no-cache',
+	 	Cache_Control => 'no-cache'
+	));
 	# ヘッダの出力
 	if($is_handyphone){
-		print "Content-Type: text/html;charset=Shift_JIS\n";
+		$res->content_encoding('Shift_JIS');
 	} else {
-		print "Content-Type: text/html;charset=UTF-8\n";
+		$res->content_encoding('UTF-8');
 	}
-	print "Pragma: no-cache\n";
-	print "Cache-Control: no-cache\n\n";
-
 	# HTMLの出力
-	print $output;
+	$res->body($output);
+	return $res->finalize;
 };
 
-my $msg = $@;
-$ENV{'PATH_INFO'} = undef;
-$wiki->_process_before_exit();
+# my $msg = $@;
+# $ENV{'PATH_INFO'} = undef;
+# $wiki->_process_before_exit();
 
-if($msg && index($msg, 'safe_die')<0){
-	$msg = Util::escapeHTML($msg);
-	print "Content-Type: text/html\n\n";
-	print "<html><head><title>Software Error</title></head>";
-	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
-}
-Util::restore_die();
+# if($msg && index($msg, 'safe_die')<0){
+# 	$msg = Util::escapeHTML($msg);
+# 	print "Content-Type: text/html\n\n";
+# 	print "<html><head><title>Software Error</title></head>";
+# 	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
+# }
+# Util::restore_die();
+
+1;

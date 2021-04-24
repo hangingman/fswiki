@@ -1,0 +1,21 @@
+packages:
+  - sudo
+  - tmux
+  - zip
+  - unzip
+  - less
+  - rsync
+  - logrotate
+  - make
+  - git
+  - python3-pip
+  - vim
+
+groups_to_add:
+  - name: wheel
+  - name: fswiki
+
+users_to_add:
+  - name: fswiki
+    group: fswiki
+    groups: wheel

@@ -22,26 +22,26 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
 	}
-	
+
 	$wiki->set_title("ファイルの添付",1);
-	
+
 	if($cgi->param("UPLOAD") ne "" || $cgi->param("CONFIRM") ne "" || $cgi->param("DELETE") ne ""){
 		unless($wiki->can_modify_page($pagename)){
 			return $wiki->error("編集は禁止されています。");
 		}
 	}
-	
+
 	if($cgi->param("DELETE") ne ""){
 		unless(&plugin::attach::Files::can_attach_delete($wiki, $pagename)){
 			return $wiki->error("ファイルの削除は許可されていません。");
 		}
 	}
-	
+
 	#-------------------------------------------------------
 	# アップロード実行
 	if($cgi->param("UPLOAD") ne ""){
@@ -50,26 +50,26 @@ sub do_action {
 		$filename = substr($filename,rindex($filename,"/")+1);
 		$filename =~ tr/";\x00-\x1f/': /;
 		&Jcode::convert(\$filename,'euc');
-		
+
 		if($filename eq ""){
 			return $wiki->error("ファイルが指定されていません。");
 		}
-		
+
 		my $hundle = $cgi->upload("file");
 		unless($hundle){
 			return $wiki->error("ファイルが読み込めませんでした。");
 		}
-		
+
 		my $uploadfile = $wiki->config('attach_dir')."/".&Util::url_encode($pagename).".".&Util::url_encode($filename);
 		if(-e $uploadfile && !&plugin::attach::Files::can_attach_update($wiki, $pagename)){
 			return $wiki->error("ファイルの上書きは許可されていません。");
 		}
-		
+
 		open(DATA,">$uploadfile") or die $!;
 		binmode(DATA);
 		while(read($hundle,$_,16384)){ print DATA $_; }
 		close(DATA);
-				
+
 		# attachプラグインから添付された場合
 		if(defined($cgi->param("count"))){
 			my @lines = split(/\n/,$wiki->get_page($pagename));
@@ -96,12 +96,12 @@ sub do_action {
 				$wiki->save_page($pagename,$content);
 			}
 		}
-		
+
 		# ログの記録
 		&write_log($wiki,"UPLOAD",$pagename,$filename);
-		
-		$wiki->redirect($pagename);
-		
+
+		return $wiki->redirect($pagename);
+
 	#-------------------------------------------------------
 	# 削除確認
 	} elsif($cgi->param("CONFIRM") ne ""){
@@ -109,9 +109,9 @@ sub do_action {
 		if($file eq ""){
 			return $wiki->error("ファイルが指定されていません。");
 		}
-		
+
 		my $buf = "";
-		
+
 		$buf .= "<a href=\"".$wiki->create_page_url($pagename)."\">".
 		        Util::escapeHTML($pagename)."</a>から".Util::escapeHTML($file)."を削除してよろしいですか？\n".
 		        "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n".
@@ -121,7 +121,7 @@ sub do_action {
 		        "  <input type=\"hidden\" name=\"file\" value=\"".Util::escapeHTML($file)."\">".
 		        "</form>";
 		return $buf;
-	
+
 	#-------------------------------------------------------
 	# 削除実行
 	} elsif($cgi->param("DELETE") ne ""){
@@ -129,13 +129,13 @@ sub do_action {
 		if($file eq ""){
 			return $wiki->error("ファイルが指定されていません。");
 		}
-		
+
 		# ログの記録
 		&write_log($wiki,"DELETE",$pagename,$file);
 
 		unlink($wiki->config('attach_dir')."/".&Util::url_encode($pagename).".".&Util::url_encode($file));
-		$wiki->redirect($pagename);
-		
+		return $wiki->redirect($pagename);
+
 	#-------------------------------------------------------
 	# ダウンロード
 	} else {
@@ -153,7 +153,7 @@ sub do_action {
 		unless(-e $filepath){
 			return $wiki->error("ファイルがみつかりません。");
 		}
-		
+
 		my $contenttype = &get_mime_type($wiki,$file);
 		my $ua = $ENV{"HTTP_USER_AGENT"};
 		my $disposition = ($contenttype =~ /^image\// && $ua !~ /MSIE/ ? "inline" : "attachment");
@@ -164,11 +164,11 @@ sub do_action {
 		binmode(DATA);
 		while(read(DATA,$_,16384)){ print $_; }
 		close(DATA);
-				
+
 		# ログの記録
 		&write_log($wiki,"DOWNLOAD",$pagename,$file);
 		&count_up($wiki,$pagename,$file);
-		
+
 		exit();
 	}
 }
@@ -180,7 +180,7 @@ sub count_up {
 	my $wiki = shift;
 	my $page = shift;
 	my $file = shift;
-	
+
 	Util::sync_update_config(undef,$wiki->config('log_dir')."/".$wiki->config('download_count_file'),
 	sub {
 		my $hash = shift;
@@ -213,7 +213,7 @@ sub write_log(){
 	if($ua  eq ""){ $ua  = "-"; }
 	my ($sec, $min, $hour, $mday, $mon, $year) = localtime(time());
 	my $date = sprintf("%04d/%02d/%02d %02d:%02d:%02d",$year+1900,$mon+1,$mday,$hour,$min,$sec);
-	
+
 	my $logfile = $wiki->config('log_dir')."/".$wiki->config('attach_log_file');
 	Util::file_lock($logfile);
 	open(LOG,">>$logfile") or die $!;
@@ -231,14 +231,14 @@ sub get_mime_type {
 	my $wiki = shift;
 	my $file = shift;
 	my $type = lc(substr($file,rindex($file,".")+1));
-	
+
 	my $hash  = &Util::load_config_hash($wiki,$wiki->config('mime_file'));
 	my $ctype = $hash->{$type};
-	
+
 	if($ctype eq "" ){
 		$ctype = "application/octet-stream";
 	}
-	
+
 	return $ctype;
 }
 

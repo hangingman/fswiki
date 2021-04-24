@@ -1,0 +1,43 @@
+# Perlのバージョン
+perl_version: perl-5.30.2
+# fswikiの実行ユーザー
+exec_user: fswiki
+
+# setup.datのデフォルト設定値
+server_host: localhost
+data_dir: ./data
+backup_dir: ./backup
+attach_dir: ./attach
+pdf_dir: ./pdf
+tmpl_dir: ./tmpl
+log_dir: ./log
+theme_dir: ./theme
+theme_uri: ./theme
+config_dir: ./config
+plugin_dir: .
+send_mail:
+smtp_server:
+time_zone: JST-9
+access_log_file: access.log
+attach_log_file: attach.log
+freeze_file: freeze.log
+download_count_file: download_count.log
+config_file : config.dat
+usercss_file: usercss.dat
+userdat_file: user.dat
+plugin_file: plugin.dat
+mime_file: mime.dat
+farmconf_file: farmconf.dat
+script_name: wiki.cgi
+storage: Wiki::DefaultStorage
+backup: 1
+frontpage: FrontPage
+post_max: -1
+page_max: 1048576
+diff_max: 1048576
+secret:
+proxy_host:
+proxy_port:
+proxy_user:
+proxy_pass:
+access_log_limit_kbyte: 1024

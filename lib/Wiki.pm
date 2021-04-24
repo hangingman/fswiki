@@ -21,10 +21,10 @@ $DEBUG   = 0;
 sub new {
 	my $class = shift;
 	my $self  = {};
-
 	# 設定を読み込み
 	my $setupfile = shift || 'setup.dat';
-	$self->{"config"} = &Util::load_config_hash(undef,$setupfile);
+	my $env   = shift;
+	$self->{"config"} = &Util::load_config_hash(undef, $setupfile);
 	die "setup file ${setupfile} not found" if (keys %{$self->{"config"}} == 0);
 	$self->{"config"}->{"plugin_dir"} = "."         unless exists($self->{"config"}->{"plugin_dir"});
 	$self->{"config"}->{"frontpage"}  = "FrontPage" unless exists($self->{"config"}->{"frontpage"});
@@ -38,7 +38,7 @@ sub new {
 	$self->{"plugin"}             = {};
 	$self->{"title"}              = "";
 	$self->{"menu"}               = [];
-	$self->{"CGI"}                = CGI2->new();
+	$self->{"CGI"}                = CGI2->new($env);
 	$self->{"hook"}               = {};
 	$self->{"user"}               = ();
 	$self->{"admin_menu"}         = ();
@@ -131,9 +131,9 @@ sub get_login_info {
 		$self->{'login_info'} = undef;
 		return undef;
 	}
-	my $id   = $session->param("wiki_id");
-	my $type = $session->param("wiki_type");
-	my $path = $session->param("wiki_path");
+	my $id   = $session->get("wiki_id");
+	my $type = $session->get("wiki_type");
+	my $path = $session->get("wiki_path");
 
 	# PATH_INFOを調べる
 	my $path_info = $cgi->path_info();
@@ -1470,9 +1470,8 @@ sub get_CGI {
 
 #==============================================================================
 # <p>
-# 引数で渡したページにリダイレクトします。
-# ページの保存後にページを再表示する場合はこのメソッドを使用して下さい。
-# なお、このメソッドを呼び出すとそこでスクリプトの実行は終了し、呼び出し元に制御は戻りません。
+# 引数で渡したページにリダイレクトします。返り値としてfinalizeされていないPlack::Responseを
+# 返します。ページの保存後にページを再表示する場合はこのメソッドを使用して下さい。
 # </p>
 # <pre>
 # $wiki-&gt;redirect(&quot;FrontPage&quot;);
@@ -1493,42 +1492,48 @@ sub redirect {
 	if($part ne ""){
 		$url .= "#p".Util::url_encode($part);
 	}
-	$self->redirectURL($url);
+	return $self->redirectURL($url);
 }
 
 #==============================================================================
 # <p>
 # 指定のURLにリダイレクトします。
-# このメソッドを呼び出すとそこでスクリプトの実行は終了し、呼び出し元に制御は戻りません。
+# 返り値としてfinalizeされていないPlack::Responseを返します。
 # </p>
 # <pre>
 # $wiki-&gt;redirectURL(リダイレクトするURL);
 # </pre>
 #==============================================================================
 sub redirectURL {
+	# Wikipedia - リダイレクト (HTTP)を参考にした
+	# https://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%80%E3%82%A4%E3%83%AC%E3%82%AF%E3%83%88_(HTTP)
 	my $self = shift;
-	my $url  = shift;
+	my $url = shift;
+	my $res = Plack::Response->new;
 
-	# Locationタグでリダイレクト
-	if($self->config('redirect')==1){
-		my ($hoge,$param) = split(/\?/,$url);
-		$url = $self->get_CGI->url().$self->get_CGI()->path_info();
-		if($param ne ''){
+	if ($self->config('redirect') == 1) {
+		# Locationタグでリダイレクト
+		my ($hoge, $param) = split(/\?/, $url);
+		$url = $self->get_CGI->url() . $self->get_CGI()->path_info();
+		if ($param ne '') {
 			$url = "$url?$param";
 		}
-		print "Location: $url\n\n";
+		$res->redirect($url);
+		$res->code(301);
+		return $res;
+	}
 
 	# METAタグでリダイレクト
-	} else {
-		my $tmpl = HTML::Template->new(filename=>$self->config('tmpl_dir')."/redirect.tmpl",
-		                               die_on_bad_params => 0);
+	my $tmpl = HTML::Template->new(
+			filename          => $self->config('tmpl_dir') . "/redirect.tmpl",
+			die_on_bad_params => 0
+	);
+	$tmpl->param(URL => $url);
 
-		$tmpl->param(URL=>$url);
-
-		print "Content-Type: text/html\n\n";
-		print $tmpl->output();
-	}
-	exit();
+	$res->content_type('text/html');
+	$res->body($tmpl->output());
+	$res->code(200);
+	return $res;
 }
 
 #==============================================================================

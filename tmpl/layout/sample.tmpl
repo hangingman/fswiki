@@ -1,0 +1,75 @@
+<!--TMPL_IF LAYOUT--><!--
+-- LAYOUTINFO_START
+-- =========================================================================
+-- TITLE       : Layoutプラグイン用のサンプルテンプレート
+-- PARAMETER   : title        , /^([^<>;,]+)$/                        <= パラメータ
+-- PARAMETER   : width        , /^([0-9\.]+)(pt|px|em|%)?$/           <= パラメータ
+-- PARAMETER   : height       , /^([0-9\.]+)(pt|px|em|%)?$/           <= パラメータ
+-- PARAMETER   : wiki         , WIKI                                  <= WIKI書式のパラメータ
+-- -------------------------------------------------------------------------
+-- HELP_START:WIKI <= ヘルプ画面に表示する簡単な説明(WIKIフォーマット)
+!!概要
+
+!!パラメータ
+
+::title
+:::「大見出し」で表示されるタイトルを指定します。
+:::titleを指定しない場合は表示されません。
+
+::width
+:::表示領域の幅を設定します。
+
+::height
+:::表示領域の高さを設定します。
+
+!!利用方法
+段組用途に利用します
+::例１）サンプル
+ {{layout sample[,title:タイトル][,width:100px][,height:300px]
+ 〜 Wikiソース 〜
+ }}
+-- HELP_END
+-- =========================================================================
+-- LAYOUTINFO_END
+--><!--/TMPL_IF LAYOUT-->
+
+<!-- Layoutプラグインの呼び出しで一回だけ出力する情報（style,script,css）など -->
+<!--TMPL_IF NAME="IS_FIRST_LAYOUT"-->
+<!--/TMPL_IF-->
+
+<!-- 同一テンプレートの呼び出しで一回だけ出力する情報（style,script,css）など -->
+<!--TMPL_IF NAME="IS_FIRST_TMPL"-->
+<style>
+div.layout_sample {
+	color      : #0000ff;
+	background : #999999;
+}
+</style>
+<!--/TMPL_IF-->
+
+<h3>ログイン情報の表示</h3>
+<p>ログインしている場合は下記にログイン情報が表示されます。</p>
+<!--TMPL_IF NAME="LOGIN"-->
+ログイン情報：<!--TMPL_VAR NAME="LOGIN_ID"-->（<!--TMPL_IF NAME="LOGIN_TYPE"-->一般<!--TMPL_ELSE-->管理者<!--/TMPL_IF-->）
+<!--/TMPL_IF-->
+
+<h3>ページ名の表示</h3>
+<p>下記に表示中のページ名が表示されます。</p>
+<!--TMPL_IF NAME="PAGE"-->
+ページ名：<!--TMPL_VAR NAME="PAGE"-->
+<!--/TMPL_IF-->
+
+<h3>携帯電話／ＰＣで表示情報を変えるには？</h3>
+<p>下記に表示される文字は、携帯／ＰＣで表示される文字が変わります。</p>
+<!--TMPL_IF NAME="IS_HANDYPHONE"-->
+〜 携帯からのアクセスです 〜
+<!--TMPL_ELSE-->
+〜 ＰＣからのアクセスです 〜
+<!--/TMPL_IF-->
+
+<h3>指定されたパラメータを使用した表示</h3>
+<div class="layout_sample" style="<!--TMPL_IF NAME="width"-->width:<!--TMPL_VAR NAME="width"-->;<!--/TMPL_IF--><!--TMPL_IF NAME="height"-->height:<!--TMPL_VAR NAME="height"-->;<!--/TMPL_IF-->">
+<h4><!--TMPL_VAR NAME="title"--></h4>
+<!-- Wikiソース変換後のHTMLを挿入するには・・・ -->
+<!--TMPL_VAR NAME="SOURCE"-->
+</div>
