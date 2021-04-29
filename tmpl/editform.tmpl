@@ -24,7 +24,7 @@
 </form>
 
 <!-- JavaScript製テキストエディタAceの設定 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.min.js"></script>
 <script>
   var editor = ace.edit("content");
   var textarea = $('textarea[name="content"]').hide();
@@ -35,4 +35,5 @@
   editor.$blockScrolling = Infinity;
   editor.setTheme("ace/theme/monokai");
   editor.getSession().setMode("ace/mode/html");
+  editor.setFontSize(14);
 </script>
