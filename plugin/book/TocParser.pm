@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::book::TocParser;
 use strict;
+use warnings;
 our @ISA;
 use Wiki::HTMLParser;
 

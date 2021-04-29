@@ -1,14 +1,14 @@
 ############################################################
-# 
+#
 # <p>任意のテンプレートを利用しWikiソースのパース結果を適用するプラグインを提供します。</p>
-# 
+#
 # <h3>利用方法</h3>
 # <pre>
 # {{layout テンプレート名[,変数:値,...]
 # 〜Wiki書式のソース〜
 # }}
 # </pre>
-# 
+#
 # <h3>パラメータで利用可能な変数</h3>
 # <p>
 # パラメータで利用する変数の定義はテンプレート内に規定のフォーマットで記述します。
@@ -23,7 +23,7 @@
 # この outline パラメータは <u>setup.dat</u> もしくは <u>config/config.dat</u> ファイル内で、以下の設定を行うことで既定の動作となります。
 #= <pre>layout_process_outline=1</pre>
 # <p>
-# 
+#
 # <h3>テンプレートで利用可能な内部変数一覧</h3>
 # <pre>
 # SOURCE            : Wikiソース変換結果（HTMLソース）
@@ -51,19 +51,19 @@
 # CGI_PARAM_...     : ...で指定したCGIパラメータの設定値（無ければFALSEになる）?page=xxxx の場合は CGI_PARAM_page に xxx が設定される
 # CGI_PARAMS_...    : ...で指定した配列要素のCGIパラメータの設定値 ?abc=xxx&abc=yyy の場合は CGI_PARAMS_abc に CGI_PARAM_abc として各値が設定される
 # </pre>
-# 
+#
 # <p>
 # 上記の他、テンプレートファイルに指定した PARAMETER で定義された変数が使用できます。
 # また、PARAMETER で定義された変数の「変数名+'#url'」 でURLエンコードされた値を取得できます。
 # </p>
-# 
+#
 # <h3>任意のテンプレートの内容をそのまま出力するには・・・</h3>
 # <p><small>このプラグイン利用時は Wiki ソースの指定はできません。テンプレートで利用可能な内部変数は利用できます。</small></p>
 # <pre>
 # // インライン版
 # {{ilayout テンプレート名[,変数:値,...]}}
 # </pre>
-# 
+#
 # <h3>FSWIKI用の追加テンプレート記述</h3>
 # <dl>
 # <dt>FSWIKI_SOURCE 〜 /FSWIKI_SOURCE</dt>
@@ -76,7 +76,7 @@
 # [[Menu]]
 # &lt;!--/FSWIKI_SOURCE--&gt;
 # </pre>
-# 
+#
 # <dl>
 # <dt>FSWIKI_INCLUDE</dt>
 # <dd>テンプレート内に指定したWikiページを挿入する</dd>
@@ -85,7 +85,7 @@
 # // 記述例
 # &lt;!--FSWIKI_INCLUDE PAGE=Menu--&gt;
 # </pre>
-# 
+#
 # <dl>
 # <dt>FSWIKI_HEAD_INFO</dt>
 # <dd>テンプレート内の指定した範囲を&lt;HEAD&gt;タグ内に挿入する</dd>
@@ -103,24 +103,25 @@
 # &lt;!--/FSWIKI_HEAD_INFO--&gt;
 # &lt;!--/TMPL_IF--&gt;
 # </pre>
-# 
+#
 ############################################################
 package plugin::layout::Layout;
+use strict;
+use warnings;
 use plugin::layout::LayoutUtil;
 use Util;
-use strict;
 #===========================================================
 # コンストラクタ
 #===========================================================
 sub new {
 	my $class = shift;
 	my $self = {};
-	
+
 	$self->{'exist_page'} = undef;
-	
+
 	# 設定ファイル
 	$self->{config_file} = 'layoutkey.dat';
-	
+
 	return bless $self,$class;
 }
 
@@ -132,7 +133,7 @@ sub inline {
 	my $wiki   = shift;
 	my $tmpl   = shift;
 	my @attr   = @_;
-	
+
 	return $self->block($wiki,undef,$tmpl,@attr);
 }
 
@@ -147,26 +148,26 @@ sub block {
 	my @attr   = @_;
 	my $cgi    = $wiki->get_CGI();
 	my $outline = 0;
-	
+
 	# Wikiソース変換のデフォルト設定値の取得
 	if ( defined($wiki->config('layout_process_outline')) ) {
 		$outline = $wiki->config('layout_process_outline');
 	}
-	
+
 	# テンプレート・パラメータ用
 	my %param = {};
-	
+
 	# テンプレート名のチェック
 	if ( $tmpl =~ /[\/\\]?\.\.[\/\\]/ ) {
 		return $wiki->error("テンプレート名が正しくありません。");
 	}
-	
+
 	# テンプレート情報の取得
 	my $tmplinfo = &plugin::layout::LayoutUtil::get_tmpl_info($wiki, $tmpl);
 	if ( !defined($tmplinfo) ) {
 		return $wiki->error("テンプレート(".$tmpl.")が見つかりません。");
 	}
-	
+
 	# 規定のパラメータの取り出し
 	my $num = 0;
 	foreach (@attr) {
@@ -200,10 +201,10 @@ sub block {
 			return $wiki->error("(".$a.")キーの値が正しくありません。");
 		}
 	}
-	
+
 	my $buf = "";
 	my $html = "";
-	
+
 	# SOURCE 種別
 	if (!$tmplinfo->{SOURCE} || $tmplinfo->{SOURCE} eq "WIKI") {
 		# Wikiソース変換
@@ -220,23 +221,23 @@ sub block {
 	}
 	my $login_info = $wiki->get_login_info();	# ログイン情報
 	my $is_handyphone = &Util::handyphone();	# 携帯チェック
-	
+
 	my $fswiki_home = $cgi->script_name();
 	$fswiki_home =~ s/\/[^\/]+$//;
 	my $fswiki_home_dir = $cgi->path_info();
 	$fswiki_home_dir =~ s/[^\/]+/\.\./g;
 	$fswiki_home_dir = ".".$fswiki_home_dir;
-	
+
 	# テンプレートを使用してフォーマット取得
 	my $layouttmpl = HTML::Template->new(
 	                    filename=>$tmplinfo->{TEMPLATE},
 	                    die_on_bad_params => 0,
 	                    loop_context_vars => 1,
 	                    global_vars => 1);
-	
+
 	$self->{tmpl}->{$tmpl} = 0 if (!defined($self->{tmpl}->{$tmpl}));
 	$self->{layout} = 0 if (!defined($self->{layout}));
-	
+
 	%param = (%param
 	         ,SOURCE            => $html
 	         ,LOGIN             => (defined($login_info))?1:0
@@ -258,15 +259,15 @@ sub block {
 	         ,SITE_TMPL_NAME    => $wiki->config('site_tmpl_theme')
 	         ,PATH_INFO         => $cgi->path_info()
 	         );
-	
+
 	$layouttmpl->param(%param);
-	
+
 	# 設定キー情報
 	my $layoutkey = &Util::load_config_hash($wiki,$self->{config_file});
 	foreach my $key (sort(keys(%$layoutkey))) {
 		$layouttmpl->param($key => $layoutkey->{$key});
 	}
-	
+
 	# CGI->param の設定値
 	foreach my $key ($cgi->all_parameters()) {
 #		$layouttmpl->param('CGI_PARAM_'.$key => $cgi->param($key));
@@ -278,13 +279,13 @@ sub block {
 			$layouttmpl->param('CGI_PARAM_'.$key => $values[0]);
 		}
 	}
-	
+
 	# アクション
 	$layouttmpl->param('WIKI_ACTION' => $cgi->param('action'));
 	if (defined($cgi->param('action'))) {
 		$layouttmpl->param('WIKI_ACTION_'.$cgi->param('action') => 1);
 	}
-	
+
 	# ページ名をEXIST_PAGE_ページ名というパラメータにセット
 	# ただし、スラッシュを含むページ名はセットしない
 	if ( !defined($self->{'exist_page'}) ) {
@@ -294,7 +295,7 @@ sub block {
 			push(@{$self->{'exist_page'}}, $page);
 		}
 	}
-	
+
 	# EXIST_PAGE_xxxx の設定
 	&plugin::layout::LayoutUtil::set_template_exist_page($wiki, $layouttmpl);
 =pod
@@ -304,9 +305,9 @@ sub block {
 		}
 	}
 =cut
-	
+
 	$buf = $layouttmpl->output();
-	
+
 	# FSWIKI テンプレート書式の処理
 	$buf = &plugin::layout::LayoutUtil::process_template($wiki, $buf);
 =pod
@@ -335,10 +336,10 @@ sub block {
 		}
 	}
 =cut
-	
+
 	$self->{tmpl}->{$tmpl} += 1;
 	$self->{layout} += 1;
-	
+
 	return $buf;
 }
 

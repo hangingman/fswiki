@@ -1,10 +1,11 @@
 ###############################################################################
-# 
+#
 # <p>アクセスログを整形して一覧表示します。</p>
-# 
+#
 ###############################################################################
 package plugin::accesslog::AccessLog;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -30,17 +31,17 @@ sub do_action {
 	my $output = "";
 	my $i = 0;
 	my $k = 0;
-	
+
 	if($c_cnt > $disp_cnt){
 		$disp_cnt = $c_cnt;
 	}
-	
+
 	$wiki->set_title("アクセスログ閲覧");
-	
+
 	open(LH ,"<$log_path");
 	@data = <LH>;
 	close(LH);
-	
+
 	my $page = int($#data / $disp_cnt);
 	my $page_t = $#data % $disp_cnt;
 	if($page_t > 0){
@@ -58,12 +59,12 @@ sub do_action {
 		}
 	}
 	my $next_an = "<a href=\"#\" onClick=\"javascript:get_anc(1);\">&gt;&gt;</a>";
-	
+
 	if($page <= $an_cnt){
 		$pre_an  = "";
 		$next_an = "";
 	}
-	
+
 	my $end = $#data;
 	my $start = ($end - $page_t);
 	foreach(@data){
@@ -81,7 +82,7 @@ sub do_action {
 		}
 		$i++;
 	}
-	
+
 	my $data =<<"__HTML__";
 <script>
 var targetId = 'result';
@@ -201,7 +202,7 @@ $output
 </table>
 </div>
 __HTML__
-	
+
 	return $data;
 }
 

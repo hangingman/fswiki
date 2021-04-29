@@ -1,10 +1,11 @@
 ###############################################################################
-# 
+#
 # <p>アクセスログをAjaxで検索して表示します。</p>
-# 
+#
 ###############################################################################
 package plugin::accesslog::AccessLogSearch;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -23,7 +24,7 @@ sub do_action {
 	my $print  = "";
 	my $log_path = $wiki->config('log_dir')."/".$wiki->config('access_log_file');
 	my $ajax_path = $wiki->config('log_dir')."/ajax_access.log";
-	
+
 	use Jcode;
 	unlink($ajax_path);
 	open(LH ,"<$log_path");
@@ -33,9 +34,9 @@ sub do_action {
 	}
 	close(FH);
 	close(LH);
-	
+
 	$wiki->set_title("アクセスログ検索");
-	
+
 	$print =<<"EOD";
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script src="LogSearch.js" type="text/javascript"></script>
@@ -63,7 +64,7 @@ function search(str) {
 <p><input id="search" type="text" size="80" value="" onkeyup="search(this.value)" /></p>
 <ul id="result"></ul>
 EOD
-	
+
 	return $print;
 }
 

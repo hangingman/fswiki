@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::admin::AccountHandler;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -21,9 +22,9 @@ sub do_action {
 	my $self  = shift;
 	my $wiki  = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	$wiki->set_title("アカウント情報");
-	
+
 	if($cgi->param("changepass") ne ""){
 		return $self->change_pass($wiki);
 	}
@@ -31,7 +32,7 @@ sub do_action {
 		return $wiki->error("ログインしていません。");
 	}
 	my $id = $wiki->get_login_info()->{id};
-	
+
 	return $self->account_form($wiki,$id);
 }
 
@@ -42,7 +43,7 @@ sub account_form {
 	my $self = shift;
 	my $wiki = shift;
 	my $id   = shift;
-	
+
 	my $buf = "<h2>アカウント情報</h2>";
 	$buf .= "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
 	$buf .= "  <table>\n";
@@ -69,7 +70,7 @@ sub account_form {
 	$buf .= "    <input type=\"hidden\" name=\"id\" value=\"".&Util::escapeHTML($id)."\">\n";
 #	$buf .= "  </div>\n";
 	$buf .= "</form>\n";
-	
+
 	return $buf;
 }
 
@@ -117,9 +118,9 @@ sub change_pass {
 	} else {
 		return $wiki->error("現在のパスワードが違います。");
 	}
-	
+
 	$wiki->redirectURL( $wiki->create_url({ action=>"LOGIN" }) );
-	
+
 	#return "<p>パスワードを変更しました。</p>".
 	#       "[<a href=\"".$wiki->config('script_name')."?action=LOGIN\">メニューに戻る</a>]\n";
 }

@@ -4,15 +4,16 @@
 #
 ###############################################################################
 package plugin::format::WalWikiFormat;
-use base qw(plugin::format::FormatBase); 
 use strict;
+use warnings;
+use base qw(plugin::format::FormatBase);
 #==============================================================================
 # FSWikiの書式に変換します。
 #==============================================================================
 sub convert_to_fswiki_paragraph {
 	my $self = shift;
 	my $line = shift;
-	
+
 	if($line =~ /^\*\*\*/){
 		return "!".$self->convert_to_fswiki_line(substr($line,3))."\n";
 	} elsif($line =~ /^\*\*/){
@@ -43,7 +44,7 @@ sub convert_to_fswiki_line {
 	my $self = shift;
 	my $line = shift;
 	my $buf  = "";
-	
+
 	if($line =~ /(''')(.+?)(''')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -51,7 +52,7 @@ sub convert_to_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_to_fswiki_line($pre); }
 		$buf .= "''$label''";
 		if($post ne ""){ $buf .= $self->convert_to_fswiki_line($post); }
-		
+
 	} elsif($line =~ /('')(.+?)('')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -59,7 +60,7 @@ sub convert_to_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_to_fswiki_line($pre); }
 		$buf .= "'''$label'''";
 		if($post ne ""){ $buf .= $self->convert_to_fswiki_line($post); }
-		
+
 	} elsif($line =~ /(\[\[)([^ ]+?)(\]\])/){
 		my $pre   = $`;
 		my $post  = $';
@@ -67,7 +68,7 @@ sub convert_to_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_to_fswiki_line($pre); }
 		$buf .= "[[$label]]";
 		if($post ne ""){ $buf .= $self->convert_to_fswiki_line($post); }
-		
+
 	} elsif($line =~ /(\[\[)([^\[]+?) ((?:\w+:\/\/|mailto:)[^ ]+?)(\]\])/){
 		my $pre   = $`;
 		my $post  = $';
@@ -76,7 +77,7 @@ sub convert_to_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_to_fswiki_line($pre); }
 		$buf .= "[$label1|$label2]";
 		if($post ne ""){ $buf .= $self->convert_to_fswiki_line($post); }
-		
+
 	} elsif($line =~ /(\[\[)(.+?) ([^ ]+?)(\]\])/){
 		my $pre   = $`;
 		my $post  = $';
@@ -97,7 +98,7 @@ sub convert_to_fswiki_line {
 sub convert_from_fswiki_paragraph {
 	my $self = shift;
 	my $line = shift;
-	
+
 	if($line =~ /^!!!/){
 		return "*".$self->convert_from_fswiki_line(substr($line,3))."\n";
 	} elsif($line =~ /^!!/){
@@ -128,7 +129,7 @@ sub convert_from_fswiki_line {
 	my $self = shift;
 	my $line = shift;
 	my $buf  = "";
-	
+
 	if($line =~ /(''')(.+?)(''')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -136,7 +137,7 @@ sub convert_from_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_from_fswiki_line($pre); }
 		$buf .= "''$label''";
 		if($post ne ""){ $buf .= $self->convert_from_fswiki_line($post); }
-		
+
 	} elsif($line =~ /('')(.+?)('')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -144,7 +145,7 @@ sub convert_from_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_from_fswiki_line($pre); }
 		$buf .= "'''$label'''";
 		if($post ne ""){ $buf .= $self->convert_from_fswiki_line($post); }
-		
+
 	} elsif($line =~ /(\[)([^\[]+?)\|((?:\w+:\/\/|mailto:)[^\]]+?)(\])/){
 		my $pre   = $`;
 		my $post  = $';
@@ -153,7 +154,7 @@ sub convert_from_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_from_fswiki_line($pre); }
 		$buf .= "[[$label1 $label2]]";
 		if($post ne ""){ $buf .= $self->convert_from_fswiki_line($post); }
-		
+
 	} elsif($line =~ /(\[\[)([^\|]+?)\|([^\|]+?)(\]\])/){
 		my $pre   = $`;
 		my $post  = $';
@@ -162,7 +163,7 @@ sub convert_from_fswiki_line {
 		if($pre ne ""){ $buf .= $self->convert_from_fswiki_line($pre); }
 		$buf .= "[[$label1 $label2]]";
 		if($post ne ""){ $buf .= $self->convert_from_fswiki_line($post); }
-		
+
 	} else {
 		$buf .= $line;
 	}

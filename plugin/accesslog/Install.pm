@@ -5,6 +5,7 @@
 ############################################################
 package plugin::accesslog::Install;
 use strict;
+use warnings;
 sub install {
 	my $wiki = shift;
 	$wiki->add_admin_handler("ACCESSLOG","plugin::accesslog::AccessLog");

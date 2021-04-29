@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::pdf::PDFMaker;
 use strict;
+use warnings;
 use lib '../../';
 use lib '../../lib';
 use plugin::pdf::PDFParser;

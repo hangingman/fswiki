@@ -19,6 +19,7 @@
 ############################################################
 package plugin::attach::Ref;
 use strict;
+use warnings;
 use plugin::attach::AttachHandler;
 #===========================================================
 # コンストラクタ

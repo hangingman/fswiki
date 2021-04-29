@@ -4,15 +4,16 @@
 #
 ###############################################################################
 package plugin::format::YukiWikiFormat;
-use base qw(plugin::format::FormatBase); 
 use strict;
+use warnings;
+use base qw(plugin::format::FormatBase);
 #==============================================================================
 # FSWikiの書式に変換します。
 #==============================================================================
 sub convert_to_fswiki_paragraph {
 	my $self = shift;
 	my $line = shift;
-	
+
 	if($line =~ /^\*\*\*/){
 		return "!".$self->_convert_line(substr($line,3))."\n";
 	} elsif($line =~ /^\*\*/){
@@ -59,7 +60,7 @@ sub _convert_line {
 	my $self = shift;
 	my $line = shift;
 	my $buf  = "";
-	
+
 	if($line =~ /(''')(.+?)(''')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -67,7 +68,7 @@ sub _convert_line {
 		if($pre ne ""){ $buf .= $self->_convert_line($pre); }
 		$buf .= "''$label''";
 		if($post ne ""){ $buf .= $self->_convert_line($post); }
-		
+
 	} elsif($line =~ /('')(.+?)('')/){
 		my $pre   = $`;
 		my $post  = $';
@@ -87,7 +88,7 @@ sub _convert_line {
 sub convert_from_fswiki_paragraph {
 	my $self = shift;
 	my $line = shift;
-	
+
 	if($line =~ /^!!!/){
 		return "*".$self->_convert_line(substr($line,3))."\n";
 	} elsif($line =~ /^!!/){

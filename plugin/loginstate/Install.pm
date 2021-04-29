@@ -4,7 +4,8 @@
 #
 ############################################################
 package plugin::loginstate::Install;
-#use strict;
+use strict;
+use warnings;
 
 sub install {
 	my $wiki = shift;

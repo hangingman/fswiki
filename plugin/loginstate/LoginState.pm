@@ -18,7 +18,8 @@
 #
 ############################################################
 package plugin::loginstate::LoginState;
-#use strict;
+use strict;
+use warnings;
 
 sub new {
 	my $class = shift;

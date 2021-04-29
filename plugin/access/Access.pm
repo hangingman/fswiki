@@ -1,5 +1,5 @@
 ###############################################################################
-# 
+#
 # <p>アクセス数の多い順にページ名を一覧表示します。</p>
 # <p>引数で表示件数を指定できます。</p>
 # <pre>
@@ -9,10 +9,11 @@
 # <pre>
 # {{access 5,v}}
 # </pre>
-# 
+#
 ###############################################################################
 package plugin::access::Access;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -30,11 +31,11 @@ sub paragraph {
 	my $wiki   = shift;
 	my $max    = shift;
 	my $way    = shift;
-	
+
 	if($way eq ""){
 		$way = "H";
 	}
-	
+
 	if($max eq "V" || $max eq "v"){
 		$way = "V";
 		$max = "";
@@ -42,9 +43,9 @@ sub paragraph {
 		$way = "H";
 		$max = "";
 	}
-	
+
 	my ($line,%count);
-	
+
 	open(LOG,$wiki->config('log_dir')."/".$wiki->config('access_log_file')) or return "";
 	while(my $line=<LOG>){
 		chomp $line;
@@ -53,7 +54,7 @@ sub paragraph {
 		$count{$page}++;
 	}
 	close(LOG);
-	
+
 	my @keys;
 	foreach(keys(%count)){
 		push(@keys,$_);
@@ -63,10 +64,10 @@ sub paragraph {
 		my $count2 = $count{$b};
 		return $count2<=>$count1;
 	} @keys;
-	
+
 	my $flag = 0;
 	my $ret = "";
-	
+
 	foreach(@keys){
 		if($max ne "" && $flag==$max){
 			last;
@@ -79,7 +80,7 @@ sub paragraph {
 			}
 			$ret = $ret."[[$_]] (".$count{$_}.")";
 			$flag++;
-			
+
 			if($way ne "H" && $way ne "h"){
 				$ret .= "\n";
 			}

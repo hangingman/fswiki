@@ -1,15 +1,16 @@
 ###############################################################################
-# 
+#
 # <p>アクセス数の多い順にページ名を日毎x件表示します。</p>
 # <p>引数で表示件数を指定できます。</p>
 # <pre>
 # {{accessdays 5(上位x件},5(y日分)}}
 # </pre>
 # <p>デフォルトは5件,5日です。</p>
-# 
+#
 ###############################################################################
 package plugin::access::AccessDays;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -49,17 +50,17 @@ sub paragraph {
 		$access->{$date}->{$page}++;
 	}
 	close(LOG);
-	
+
 	my @days = keys(%{$access});
 
 	@days = sort {
 	    return $b cmp $a;
 	} @days;
-	
+
 	foreach my $day (@days){
 		my $tmpday = $day;
 		# recentdaysと同じ日付形式に
-		$tmpday =~ s/\/0/\//g; 
+		$tmpday =~ s/\/0/\//g;
 		$buf .= "'''$tmpday'''\n";
 		my @pages = keys(%{$access->{$day}});
 		@pages = sort {
@@ -67,7 +68,7 @@ sub paragraph {
 			my $count2=$access->{$day}->{$b};
 			return $count2 <=> $count1;
 		}@pages;
-		
+
 		my $rank = $maxrank;
 		foreach my $page (@pages){
 			# 削除されたページと参照権限のないページを省く
@@ -77,11 +78,11 @@ sub paragraph {
 			$rank--;
 			last unless $rank;
 		}
-		
+
 		$maxdays--;
 		last unless $maxdays;
 	}
-	
+
 	return $buf;
 }
 

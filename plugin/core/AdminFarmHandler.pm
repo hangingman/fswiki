@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::core::AdminFarmHandler;
 use strict;
+use warnings;
 #==============================================================================
 # コンストラクタ
 #==============================================================================
@@ -34,7 +35,7 @@ sub do_action {
 sub save_config {
 	my $self = shift;
 	my $wiki = shift;
-	
+
 	my $cgi           = $wiki->get_CGI();
 	my $create        = $cgi->param("create");
 	my $remove        = $cgi->param("remove");
@@ -42,7 +43,7 @@ sub save_config {
 	my $use_template  = $cgi->param("use_template");
 	my $search_parent = $cgi->param("search_parent");
 	my $hide_template = $cgi->param("hide_template");
-	
+
 	&Util::save_config_hash($wiki,$wiki->config('farmconf_file'),
 		{create        => $create,
 		 remove        => $remove,
@@ -50,7 +51,7 @@ sub save_config {
 		 use_template  => $use_template,
 		 search_parent => $search_parent,
 		 hide_template => $hide_template});
-	
+
 	$wiki->redirectURL($wiki->create_url( {action=>"ADMINFARM"} ) );
 	#return "WikiFarmの設定を保存しました。";
 }
@@ -62,7 +63,7 @@ sub config_form {
 	my $self = shift;
 	my $wiki = shift;
 	my $config = &Util::load_config_hash($wiki,$wiki->config('farmconf_file'));
-	
+
 	my $buf = "<form action=\"".$wiki->create_url()."\" method=\"POST\">\n";
 	$buf   .= "<h2>WikiFarmの設定</h2>\n";
 	$buf   .= "  <h3>Farmを使用するかどうか</h3>\n";
@@ -84,7 +85,7 @@ sub config_form {
 	$buf   .= "  </p>\n";
 	$buf   .= "  <h3>作成時のテンプレート</h3>\n";
 	$buf   .= "  <ul>\n";
-	$buf   .= "  <li><input type=\"checkbox\" id=\"use_template\" name=\"use_template\" value=\"1\""; 
+	$buf   .= "  <li><input type=\"checkbox\" id=\"use_template\" name=\"use_template\" value=\"1\"";
 	          if($config->{use_template}==1){ $buf.= " checked"; } $buf.="><label for=\"use_template\">./templateからページをコピーする</label></li>\n";
 	$buf   .= "  <li><input type=\"checkbox\" id=\"search_parent\" name=\"search_parent\" value=\"1\"";
 	          if($config->{search_parent}==1){ $buf.= " checked"; } $buf.="><label for=\"search_parent\">./templateがない場合、親にさかのぼって探す</label></li>\n";
@@ -95,7 +96,7 @@ sub config_form {
 	$buf   .= "  <input type=\"reset\"  value=\"リセット\">\n";
 	$buf   .= "  <input type=\"hidden\" name=\"action\" value=\"ADMINFARM\">\n";
 	$buf   .= "</form>\n";
-	
+
 	return $buf;
 }
 

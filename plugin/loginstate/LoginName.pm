@@ -21,7 +21,8 @@
 #
 ############################################################
 package plugin::loginstate::LoginName;
-#use strict;
+use strict;
+use warnings;
 
 
 sub new {

@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::info::OutlineParser;
 use strict;
+use warnings;
 our @ISA;
 use Wiki::HTMLParser;
 

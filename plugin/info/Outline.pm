@@ -8,6 +8,7 @@
 ############################################################
 package plugin::info::Outline;
 use strict;
+use warnings;
 use plugin::info::OutlineParser;
 
 #===========================================================

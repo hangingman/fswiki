@@ -10,6 +10,8 @@
 # 
 ############################################################
 package plugin::layout::LayoutHelp;
+use strict;
+use warnings;
 use plugin::layout::LayoutUtil;
 use Util;
 use strict;

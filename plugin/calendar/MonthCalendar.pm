@@ -14,6 +14,7 @@
 ###################################################################
 package plugin::calendar::MonthCalendar;
 use strict;
+use warnings;
 use plugin::calendar::CalendarHandler;
 #==================================================================
 # コンストラクタ

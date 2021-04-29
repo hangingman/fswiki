@@ -5,6 +5,7 @@
 ############################################################
 package plugin::attach::AttachHandler;
 use strict;
+use warnings;
 use plugin::attach::Files;
 #===========================================================
 # コンストラクタ

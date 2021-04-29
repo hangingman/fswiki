@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::core::KeywordCache;
 use strict;
+use warnings;
 use Wiki::Keyword;
 use Wiki::InterWiki;
 

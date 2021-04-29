@@ -5,6 +5,7 @@
 ############################################################
 package plugin::book::Install;
 use strict;
+use warnings;
 use plugin::book::TocParser;
 
 sub install {

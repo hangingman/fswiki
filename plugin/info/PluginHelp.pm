@@ -20,6 +20,7 @@
 ##############################################################
 package plugin::info::PluginHelp;
 use strict;
+use warnings;
 use plugin::info::PluginHelpHandler;
 #=============================================================
 # コンストラクタ

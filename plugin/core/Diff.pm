@@ -1,11 +1,12 @@
 ###############################################################################
-# 
+#
 # 差分を表示するプラグイン
-# 
+#
 ###############################################################################
 package plugin::core::Diff;
-use Algorithm::Diff qw(traverse_sequences);
 use strict;
+use warnings;
+use Algorithm::Diff qw(traverse_sequences);
 
 #==============================================================================
 # コンストラクタ
@@ -13,7 +14,7 @@ use strict;
 sub new {
 	my $class = shift;
 	my $self = {};
-	
+
 	return bless $self,$class;
 }
 
@@ -24,7 +25,7 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if($pagename eq ""){
 		$pagename = $wiki->config("frontpage");
@@ -34,18 +35,18 @@ sub do_action {
 	}
 	if($cgi->param('rollback') ne ''){
 		return $self->rollback($wiki, $pagename, $cgi->param('rollback'));
-		
+
 	} elsif($wiki->{storage}->backup_type eq 'all'){
 		my $login = $wiki->get_login_info();
 		if(defined($login) && $login->{'type'} == 0 && $cgi->param('clear') ne ''){
 			# 履歴のクリア
 			$self->clear_history($wiki, $pagename);
 			return $self->show_history($wiki, $pagename);
-			
+
 		} elsif($cgi->param('generation') eq '' && $cgi->param('diff') eq ''){
 			# 履歴を表示
 			return $self->show_history($wiki, $pagename);
-			
+
 		} else {
 			if($cgi->param('generation') ne ''){
 				# 指定したリビジョンでの差分を表示
@@ -94,16 +95,16 @@ sub show_history {
 	my $self = shift;
 	my $wiki = shift;
 	my $page = shift;
-	
+
 	$wiki->set_title("$pageの変更履歴");
 	my $buf   = "<form><ul>\n";
 	my $count = 0;
 	my @list  = $wiki->{storage}->get_backup_list($page);
-	
+
 	if($#list == -1){
 		return "履歴はありません。";
 	}
-	
+
 	# editlogプラグインのログから編集者のユーザ名を取得
 	# （editlogの日付がズレることがあったので1秒以内の更新は同じ履歴とみなすようにしてます）
 	my $editlog = {};
@@ -122,7 +123,7 @@ sub show_history {
 		}
 		close(DATA);
 	}
-	
+
 	foreach my $time (@list){
 		$buf .= "<li>";
 		if($count == 0){
@@ -134,20 +135,20 @@ sub show_history {
 		}
 		$buf .= "<a href=\"".$wiki->create_url({ action=>"DIFF",page=>$page,generation=>($#list-$count) })."\">".&Util::format_date($time).
 		        "</a> <a href=\"".$wiki->create_url({ action=>"SOURCE",page=>$page,generation=>($#list-$count) })."\">ソース</a>";
-		        
+
 		if(defined($editlog->{substr($time, 0, length($time) - 4)})){
 			$buf .= " by ".$editlog->{substr($time, 0, length($time) - 4)};
 		}
-		
+
 		$buf .=  "</li>\n";
 		$count++;
 	}
-	
+
 	$buf .= "</ul>".
 		"<input type=\"hidden\" name=\"page\" value=\"".Util::escapeHTML($page)."\">".
 		"<input type=\"hidden\" name=\"action\" value=\"DIFF\">".
 		"<input type=\"submit\" name=\"diff\" value=\"選択したリビジョン間の差分を表示\">\n";
-	
+
 	my $login = $wiki->get_login_info();
 	if(defined($login) && $login->{'type'} == 0){
 		$buf .= "<input type=\"submit\" name=\"clear\" value=\"履歴をすべて削除\">\n";
@@ -164,10 +165,10 @@ sub show_diff {
 	my $page = shift;
 	my $from = shift;
 	my $to   = shift;
-	
+
 	$wiki->set_title("$pageの変更点");
 	my ($source1, $source2) = $self->get_diff_sources($wiki, $page, $from, $to);
-	
+
 	my $theme_uri = $wiki->config('theme_uri');
 	my $buf = _get_diff_html($wiki, $source1, $source2);
 
@@ -181,7 +182,7 @@ sub show_diff {
 			</form>
 		|;
 	}
-	
+
 	return $buf;
 }
 
@@ -235,7 +236,7 @@ function diffUsingJS(type) {
   diffUsingJS(1);
 </script>
 	|;
-	
+
 	return $buf;
 }
 
@@ -247,20 +248,20 @@ sub get_diff_text {
 	my $wiki = shift;
 	my $page = shift;
 	my $gen  = shift;
-	
+
 	my $source1 = $wiki->get_page($page);
 	my $source2 = $wiki->get_backup($page, $gen);
 	my $format  = $wiki->get_edit_format();
-	
+
 	$source1 = $wiki->convert_from_fswiki($source1, $format);
 	$source2 = $wiki->convert_from_fswiki($source2, $format);
-	
+
 	my $diff_text = "";
 	my @msg1 = split(/\n/,$source1);
 	my @msg2 = split(/\n/,$source2);
 	my $msgrefA = \@msg2;
 	my $msgrefB = \@msg1;
-	
+
 	traverse_sequences($msgrefA, $msgrefB,
 		{
 			MATCH => sub {},
@@ -273,7 +274,7 @@ sub get_diff_text {
 				$diff_text .= "+".$msgrefB->[$b]."\n";
 			}
 		});
-	
+
 	return $diff_text;
 }
 
@@ -286,14 +287,14 @@ sub get_diff_sources {
 	my $page = shift;
 	my $from = shift;
 	my $to   = shift;
-	
+
 	my $source1 = '';
 	if($from ne ''){
 		$source1 = $wiki->get_backup($page, $from);
 	} else {
 		$source1 = $wiki->get_page($page);
 	}
-	
+
 	my $source2 = '';
 	if($to ne ''){
 		$source2 = $wiki->get_backup($page, $to);
@@ -301,10 +302,10 @@ sub get_diff_sources {
 		$source2 = $wiki->get_page($page);
 	}
 	my $format  = $wiki->get_edit_format();
-	
+
 	$source1 = $wiki->convert_from_fswiki($source1, $format);
 	$source2 = $wiki->convert_from_fswiki($source2, $format);
-	
+
 	return ($source1, $source2);
 }
 

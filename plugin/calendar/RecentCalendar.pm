@@ -29,6 +29,7 @@
 ###################################################################
 package plugin::calendar::RecentCalendar;
 use strict;
+use warnings;
 use plugin::calendar::CalendarHandler;
 #==================================================================
 # コンストラクタ

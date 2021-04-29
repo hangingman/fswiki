@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::category::CategoryHandler;
 use strict;
+use warnings;
 use plugin::category::CategoryCache;
 #==============================================================================
 # コンストラクタ

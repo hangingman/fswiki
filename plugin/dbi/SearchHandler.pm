@@ -4,8 +4,9 @@
 #
 ############################################################
 package plugin::search::SearchHandler;
-use plugin::search::SearchHandler;
 use strict;
+use warnings;
+use plugin::search::SearchHandler;
 
 #===========================================================
 # アクションの実行

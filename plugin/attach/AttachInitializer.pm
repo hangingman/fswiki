@@ -6,6 +6,7 @@
 ############################################################
 package plugin::attach::AttachInitializer;
 use strict;
+use warnings;
 use File::Path;
 #===========================================================
 # コンストラクタ

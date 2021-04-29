@@ -5,6 +5,7 @@
 ###############################################################################
 package plugin::pdf::PDFParser;
 use strict;
+use warnings;
 our @ISA;
 use Wiki::Parser;
 use PDFJ 'EUC';

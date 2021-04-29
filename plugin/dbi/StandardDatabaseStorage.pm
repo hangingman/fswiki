@@ -4,10 +4,11 @@
 # </p>
 ###############################################################################
 package plugin::dbi::StandardDatabaseStorage;
+use strict;
+use warnings;
 use Wiki::DefaultStorage;
 use DBI;
 our @ISA;
-use strict;
 
 # バージョン情報
 our $VERSION;

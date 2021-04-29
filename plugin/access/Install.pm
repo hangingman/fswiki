@@ -6,6 +6,7 @@
 ############################################################
 package plugin::access::Install;
 use strict;
+use warnings;
 sub install {
 	my $wiki = shift;
 	$wiki->add_paragraph_plugin("access"    ,"plugin::access::Access"    ,"WIKI");

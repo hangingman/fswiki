@@ -1,5 +1,5 @@
 ############################################################
-# 
+#
 # <p>アクティブなユーザを一覧表示します。<p>
 # <p>
 # 引数で表示件数を指定できます。(0で全員表示)
@@ -13,10 +13,11 @@
 # <pre>
 # {{actives 5,7}}
 # </pre>
-# 
+#
 ############################################################
 package plugin::editlog::Actives;
 use strict;
+use warnings;
 #===========================================================
 # コンストラクタ
 #===========================================================
@@ -36,16 +37,16 @@ sub paragraph {
 	my $days = shift;
 	my %count;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	return "更新履歴はありません。" if $wiki->config('log_dir') eq "";
 	return "更新履歴はありません。" if ! -e $wiki->config('log_dir')."/useredit.log";
-	
+
 	my $oldest = 0;
 	if(! $days) {
 		$days = 30;
 	}
 	$oldest = time() - $days * 24 * 3600;
-	
+
 	open(DATA,$wiki->config('log_dir')."/useredit.log") or die $!;
 	while(<DATA>){
 		my($date, $time, $unixtime, $action, $subject, $id) = split(" ",$_);
@@ -54,17 +55,17 @@ sub paragraph {
 		}
 	}
 	close(DATA);
-	
+
 	my $content = "";
 	my @members = reverse sort {$count{$a} <=> $count{$b}} keys(%count);
 	if($max && $#members>$max-1){
 		@members = @members[0..$max-1];
 	}
-	
+
 	if($#members==-1){
 		return "更新履歴はありません。";
 	}
-	
+
 	foreach my $key(@members){
 		if($key eq ""){
 			$content .= "*未ログイン($count{$key})\n";
@@ -72,7 +73,7 @@ sub paragraph {
 			$content .= "*$key($count{$key})\n";
 		}
 	}
-	
+
 	return $content;
 }
 

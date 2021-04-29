@@ -4,14 +4,17 @@
 #
 ##############################################################
 package plugin::layout::PluginHelpHandler;
+use strict;
+use warnings;
 use plugin::info::PluginHelpHandler;
 use strict;
 
 1;
 
 package plugin::info::PluginHelpHandler;
-use Util;
 use strict;
+use warnings;
+use Util;
 
 #=============================================================
 # アクションハンドラメソッド
@@ -28,7 +31,7 @@ sub do_action {
 	} else {
 		$comment = &get_comment($wiki,$plugin);
 	}
-	
+
 	$wiki->set_title(&Util::escapeHTML($name)."プラグイン");
 	return $comment;
 }
@@ -36,7 +39,7 @@ sub do_action {
 sub get_alias_comment {
 	my $wiki   = shift;
 	my $name   = shift;
-	
+
 	my $layoutalias = 'layoutalias.dat';
 	my $info = &Util::load_config_hash($wiki,$layoutalias);
 	my ($command, $parameter) = split(/\t/,$info->{$name});

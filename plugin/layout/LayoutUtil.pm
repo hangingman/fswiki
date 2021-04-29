@@ -1,18 +1,19 @@
 ############################################################
-# 
+#
 # <p>Layoutプラグインのテンプレートからテンプレート情報を取得します。</p>
-# 
+#
 ############################################################
 package plugin::layout::LayoutUtil;
-use Util;
 use strict;
+use warnings;
+use Util;
 
 #===========================================================
 # テンプレート一覧を取得する関数
 #===========================================================
 sub get_tmpl_list {
 	my $wiki = shift;
-	
+
 	my @list;
 	opendir(DIR,$wiki->config('tmpl_dir')."/layout") or die $!;
 	while(my $entry = readdir(DIR)){
@@ -22,7 +23,7 @@ sub get_tmpl_list {
 		}
 	}
 	closedir(DIR);
-	
+
 	@list = sort(@list);
 	return @list;
 }
@@ -34,20 +35,20 @@ sub get_tmpl_list {
 sub get_tmpl_info {
 	my $wiki = shift;
 	my $tmpl = shift;
-	
+
 	my $tmplinfo = undef;
 	my $tmplsrc  = undef;
-	
+
 	# テンプレート名チェック
 	return undef if ($tmpl =~ /\.\./);
 	# テンプレート存在チェック
 	$tmplinfo->{TEMPLATE} = $wiki->config('tmpl_dir')."/layout/".$tmpl.".tmpl";
 	return undef if ( ! -f $tmplinfo->{TEMPLATE} );
-	
+
 	open(TEMPLATE, $tmplinfo->{TEMPLATE});
 	while (read(TEMPLATE, $tmplsrc, 10240, length($tmplsrc))) {};
 	close(TEMPLATE);
-	
+
 	my ($layout,$help) = 0;
 	foreach (split("\n",$tmplsrc)) {
 		if ( /^-- LAYOUTINFO_START/ ) {
@@ -85,7 +86,7 @@ sub get_tmpl_info {
 			}
 		}
 	}
-	
+
 	return $tmplinfo;
 }
 
@@ -105,10 +106,10 @@ sub get_tmpl_info {
 sub process_template {
 	my $wiki = shift;
 	my $source = shift;
-	
+
 	my @lines = split(/\n/,$source);
 	my $html = "";
-	
+
 	while ($source =~ /<!--\s*(FSWIKI_SOURCE|FSWIKI_INCLUDE|FSWIKI_HEAD_INFO)(\s+(PAGE=)?["']([\w\-\.]*)['"])?\s*-->/i) {
 		$html .= $`;
 		my $a = $';
@@ -146,14 +147,14 @@ sub process_template {
 sub set_template_exist_page {
 	my $wiki = shift;
 	my $tmpl = shift;
-	
+
 	my $tmplpath = $tmpl->{options}->{filepath};
 	my $tmplsrc = $tmpl->{template};
-	
+
 	open(TEMPLATE, $tmplpath);
 	while (read(TEMPLATE, $tmplsrc, 10240, length($tmplsrc))) {}
 	close(TEMPLATE);
-	
+
 	while ( $tmplsrc =~ /<!--\s*[Tt][Mm][Pp][Ll]_[Ii][Ff]\s+(NAME=)?["']?EXIST_PAGE_([\w\/\-\.]+)['"]?\s*-->/ ) {
 		if(index($2,"/")==-1 && $wiki->can_show($2)){
 			$tmpl->param("EXIST_PAGE_".$2=>1);

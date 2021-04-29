@@ -5,6 +5,7 @@
 ############################################################
 package plugin::search::Install;
 use strict;
+use warnings;
 
 sub install {
 	my $wiki = shift;

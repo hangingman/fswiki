@@ -5,6 +5,8 @@
 #
 ############################################################
 package plugin::mimetex::Install;
+use strict;
+use warnings;
 
 sub install {
 	my $wiki = shift;
