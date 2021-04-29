@@ -1,8 +1,9 @@
 <!--=========================================================================-->
 <!-- ページの編集フォーム -->
 <!--=========================================================================-->
+<div id="content" style="height: 600px"></div>
 <form class="update" method="post" action="<!--TMPL_VAR NAME="SCRIPT_NAME"-->">
-  <textarea cols="80" rows="20" name="content" class="edit"><!--TMPL_VAR NAME="CONTENT" ESCAPE="HTML"--></textarea>
+  <textarea cols="80" rows="20" name="content" style="display: none;"><!--TMPL_VAR NAME="CONTENT" ESCAPE="HTML"--></textarea>
   <p>
     <!--TMPL_IF NAME="EXISTS_PAGE"-->
     <input type="checkbox" name="sage" value="1" id="sage"
@@ -21,3 +22,17 @@
     <!--/TMPL_LOOP-->
   </p>
 </form>
+
+<!-- JavaScript製テキストエディタAceの設定 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+<script>
+  var editor = ace.edit("content");
+  var textarea = $('textarea[name="content"]').hide();
+  editor.getSession().setValue(textarea.val());
+  editor.getSession().on('change', function(){
+    textarea.val(editor.getSession().getValue());
+  });
+  editor.$blockScrolling = Infinity;
+  editor.setTheme("ace/theme/monokai");
+  editor.getSession().setMode("ace/mode/html");
+</script>
