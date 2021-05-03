@@ -19,3 +19,5 @@ requires 'CGI::Compile', '== 0.24';
 requires 'Proclet', '== 0.35';
 requires 'Plack::Response', '== 1.0047';
 requires 'Plack::Middleware::Session', '== 0.30';
+requires 'Plack::Middleware::CSRFBlock', '>= 0.06';
+requires 'UUID::Tiny', '== 1.04'
