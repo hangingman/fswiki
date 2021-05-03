@@ -7,10 +7,12 @@ package Wiki::Keyword;
 use strict;
 
 # 1 文字にマッチする正規表現
-my $ascii	  = '[\x00-\x7F]';				  # ASCII	  の 1 文字
-my $twoBytes   = '[\x8E\xA1-\xFE][\xA1-\xFE]';   # EUC 2 Byte の 1 文字
-my $threeBytes = '\x8F[\xA1-\xFE][\xA1-\xFE]';   # EUC 3 Byte の 1 文字
-my $AsciiOrEUC = "$ascii|$twoBytes|$threeBytes"; # ASCII/EUC  の 1 文字
+# UTF-8にマッチする正規表現については以下を参考にしている
+# ref: https://chalow.net/2006-03-09-1.html
+my $ascii	   = '[\x00-\x7F]';				                                       # ASCII	  の 1 文字
+my $twoBytes   = '[\x00-\x7f]|[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}';   # UTF-8 2 Byte の 1 文字
+my $threeBytes = '[\xF0-\xF7][\x80-\xBF]{3}';                                      # UTF-8 3 Byte の 1 文字
+my $AsciiOrUTF8 = "$ascii|$twoBytes|$threeBytes"; # ASCII/UTF-8の1文字
 
 my $keyword_cache  = 'keywords.cache';  # 古いキーワードキャッシュファイル
 my $keyword_cache2 = 'keywords2.cache'; # 新しいキーワードキャッシュファイル
@@ -23,14 +25,14 @@ sub new {
 	my $wiki      = shift;
 	my $interwiki = shift;
 	my $self      = {};
-	
+
 	$self->{wiki}      = $wiki;
 	$self->{keywords}  = [];
 	$self->{interwiki} = $interwiki;
-	
+
 	$self = bless($self,$class);
 	$self->load_keywords();
-	
+
 	return $self;
 }
 
@@ -69,7 +71,7 @@ sub exists_keyword {
 			else {
 
 				# 1 文字進めてキーワードを再検索。
-				$label =~ /^($AsciiOrEUC)(.*)$/;
+				$label =~ /^($AsciiOrUTF8)(.*)$/;
 				$self->{g_pre} .= $1;
 				$str = $2 . $self->{g_post};
 			}
@@ -170,7 +172,7 @@ sub load_keywords {
 
 	# 現在のユーザの権限に対応するキーワード正規表現をコンパイル。
 	my $regexp = $self->{'regexp_list'}->[$can_show_max];
-	$self->{'regexp'} = qr/^((?:$AsciiOrEUC)*?)($regexp)/;
+	$self->{'regexp'} = qr/^((?:$AsciiOrUTF8)*?)($regexp)/;
 }
 
 #==============================================================================
