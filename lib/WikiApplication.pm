@@ -288,10 +288,10 @@ sub run_psgi {
 	# 出力処理
 	#------------------------------------------------------------------------------
 	my $res = Plack::Response->new(200);
-	$res->content_type('text/html;charset=UTF-8');
 	$res->headers(HTTP::Headers->new(
-		Pragma        => 'no-cache',
-	 	Cache_Control => 'no-cache'
+			Pragma        => 'no-cache',
+			Cache_Control => 'no-cache',
+			Content_Type  => 'text/html'
 	));
 	# ヘッダの出力
 	if($is_handyphone){
