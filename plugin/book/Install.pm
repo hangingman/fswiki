@@ -9,7 +9,7 @@ use warnings;
 use plugin::book::TocParser;
 
 sub install {
-	my $wiki  = shift;
+	my Wiki $wiki = shift;
 	$wiki->add_paragraph_plugin("chapter", "plugin::book::Chapter", "HTML");
 	$wiki->add_paragraph_plugin("section", "plugin::book::Section", "HTML");
 	$wiki->add_inline_plugin("title1", "plugin::book::Title1", "HTML");
@@ -18,42 +18,42 @@ sub install {
 	$wiki->add_paragraph_plugin("caption" ,"plugin::book::Caption" ,"HTML");
 	$wiki->add_paragraph_plugin("toc" ,"plugin::book::Toc" ,"HTML");
 	$wiki->add_inline_plugin("link" ,"plugin::book::Link" ,"HTML");
-	
+
 	$wiki->add_block_plugin("list" ,"plugin::book::List" ,"HTML");
 	$wiki->add_inline_plugin("code" ,"plugin::book::Code" ,"HTML");
-	
+
 	$wiki->add_block_plugin("column" ,"plugin::book::Column" ,"HTML");
 	$wiki->add_paragraph_plugin("columnlist", "plugin::book::ColumnList", "HTML");
 	$wiki->add_block_plugin("note" ,"plugin::book::Note" ,"HTML");
 	$wiki->add_block_plugin("box" ,"plugin::book::Box" ,"HTML");
-	
+
 	$wiki->add_inline_plugin("memo", "plugin::book::Memo", "HTML");
 	$wiki->add_inline_plugin("add", "plugin::book::Add", "HTML");
 	$wiki->add_inline_plugin("del", "plugin::book::Del", "HTML");
 	$wiki->add_paragraph_plugin("memolist", "plugin::book::Memolist", "HTML");
-	
+
 	$wiki->add_inline_plugin("wordcount", "plugin::book::Wordcount", "HTML");
 	$wiki->add_inline_plugin("pagecount", "plugin::book::Pagecount", "HTML");
-	
+
 	$wiki->add_hook("chapter", "plugin::book::Title1");
 	$wiki->add_hook("chapter", "plugin::book::Title2");
 	$wiki->add_hook("chapter", "plugin::book::Title3");
 	$wiki->add_hook("chapter", "plugin::book::Caption");
-	
+
 	$wiki->add_hook("title1", "plugin::book::Title2");
 	$wiki->add_hook("title1", "plugin::book::Title3");
 	$wiki->add_hook("title3", "plugin::book::Title3");
-	
+
 	$wiki->add_inline_plugin("br", "plugin::book::Br");
 	$wiki->add_paragraph_plugin("keyword" ,"plugin::book::Keyword" ,"HTML");
-	
+
 	my @paths = split(/\//, $wiki->get_CGI()->path_info());
 	my $path_prefix = '';
 	for(my $i = 0; $i < $#paths; $i++){
 		$path_prefix .= '../';
 	}
 	$wiki->{book_plugin_path_prefix} = $path_prefix;
-	
+
 	my $head_info = <<"END_OF_HEAD";
 <link href="${path_prefix}plugin/book/google-code-prettify/sunburst.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="${path_prefix}plugin/book/google-code-prettify/prettify.js"></script>
@@ -224,7 +224,7 @@ pre.prettyprint strong {
 }
 </style>
 END_OF_HEAD
-	
+
 	$wiki->add_head_info($head_info);
 }
 
