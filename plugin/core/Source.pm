@@ -44,7 +44,7 @@ sub do_action {
 	$res->content_type('text/html;charset=UTF-8');
     $res->content_encoding('UTF-8');
 	# HTMLの出力
-	$res->body($source);
+	$res->body('<pre>' . $source . '</pre>');  # FIXME: 文字列結合ではなくどこかで<pre>タグを作っていそうだが見つからず
 	return $res;
 }
 
