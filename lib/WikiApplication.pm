@@ -120,7 +120,7 @@ sub run_psgi {
 	# プラグインのインストールに失敗した場合
 	$content = $plugin_error . $content if $plugin_error ne '';
 	# プラグイン側でHTTP responseヘッダ等が設定されている場合はreturnする
-	if (blessed $content eq "Plack::Response") {
+	if (blessed $content && $content->isa("Plack::Response")) {
 		return $content->finalize();
 	}
 

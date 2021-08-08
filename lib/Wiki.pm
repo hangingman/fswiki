@@ -10,6 +10,8 @@ use File::Copy;
 use File::Path;
 use Wiki::DefaultStorage;
 use Wiki::HTMLParser;
+use Scalar::Util qw(blessed);
+
 our ($VERSION, $DEBUG);
 $VERSION = '4.0.0';
 $DEBUG   = 0;
@@ -552,7 +554,7 @@ sub call_handler {
 	}
 
 	# 管理者用のアクション
-	if($self->{"handler_permission"}->{$action}==0){
+	if ($self->{"handler_permission"}->{$action}==0){
 		my $login = $self->get_login_info();
 		if(!defined($login)){
 			return $self->error("ログインしていません。");
@@ -560,8 +562,11 @@ sub call_handler {
 		} elsif($login->{type}!=0){
 			return $self->error("管理者権限が必要です。");
 		}
-		return $obj->do_action($self).
-		       "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
+		my $content = $obj->do_action($self);
+		if (blessed $content && $content->isa("Plack::Response")) {
+			return $content;
+		}
+		return $content . "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
 
 	# ログインユーザ用のアクション
 	} elsif($self->{"handler_permission"}->{$action}==2){
@@ -569,8 +574,11 @@ sub call_handler {
 		if(!defined($login)){
 			return $self->error("ログインしていません。");
 		}
-		return $obj->do_action($self).
-		       "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
+		my $content = $obj->do_action($self);
+		if (blessed $content && $content->isa("Plack::Response")) {
+			return $content;
+		}
+		return $content . "<div class=\"comment\"><a href=\"".$self->create_url({action=>"LOGIN"})."\">メニューに戻る</a></div>";
 
 	# 普通のアクション
 	} else {
