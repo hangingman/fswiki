@@ -1,0 +1,33 @@
+#
+# exec command: >
+#   docker-compose -f docker-compose-heroku.yml --env-file .env.local up -d --build
+#   docker exec -it <container name> sh
+#
+version: "3.9"
+services:
+  app:
+    image: busybox
+    volumes:
+      - datavolume:/data
+  goofys:
+    image: cloudposse/goofys:latest
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      REGION: ap-northeast-1
+      BUCKET: ${BUCKET}
+      MOUNT_DIR: /data
+    # Need following options;
+    # https://github.com/s3fs-fuse/s3fs-fuse/issues/647#issuecomment-637458150
+    cap_add:
+      - MKNOD
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    devices:
+      - /dev/fuse
+    volumes:
+      - datavolume:/data
+
+volumes:
+  datavolume:
