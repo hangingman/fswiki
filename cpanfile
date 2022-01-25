@@ -1,6 +1,6 @@
 requires 'Algorithm::Diff', '== 1.1903';
-requires 'WWW::RobotRules', '== 5.832';
-requires 'Bundle::LWP', '== 5.835';
+#requires 'WWW::RobotRules', '== 5.832';
+#requires 'Bundle::LWP', '== 5.835';
 requires 'Digest::MD5', '== 2.55';
 requires 'File::Listing';
 requires 'HTML::Template', '== 2.97';
