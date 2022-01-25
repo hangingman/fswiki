@@ -5,29 +5,24 @@
 #
 version: "3.9"
 services:
-  app:
-    image: busybox
+  wiki:
+    build:
+      context: ./
+      dockerfile: ./docker/heroku/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
     volumes:
-      - datavolume:/data
-  goofys:
-    image: cloudposse/goofys:latest
+      - webappvolume:/opt/fswiki
+  db:
+    image: postgres:13.5
+    ports:
+      - "5432:5432"
     environment:
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      REGION: ap-northeast-1
-      BUCKET: ${BUCKET}
-      MOUNT_DIR: /data
-    # Need following options;
-    # https://github.com/s3fs-fuse/s3fs-fuse/issues/647#issuecomment-637458150
-    cap_add:
-      - MKNOD
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    devices:
-      - /dev/fuse
-    volumes:
-      - datavolume:/data
+      POSTGRES_USER: admin
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: admin
 
 volumes:
-  datavolume:
+  webappvolume: {}
