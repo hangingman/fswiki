@@ -304,16 +304,4 @@ sub run_psgi {
 	return $res->finalize;
 };
 
-# my $msg = $@;
-# $ENV{'PATH_INFO'} = undef;
-# $wiki->_process_before_exit();
-
-# if($msg && index($msg, 'safe_die')<0){
-# 	$msg = Util::escapeHTML($msg);
-# 	print "Content-Type: text/html\n\n";
-# 	print "<html><head><title>Software Error</title></head>";
-# 	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
-# }
-# Util::restore_die();
-
 1;

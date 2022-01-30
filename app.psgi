@@ -7,6 +7,7 @@ use Plack::Session::Store::File;
 use lib ('./lib', './local/lib/perl5');
 use Wiki;
 use WikiApplication;
+use WikiDB;
 use UUID::Tiny ':std';
 
 builder {
@@ -23,9 +24,12 @@ builder {
 
 	# FreeStyleWiki フロントエンドPSGIモジュール
 	my WikiApplication $wiki_app = WikiApplication->new;
+	# FreeStyleWiki DB移行モジュール
+	my WikiDB $wiki_db = WikiDB->new;
 
 	# Plack::Middleware::Sessionにセッション情報を設定する
 	mount "/fswiki/wiki.cgi" => sub {$wiki_app->run_psgi(@_);};
+	mount "/fswiki/wikidb.cgi" => sub {$wiki_db->run_psgi(@_);};
 	mount "/fswiki/theme" => Plack::App::Directory->new({ root => './theme' })->to_app;
 	mount "/fswiki/plugin" => Plack::App::Directory->new({ root => './plugin' })->to_app;
 };
