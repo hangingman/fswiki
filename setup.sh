@@ -12,7 +12,7 @@ case "$1" in
   ;;
 esac
 
-echo "# fswiki setup (for 3.5.8)..."
+echo "# fswiki setup (for 4.0.0-fork)..."
 echo "prepare..."
 
 if test -z "$FSWIKI_HOME";
@@ -27,20 +27,7 @@ fi
 echo "  FSWIKI_HOME=$FSWIKI_HOME"
 PERM_DIR=777
 PERM_FILE=666
-PERM_EXE=755
 
-echo "  check $FSWIKI_HOME/wiki.cgi..."
-if test -e "$FSWIKI_HOME/wiki.cgi";
-then
-  echo "    ok"
-else
-  echo "  $FSWIKI_HOME/wiki.cgi not exists!!"
-  exit 1
-fi
-
-echo "do..."
-
-chmod $PERM_EXE "$FSWIKI_HOME"/wiki.cgi || exit 1
 for dir in backup attach pdf log data config theme tmpl tools;
 do
   echo "  check $FSWIKI_HOME/$dir..."
@@ -54,19 +41,6 @@ do
   echo "  check $FSWIKI_HOME/log/$logfile..."
   test -e "$FSWIKI_HOME"/log/$logfile || touch "$FSWIKI_HOME"/log/$logfile || exit 1
 done
-
-echo "  check $FSWIKI_HOME/.htaccess..."
-if test -e "$FSWIKI_HOME/.htaccess";
-then
-  echo "    already exists."
-else
-  cat > "$FSWIKI_HOME/.htaccess" << HTACCESS
-<FilesMatch "\.(pm|dat|wiki|log)$">
-  deny from all
-</FilesMatch>
-HTACCESS
-  echo "    create."
-fi
 
 echo "done"
 

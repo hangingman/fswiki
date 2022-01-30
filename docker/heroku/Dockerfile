@@ -19,6 +19,7 @@ RUN perl -v
 ENV PERL_CPANM_OPT "--local-lib=~/perl5"
 ENV PATH "/home/fswiki/perl5/bin:$PATH"
 ENV PERL5LIB "/home/fswiki/perl5/lib/perl5:$PERL5LIB"
+ENV FSWIKI_HOME "/home/fswiki"
 
 RUN cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
@@ -27,6 +28,8 @@ COPY ./cpanfile /home/fswiki/cpanfile
 RUN carton install
 
 COPY . /home/fswiki
+RUN sudo chown -R fswiki:fswiki $FSWIKI_HOME
+RUN bash ./setup.sh $FSWIKI_HOME
 
 CMD ["carton", "exec", "start_server", \
     "--pid-file=/tmp/fswiki.pid", \
