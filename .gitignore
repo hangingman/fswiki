@@ -6,6 +6,7 @@ attach/
 config/
 layout/
 local/
+t/
 
 .htaccess
 sitemap.xml
