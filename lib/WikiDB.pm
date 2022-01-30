@@ -1,4 +1,7 @@
-#!/usr/bin/perl
+package WikiDB;
+use strict;
+use warnings FATAL => 'all';
+
 ###############################################################################
 #
 # ::FreeStyleWiki
@@ -6,54 +9,30 @@
 # Wiki::DatabaseStorage 移行スクリプト
 #
 ###############################################################################
-BEGIN {
-	if(exists $ENV{MOD_PERL}){
-		# カレントディレクトリの変更
-		chdir($ENV{FSWIKI_HOME});
-	}
-}
-# ModPerl::Registry(Prefork)では実行時に変更されている可能性がある
-if(exists $ENV{MOD_PERL}){
-	chdir($ENV{FSWIKI_HOME});
-}
 
-#==============================================================================
-# モジュールのインクルード
-#==============================================================================
-use Cwd;
-use lib ('./lib', './local/lib/perl5');
-# ModPerl::Registry(Prefork)では@INCが初期化されている場合がある
-unshift @INC, './lib' if(exists $ENV{MOD_PERL});
-unshift @INC, './local/lib/perl5' if(exists $ENV{MOD_PERL});
 
-use strict;
-use Wiki;
-use Util;
-use Jcode;
-use HTML::Template;
 
-# これをやらないとApache::Registoryで動かない
-if(exists $ENV{MOD_PERL}){
-	eval("use Digest::MD5;");
-	eval("use plugin::core::Diff;");
-	eval("use plugin::pdf::PDFMaker;");
-}
+sub new {
+	my $class = shift;
+	my $self  = {};
+	return bless $self,$class;
+};
 
-#==============================================================================
-# CGIとWikiのインスタンス化
-#==============================================================================
-my $wiki = Wiki->new('setup.dat');
-my $cgi = $wiki->get_CGI();
-# ストレージをデフォルトに変更する
-$wiki->{"storage"}->finalize();
-$wiki->{"storage"} = Wiki::DefaultStorage->new($wiki);
-
-# スクリプト名の上書き
-$wiki->config("script_name","wikidb.cgi");
-# データベース作成用のインスタンス生成
-my $wikidb = Wiki::DB->new();
-
-eval {
+sub run_psgi {
+	# 外部からのリクエスト
+	my ($self, $env) = @_;
+	#==============================================================================
+	# CGIとWikiのインスタンス化
+	#==============================================================================
+	my $wiki = Wiki->new('setup.dat', $env);
+	my $cgi = $wiki->get_CGI($env);
+	# ストレージをデフォルトに変更する
+	$wiki->{"storage"}->finalize();
+	$wiki->{"storage"} = Wiki::DefaultStorage->new($wiki);
+	# スクリプト名の上書き
+	$wiki->config("script_name", "wikidb.cgi");
+	# データベース作成用のインスタンス生成
+	my $wikidb = Wiki::DB->new();
 	# Session用ディレクトリはFarmでも共通に使用する
 	$wiki->config('session_dir',$wiki->config('log_dir'));
 
@@ -168,12 +147,12 @@ eval {
 	my $output = "";
 	my $tmpl = $wikidb->get_template($wiki);
 	my $template = HTML::Template->new(
-	                    scalarref => \$tmpl,
-	                    die_on_bad_params => 0,
-	                    loop_context_vars => 1,
-	                    case_sensitive => 1,
-	                    global_vars => 1,
-	                    utf8 => 1);
+			scalarref => \$tmpl,
+			die_on_bad_params => 0,
+			loop_context_vars => 1,
+			case_sensitive => 1,
+			global_vars => 1,
+			utf8 => 1);
 
 	$template->param(TITLE => $title, CONTENTS => $content);
 	$output = $template->output;
@@ -181,25 +160,16 @@ eval {
 	#------------------------------------------------------------------------------
 	# 出力処理
 	#------------------------------------------------------------------------------
-	# ヘッダの出力
-	print "Content-Type: text/html;charset=UTF-8\n";
-	print "Pragma: no-cache\n";
-	print "Cache-Control: no-cache\n\n";
-
-	# HTMLの出力
-	print $output;
+	my $res = Plack::Response->new(200);
+	$res->headers(HTTP::Headers->new(
+			Pragma        => 'no-cache',
+			Cache_Control => 'no-cache',
+			Content_Type  => 'text/html'
+	));
+	$res->content_encoding('UTF-8');
+	$res->body($output);
+	return $res->finalize;
 };
-
-my $msg = $@;
-$ENV{'PATH_INFO'} = undef;
-$wiki->_process_before_exit();
-
-if($msg && index($msg, 'safe_die')<0){
-	$msg = Util::escapeHTML($msg);
-	print "Content-Type: text/html\n\n";
-	print "<html><head><title>Software Error</title></head>";
-	print "<body><h1>Software Error:</h1><p>$msg</p></body></html>";
-}
 
 1;
 
@@ -335,86 +305,86 @@ sub db_transition {
 	if (!$hDB) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; };  $html .= "<br>OK</li>\n";
 
 	eval {
-	$sql = {
-		# Drop
-		data_drp     => "DROP TABLE IF EXISTS `data_tbl`",
-		backup_drp   => "DROP TABLE IF EXISTS `backup_tbl`",
-		attr_drp     => "DROP TABLE IF EXISTS `attr_tbl`",
-		access_drp   => "DROP TABLE IF EXISTS `access_tbl`",
-		data_drp_idx_1   => "DROP INDEX `data_idx_1`",
-		backup_drp_idx_1 => "DROP INDEX `backup_idx_1`",
-		attr_drp_idx_1   => "DROP INDEX `attr_idx_1`",
-		attr_drp_idx_2   => "DROP INDEX `attr_idx_2`",
-		access_drp_idx_1 => "DROP INDEX `access_idx_1`",
-		access_drp_idx_2 => "DROP INDEX `access_idx_2`",
-		# Table
-		data_tbl     => "CREATE TABLE `data_tbl` (`page` text, `source` text, `lastmodified` bigint)",
-		backup_tbl   => "CREATE TABLE `backup_tbl` (`page` text, `source` text, `lastmodified` bigint)",
-		attr_tbl     => "CREATE TABLE `attr_tbl` (`page` text, `key` text, `value` text, `lastmodified` bigint)",
-		access_tbl   => "CREATE TABLE `access_tbl` (`page` text, `datetime` text, `remote_addr` text, `referer` text, `user_agent` text, `lastmodified` bigint)",
-		# Index
-		data_idx_1   => "CREATE UNIQUE INDEX `data_idx_1` ON `data_tbl` (`page`(255))",
-		backup_idx_1 => "CREATE UNIQUE INDEX `backup_idx_1` ON `backup_tbl` (`page`(255), `lastmodified` DESC)",
-		attr_idx_1   => "CREATE UNIQUE INDEX `attr_idx_1` ON `attr_tbl` (`page`(255), `key`(255))",
-		attr_idx_2   => "CREATE UNIQUE INDEX `attr_idx_2` ON `attr_tbl` (`key`(255), `page`(255))",
-		access_idx_1 => "CREATE INDEX `access_idx_1` ON `access_tbl` (`lastmodified` DESC)",
-		access_idx_2 => "CREATE INDEX `access_idx_2` ON `access_tbl` (`page`(255), `datetime`(255) DESC)",
-		# Insert
-		data_ins     => "INSERT INTO `data_tbl` VALUES(?, ?, ?)",
-		backup_ins   => "INSERT INTO `backup_tbl` VALUES(?, ?, ?)",
-		attr_ins     => "INSERT INTO `attr_tbl` VALUES(?, ?, ?, ?)",
-	};
-	# インデックス／テーブルの削除
-	$hst = $hDB->do($sql->{data_drp_idx1});
-	$hst = $hDB->do($sql->{backup_drp_idx1});
-	$hst = $hDB->do($sql->{attr_drp_idx1});
-	$hst = $hDB->do($sql->{attr_drp_idx2});
-	$hst = $hDB->do($sql->{access_drp_idx1});
-	$hst = $hDB->do($sql->{access_drp_idx2});
-	$hst = $hDB->do($sql->{data_drp});
-	$hst = $hDB->do($sql->{backup_drp});
-	$hst = $hDB->do($sql->{attr_drp});
-	$hst = $hDB->do($sql->{access_drp});
-	# ページ情報テーブル／インデックス
-	$html .= "<li>".$sql->{data_tbl}; $hst = $hDB->do($sql->{data_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{data_idx_1}; $hst = $hDB->do($sql->{data_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
-	# バックアップ用テーブル／インデックス
-	$html .= "<li>".$sql->{backup_tbl}; $hst = $hDB->do($sql->{backup_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{backup_idx_1}; $hst = $hDB->do($sql->{backup_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
-	# ページ属性テーブル／インデックス
-	$html .= "<li>".$sql->{attr_tbl}; $hst = $hDB->do($sql->{attr_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{attr_idx_1}; $hst = $hDB->do($sql->{attr_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{attr_idx_2}; $hst = $hDB->do($sql->{attr_idx_2}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
-	# アクセスログ・テーブル／インデックス
-	$html .= "<li>".$sql->{access_tbl}; $hst = $hDB->do($sql->{access_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{access_idx_1}; $hst = $hDB->do($sql->{access_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
-	$html .= "<li>".$sql->{access_idx_2}; $hst = $hDB->do($sql->{access_idx_2}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		$sql = {
+				# Drop
+				data_drp     => "DROP TABLE IF EXISTS `data_tbl`",
+				backup_drp   => "DROP TABLE IF EXISTS `backup_tbl`",
+				attr_drp     => "DROP TABLE IF EXISTS `attr_tbl`",
+				access_drp   => "DROP TABLE IF EXISTS `access_tbl`",
+				data_drp_idx_1   => "DROP INDEX `data_idx_1`",
+				backup_drp_idx_1 => "DROP INDEX `backup_idx_1`",
+				attr_drp_idx_1   => "DROP INDEX `attr_idx_1`",
+				attr_drp_idx_2   => "DROP INDEX `attr_idx_2`",
+				access_drp_idx_1 => "DROP INDEX `access_idx_1`",
+				access_drp_idx_2 => "DROP INDEX `access_idx_2`",
+				# Table
+				data_tbl     => "CREATE TABLE `data_tbl` (`page` text, `source` text, `lastmodified` bigint)",
+				backup_tbl   => "CREATE TABLE `backup_tbl` (`page` text, `source` text, `lastmodified` bigint)",
+				attr_tbl     => "CREATE TABLE `attr_tbl` (`page` text, `key` text, `value` text, `lastmodified` bigint)",
+				access_tbl   => "CREATE TABLE `access_tbl` (`page` text, `datetime` text, `remote_addr` text, `referer` text, `user_agent` text, `lastmodified` bigint)",
+				# Index
+				data_idx_1   => "CREATE UNIQUE INDEX `data_idx_1` ON `data_tbl` (`page`(255))",
+				backup_idx_1 => "CREATE UNIQUE INDEX `backup_idx_1` ON `backup_tbl` (`page`(255), `lastmodified` DESC)",
+				attr_idx_1   => "CREATE UNIQUE INDEX `attr_idx_1` ON `attr_tbl` (`page`(255), `key`(255))",
+				attr_idx_2   => "CREATE UNIQUE INDEX `attr_idx_2` ON `attr_tbl` (`key`(255), `page`(255))",
+				access_idx_1 => "CREATE INDEX `access_idx_1` ON `access_tbl` (`lastmodified` DESC)",
+				access_idx_2 => "CREATE INDEX `access_idx_2` ON `access_tbl` (`page`(255), `datetime`(255) DESC)",
+				# Insert
+				data_ins     => "INSERT INTO `data_tbl` VALUES(?, ?, ?)",
+				backup_ins   => "INSERT INTO `backup_tbl` VALUES(?, ?, ?)",
+				attr_ins     => "INSERT INTO `attr_tbl` VALUES(?, ?, ?, ?)",
+		};
+		# インデックス／テーブルの削除
+		$hst = $hDB->do($sql->{data_drp_idx1});
+		$hst = $hDB->do($sql->{backup_drp_idx1});
+		$hst = $hDB->do($sql->{attr_drp_idx1});
+		$hst = $hDB->do($sql->{attr_drp_idx2});
+		$hst = $hDB->do($sql->{access_drp_idx1});
+		$hst = $hDB->do($sql->{access_drp_idx2});
+		$hst = $hDB->do($sql->{data_drp});
+		$hst = $hDB->do($sql->{backup_drp});
+		$hst = $hDB->do($sql->{attr_drp});
+		$hst = $hDB->do($sql->{access_drp});
+		# ページ情報テーブル／インデックス
+		$html .= "<li>".$sql->{data_tbl}; $hst = $hDB->do($sql->{data_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{data_idx_1}; $hst = $hDB->do($sql->{data_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		# バックアップ用テーブル／インデックス
+		$html .= "<li>".$sql->{backup_tbl}; $hst = $hDB->do($sql->{backup_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{backup_idx_1}; $hst = $hDB->do($sql->{backup_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		# ページ属性テーブル／インデックス
+		$html .= "<li>".$sql->{attr_tbl}; $hst = $hDB->do($sql->{attr_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{attr_idx_1}; $hst = $hDB->do($sql->{attr_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{attr_idx_2}; $hst = $hDB->do($sql->{attr_idx_2}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		# アクセスログ・テーブル／インデックス
+		$html .= "<li>".$sql->{access_tbl}; $hst = $hDB->do($sql->{access_tbl}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; };  $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{access_idx_1}; $hst = $hDB->do($sql->{access_idx_1}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
+		$html .= "<li>".$sql->{access_idx_2}; $hst = $hDB->do($sql->{access_idx_2}); if (!$hst) { $html .= "<br>NG - ".$DBI::errstr."</li>\n"; die; }; $html .= "<br>OK</li>\n";
 
-	my @list = $wiki->get_page_list({-sort => 'name'});
-	$html .= "<li>ページ数：".$#list;
+		my @list = $wiki->get_page_list({-sort => 'name'});
+		$html .= "<li>ページ数：".$#list;
 
-	$hst1 = $hDB->prepare($sql->{data_ins});
-	die "$DBI::errstr " if (!$hst1);
-	$hst2 = $hDB->prepare($sql->{attr_ins});
-	die "$DBI::errstr " if (!$hst2);
+		$hst1 = $hDB->prepare($sql->{data_ins});
+		die "$DBI::errstr " if (!$hst1);
+		$hst2 = $hDB->prepare($sql->{attr_ins});
+		die "$DBI::errstr " if (!$hst2);
 
-	foreach my $page (@list) {
-		# ページの登録
-		$hst1->execute($page, $wiki->get_page($page), $wiki->get_last_modified2($page) );
-		# ページ・レベルの登録
-		my $level = $wiki->get_page_level($page);
-		$hst2->execute($page, "page_level", $level, time() ) if ( $level > 0 );
-		# 凍結情報の登録
-		my $freeze = $wiki->is_freeze($page);
-		$hst2->execute($page, "freeze", $freeze, time() ) if ( $freeze > 0 );
-#		# タイトル情報の登録
-#		my @title = grep(/^{{title .+}}$/, split(/\n/,$wiki->get_page($page)));
-#		if ( $#title >= 0 ) {
-#			$title[0] =~ s/{{title (.+)}}$/$1/;
-#			$hst2->execute($page, "title", $title[0], time());
-#		}
-	}
-	$html .= "<br>OK</li>";
+		foreach my $page (@list) {
+			# ページの登録
+			$hst1->execute($page, $wiki->get_page($page), $wiki->get_last_modified2($page) );
+			# ページ・レベルの登録
+			my $level = $wiki->get_page_level($page);
+			$hst2->execute($page, "page_level", $level, time() ) if ( $level > 0 );
+			# 凍結情報の登録
+			my $freeze = $wiki->is_freeze($page);
+			$hst2->execute($page, "freeze", $freeze, time() ) if ( $freeze > 0 );
+			#		# タイトル情報の登録
+			#		my @title = grep(/^{{title .+}}$/, split(/\n/,$wiki->get_page($page)));
+			#		if ( $#title >= 0 ) {
+			#			$title[0] =~ s/{{title (.+)}}$/$1/;
+			#			$hst2->execute($page, "title", $title[0], time());
+			#		}
+		}
+		$html .= "<br>OK</li>";
 	};	# eval
 	if ($@) {
 		$html .= "<br>エラーが発生しました。 - $@";
@@ -449,8 +419,8 @@ sub get_wikifarm_instance {
 	# WikiFarm用のwikiインスタンス作成
 	#-----------------------------------------------------------
 	eval {
-		$wiki = Wiki->new('setup.dat');
-		$cgi = $wiki->get_CGI();
+		my $wiki = Wiki->new('setup.dat');
+		my $cgi = $wiki->get_CGI();
 
 		# ルートWikiへの相対パスの取得
 		my $relative_path = $cgi->path_info();
@@ -509,7 +479,7 @@ sub get_wikifarm_instance {
 		$wiki->{keyword}   = $Wiki::Parser::keyword;
 
 		# プラグインのインストールと初期化
-###		my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
+		###		my @plugins = split(/\n/,&Util::load_config_text($wiki,$wiki->config('plugin_file')));
 		# 最低限のプラグインのみインストールする
 		my @plugins = split(/,/,"admin,core,info");
 		my $plugin_error = '';
