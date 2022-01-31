@@ -42,5 +42,8 @@ do
   test -e "$FSWIKI_HOME"/log/$logfile || touch "$FSWIKI_HOME"/log/$logfile || exit 1
 done
 
+FSWIKI_SECRET=$(uuidgen)
+sed -i "s/secret =.*/secret = ${FSWIKI_SECRET}/g" setup.dat
+
 echo "done"
 

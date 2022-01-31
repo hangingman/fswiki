@@ -14,4 +14,4 @@ sitemap.xml
 cpanfile.snapshot
 .idea/
 
-.env.local
+.env

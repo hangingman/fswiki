@@ -1,7 +1,4 @@
 package WikiDB;
-use strict;
-use warnings FATAL => 'all';
-
 ###############################################################################
 #
 # ::FreeStyleWiki
@@ -9,8 +6,10 @@ use warnings FATAL => 'all';
 # Wiki::DatabaseStorage 移行スクリプト
 #
 ###############################################################################
-
-
+use strict;
+use warnings FATAL => 'all';
+use Plack::Response;
+use Scalar::Util qw(blessed);
 
 sub new {
 	my $class = shift;
@@ -108,6 +107,10 @@ sub run_psgi {
 	if ( !defined($login) ) {
 		$action = "LOGIN";
 		$content = $wiki->call_handler($action);
+		# プラグイン側でHTTP responseヘッダ等が設定されている場合はreturnする
+		if (blessed $content && $content->isa("Plack::Response")) {
+			return $content->finalize();
+		}
 	}
 	# ログアウト時はログイン画面に戻す
 	elsif( $action eq "LOGIN" && defined($cgi->param('logout')) ) {
@@ -123,6 +126,10 @@ sub run_psgi {
 		$wiki->{'login_info'} = undef;
 		$content = "<div style='color:#ff0000;'>管理者でログインしてください。</div>";
 		$content .= $wiki->call_handler($action);
+		# プラグイン側でHTTP responseヘッダ等が設定されている場合はreturnする
+		if (blessed $content && $content->isa("Plack::Response")) {
+			return $content->finalize();
+		}
 	}
 	# 管理者ログイン時は移行画面を表示する
 	else {
