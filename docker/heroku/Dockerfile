@@ -1,7 +1,7 @@
 FROM perl:5.30.3-slim-threaded-bullseye
 
 RUN apt-get update
-RUN apt-get install -y gcc openssl libssl-dev zlib1g-dev sudo perlbrew
+RUN apt-get install -y gcc openssl libssl-dev zlib1g-dev sudo perlbrew uuid-runtime
 
 # debian don't use wheel group historial reason
 # https://unix.stackexchange.com/a/4461/352321
@@ -22,15 +22,13 @@ ENV PERL5LIB "/home/fswiki/perl5/lib/perl5:$PERL5LIB"
 ENV FSWIKI_HOME "/home/fswiki"
 
 RUN cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
-
 RUN cpanm Carton --notest
 COPY ./cpanfile /home/fswiki/cpanfile
 RUN carton install
 
 COPY . /home/fswiki
 RUN sudo chown -R fswiki:fswiki $FSWIKI_HOME
-RUN bash ./setup.sh $FSWIKI_HOME
 
-CMD ["carton", "exec", "start_server", \
-    "--pid-file=/tmp/fswiki.pid", \
-    "--status-file=/tmp/fswiki.status", "--", "starman", "--workers", "4", "app.psgi"]
+COPY ./docker/heroku/docker-entrypoint.sh /tmp
+RUN sudo chmod +x /tmp/docker-entrypoint.sh
+ENTRYPOINT ["/tmp/docker-entrypoint.sh"]
