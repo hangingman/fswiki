@@ -182,7 +182,7 @@ sub run_psgi {
 
 package Wiki::DB;
 use File::Path;
-use DBI;
+use DBIx::Custom;
 use strict;
 
 #==============================================================================
@@ -300,11 +300,23 @@ sub db_transition {
 	my $html = "";
 	$html .= "<ul>\n";
 
-	my $dbdriver = $wiki->config('db_driver');
-	my $dbname = $wiki->config('db_name');
-	my $dbhost = $wiki->config('db_host');
-	my $user = $wiki->config('db_user');
-	my $pass = $wiki->config('db_pass');
+	# my $dbdriver = $wiki->config('db_driver');
+	# my $dbname = $wiki->config('db_name');
+	# my $dbhost = $wiki->config('db_host');
+	# my $user = $wiki->config('db_user');
+	# my $pass = $wiki->config('db_pass');
+
+	my $dbdriver = "postgresql";
+	my $dbname = "test";
+	my $dbhost = "localhost:5432";
+	my $user = "admin";
+	my $pass = "admin";
+	my $dbi = DBIx::Custom->connect(
+			'dbi:postgresql:database=test',
+			'admin',
+			'admin'
+			# {mysql_enable_utf8mb4 => 1}
+	);
 
 	my $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
 	$html .= "<li>データベース接続[$dsn]";

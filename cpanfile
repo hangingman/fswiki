@@ -8,8 +8,7 @@ requires 'Image::Info', '== 1.42';
 requires 'Regexp::Assemble', '== 0.38';
 requires 'TeX::Hyphen', '== 1.18';
 requires 'Jcode', '== 2.07';
-requires 'DBI', '== 1.643';
-requires 'DBD::mysqlPP', '== 0.07';
+requires 'DBIx::Custom', '== 0.1635';
 requires 'Sub::Util', '== 1.55';
 
 requires 'Starman', '== 0.4015';
