@@ -8,8 +8,17 @@ build:
 build-no-cache:
 	docker-compose -f docker-compose-heroku.yml build --no-cache
 
-run:
+run-all:
 	docker-compose -f docker-compose-heroku.yml up
+
+run-wiki:
+	docker-compose -f docker-compose-heroku.yml up wiki
+
+run-db:
+	docker-compose -f docker-compose-heroku.yml up db
+
+down:
+	docker-compose -f docker-compose-heroku.yml down
 
 cgroups:
 	sudo mkdir -p /sys/fs/cgroup/systemd
