@@ -1,0 +1,18 @@
+# idea
+.idea/
+*.iml
+
+# Perl
+t/
+cpanfile.snapshot
+
+# fswiki thing
+backup/
+attach/
+pdf/
+log/
+# following dir would be copied
+# data config theme tmpl tools
+
+# don't copy host Perl libraries into docker
+local/

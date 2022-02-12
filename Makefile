@@ -12,7 +12,7 @@ run-all:
 	docker-compose -f docker-compose-heroku.yml up
 
 run-wiki:
-	docker-compose -f docker-compose-heroku.yml up wiki
+	docker-compose -f docker-compose-heroku.yml up web
 
 run-db:
 	docker-compose -f docker-compose-heroku.yml up db
