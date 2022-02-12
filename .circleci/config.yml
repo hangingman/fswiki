@@ -1,0 +1,18 @@
+version: 2.1
+orbs:
+  heroku-container: pbrisbin/heroku-container@1.0.0
+workflows:
+  build_and_release:
+    jobs:
+      - heroku-container/push-and-release:
+          app-name: fswiki-stg
+          filters:
+            branches:
+              only:
+                - develop
+      - heroku-container/push-and-release:
+          app-name: fswiki-prod
+          filters:
+            branches:
+              only:
+                - master
