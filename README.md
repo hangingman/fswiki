@@ -22,7 +22,7 @@ v5.30.2
 
 // carton
 $ cpanm Carton
-$ cpanm --local-lib=~/perl5 local::lib
+$ cpanm --local-lib=./local local::lib
 $ carton install
 
 // 初回起動の場合
@@ -82,3 +82,8 @@ $ docker exec -it fswiki_wiki_1 bash
 $ chmod +x ./ansible-playbook.sh
 $ ./ansible-playbook.sh -i ansible/environments/local/hosts ansible/fswiki-playbook.yml
 ```
+
+Deploy to Heroku
+================
+
+- [Herokuへのデプロイ方法](./docs/heroku.md)

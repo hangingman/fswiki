@@ -5,25 +5,25 @@
 #
 version: "3.9"
 services:
-  wiki:
+  web:
     env_file: .env
     build:
       context: ./
-      dockerfile: ./docker/heroku/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
     volumes:
       - webappvolume:/opt/fswiki
-  db:
-    image: postgres:13.5
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_DB: test
-      POSTGRES_PASSWORD: admin
+  #db:
+  #  image: postgres:13.5
+  #  ports:
+  #    - "5432:5432"
+  #  environment:
+  #    POSTGRES_USER: admin
+  #    POSTGRES_DB: test
+  #    POSTGRES_PASSWORD: admin
 
 volumes:
   webappvolume: {}

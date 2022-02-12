@@ -10,25 +10,27 @@ RUN echo "%fswiki        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/fswiki
 RUN chmod 0440 /etc/sudoers.d/fswiki
 RUN visudo -c
 
-RUN useradd -rm -d /home/fswiki -s /bin/bash fswiki
+ENV FSWIKI_HOME "/app/fswiki"
+RUN useradd -rm -d ${FSWIKI_HOME} -s /bin/bash fswiki
 USER fswiki
-WORKDIR /home/fswiki
+WORKDIR ${FSWIKI_HOME}
 
 # after created user, use normal user
 RUN perl -v
-ENV PERL_CPANM_OPT "--local-lib=~/perl5"
-ENV PATH "/home/fswiki/perl5/bin:$PATH"
-ENV PERL5LIB "/home/fswiki/perl5/lib/perl5:$PERL5LIB"
-ENV FSWIKI_HOME "/home/fswiki"
+ENV PERL_CPANM_OPT "--local-lib=${FSWIKI_HOME}/local"
+ENV PATH "${FSWIKI_HOME}/local/bin:$PATH"
+ENV PERL5LIB "${FSWIKI_HOME}/local/lib/perl5"
 
-RUN cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+RUN cpanm --local-lib="${FSWIKI_HOME}/local" local::lib
+RUN eval $(perl -I ${PERL5LIB} -Mlocal::lib)
 RUN cpanm Carton --notest
-COPY ./cpanfile /home/fswiki/cpanfile
-RUN carton install
+COPY ./cpanfile $FSWIKI_HOME/cpanfile
 
-COPY . /home/fswiki
+RUN carton install
+COPY . $FSWIKI_HOME
 RUN sudo chown -R fswiki:fswiki $FSWIKI_HOME
 
-COPY ./docker/heroku/docker-entrypoint.sh /tmp
-RUN sudo chmod +x /tmp/docker-entrypoint.sh
-ENTRYPOINT ["/tmp/docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/bin/
+RUN sudo chmod +x /usr/bin/docker-entrypoint.sh
+EXPOSE 5000
+ENTRYPOINT ["docker-entrypoint.sh"]
