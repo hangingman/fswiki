@@ -25,11 +25,11 @@ $ cpanm Carton
 $ cpanm --local-lib=~/perl5 local::lib
 $ carton install
 
-// 初回起動の場合
-$ ./setup.sh
+// 初回起動の場合(作業ディレクトリを引数で渡す)
+$ ./setup.sh `pwd`
 
 // Perlのアプリケーションサーバを起動
-$ carton exec starman -r
+$ carton exec plackup -r
 ```
 
 
