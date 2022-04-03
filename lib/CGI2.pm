@@ -33,7 +33,7 @@ sub path_info {
 #==============================================================================
 sub remove_session {
 	my $self = shift;
-	my $wiki = shift;
+	my Wiki $wiki = shift;
 
 	my $dir   = $wiki->config('session_dir');
 	my $limit = $wiki->config('session_limit');

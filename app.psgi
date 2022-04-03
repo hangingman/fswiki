@@ -17,8 +17,17 @@ builder {
 	my $secret = $wiki->config('secret') || create_uuid(UUID_V4);
 
     # PSGIを呼び出す前のPlack側の準備
-	enable 'Session', store => Plack::Session::Store::File->new(dir => $dir);
-	enable 'Session::Cookie', session_key => 'CGISESSID', expires => int($limit) * 60, secret => $secret;
+	enable Session => (
+		store => Plack::Session::Store::File->new(dir => $dir),
+		state => Plack::Session::State::Cookie->new(
+			session_key => 'CGISESSID',
+			expires => int($limit) * 60,
+			secret => $secret,
+			sid_generator => sub { 'cgisess_' . Digest::SHA1::sha1_hex(rand() . $$ . {} . time); },
+			sid_validator => qr/\Acgisess_[0-9a-f]{40}\Z/,  # cgisess_[SHA1文字列40桁]
+		)
+	);
+
 	enable 'CSRFBlock', meta_tag => 'csrf-token';
 
 	# FreeStyleWiki フロントエンドPSGIモジュール
