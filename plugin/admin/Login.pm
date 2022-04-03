@@ -102,13 +102,12 @@ sub admin_form {
 #==============================================================================
 sub logout {
 	my $self = shift;
-	my $wiki = shift;
-	my $cgi = $wiki->get_CGI;
+	my Wiki $wiki = shift;
+	my CGI2 $cgi = $wiki->get_CGI;
 
 	# CGI::Sessionの破棄
 	my $session = $cgi->get_session($wiki);
-	$session->delete();
-	$session->flush();
+	$session->expire();
 
 	# Cookieの破棄
 	my $path   = &Util::cookie_path($wiki);
