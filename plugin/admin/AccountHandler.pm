@@ -79,9 +79,9 @@ sub account_form {
 #==============================================================================
 sub change_pass {
 	my $self = shift;
-	my $wiki = shift;
-	my $cgi  = $wiki->get_CGI();
-	my $id   = $cgi->param("id");
+	my Wiki $wiki = shift;
+	my CGI2 $cgi = $wiki->get_CGI();
+	my $id = $cgi->param("id");
 
 	my $pass_old     = $cgi->param("pass_old");
 	my $pass         = $cgi->param("pass1");
@@ -105,11 +105,10 @@ sub change_pass {
 			return $wiki->error("入力された二つのパスワードが合致しません。");
 		}
 
-		my $session = $cgi->get_session($wiki);
-		$session->param("wiki_id"  ,$id);
-		$session->param("wiki_type",$login->{type});
-		$session->param("wiki_path",$login->{path});
-		$session->flush();
+		my Plack::Session $session = $cgi->get_session($wiki);
+		$session->set("wiki_id"  ,$id);
+		$session->set("wiki_type",$login->{type});
+		$session->set("wiki_path",$login->{path});
 
 		my $users = &Util::load_config_hash($wiki,$wiki->config('userdat_file'));
 		my ($p,$type)  = split(/\t/,$users->{$id});
