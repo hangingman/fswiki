@@ -1,4 +1,4 @@
-@charset "euc-jp";
+@charset "utf-8";
 
 body {
 	background-color: #FFFFFF;
@@ -182,8 +182,7 @@ div.sidebar h2,div.sidebar h3,div.sidebar h4 {
 
 
 /*
-テーブルの設定
-*/
+��������┃絎�*/
 div.section table {
 	margin: 0.5em 1em 0.5em 2em;
 	border				: #AABBFF 1px solid;
@@ -196,8 +195,7 @@ div.section th, div.section td {
 }
 
 /*
- いくつかのメジャーなプラグイン対応
- */
+ ����ゃ�����吾��若�����違��喝�綽� */
 
 /* calendar2 */
 table.calendar {

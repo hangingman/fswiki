@@ -29,12 +29,12 @@ sub new {
 #==============================================================================
 sub inline {
 	my $self = shift;
-	my $wiki = shift;
+	my Wiki $wiki = shift;
 	my $page = shift;
-	
+
 	$page = $wiki->get_CGI->param('page') unless $page;
-	my $source = Jcode::convert($wiki->get_page($page), 'utf8', 'euc');
-	
+	my $source = $wiki->get_page($page);
+
 	return int(length(decode('utf-8', $source)) / 1600 + 1);
 }
 
