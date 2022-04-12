@@ -85,8 +85,6 @@ sub param {
 	# 必ずUTF-8への変換を行う
 	if(Util::handyphone()){
 		if(defined($name)) {
-			#my @array = map {&Jcode::convert(\$_, "euc")} $self->CGI::param($name,$value);
-			#return @array;
 			my @values = $self->CGI::param($name,$value);
 			my @array = ();
 			foreach my $value (@values){
@@ -101,7 +99,7 @@ sub param {
 				return undef;
 			}
 		} else {
-			return map { &Jcode::convert(\$_, "euc") } $self->CGI::param();
+			return map { &Jcode::convert(\$_, "utf8") } $self->CGI::param();
 		}
 	} else {
 		if(defined($name)) {

@@ -1,6 +1,7 @@
 requires 'Algorithm::Diff', '== 1.1903';
-requires 'WWW::RobotRules', '== 5.832';
-requires 'Bundle::LWP', '== 5.835';
+requires 'WWW::RobotRules', '== 6.02';
+requires 'LWP', '== 6.62';
+requires 'LWP::Protocol::https', '== 6.10';
 requires 'Digest::MD5', '== 2.55';
 requires 'File::Listing';
 requires 'HTML::Template', '== 2.97';
@@ -20,4 +21,5 @@ requires 'Proclet', '== 0.35';
 requires 'Plack::Response', '== 1.0047';
 requires 'Plack::Middleware::Session', '== 0.30';
 requires 'Plack::Middleware::CSRFBlock', '>= 0.06';
-requires 'UUID::Tiny', '== 1.04'
+requires 'UUID::Tiny', '== 1.04';
+requires 'Archive::Zip', '== 1.68';

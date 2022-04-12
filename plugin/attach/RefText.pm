@@ -30,7 +30,7 @@ sub paragraph {
 	my $wiki = shift;
 	my $file = shift;
 	my $page = shift;
-	
+
 	if($file eq ""){
 		return &Util::paragraph_error("ファイルが指定されていません。","WIKI");
 	}
@@ -40,19 +40,19 @@ sub paragraph {
 	unless($wiki->can_show($page)){
 		return &Util::paragraph_error("ページの参照権限がありません。","WIKI");
 	}
-	
+
 	my $filename = $wiki->config('attach_dir')."/".&Util::url_encode($page).".".&Util::url_encode($file);
 	unless(-e $filename){
 		return &Util::paragraph_error("ファイルが存在しません。","WIKI");
 	}
-	
+
 	open(FILE,$filename) or die $!;
 	my $buf = "";
 	while(my $line = <FILE>){
 		$buf .= " $line";
 	}
 	close(FILE);
-	return Jcode::convert($buf,'euc');
+	return Jcode::convert($buf,'utf8');
 }
 
 1;
