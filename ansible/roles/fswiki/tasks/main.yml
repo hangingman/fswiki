@@ -93,30 +93,30 @@
     - cpanm --local-lib=~/perl5 local::lib
     - carton install
 
-- name: Install supervisord
-  apt:
-    name: supervisor
-
-- name: Ensures supervisord dir exists
-  become: yes
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ exec_user }}"
-    group: fswiki
-    recurse: yes
-  loop:
-    - /var/log/supervisor/
-    - /etc/supervisor/conf.d/
-
-- name: Copy supervisord config file
-  become: yes
-  template:
-    src: templates/etc/supervisor/conf.d/fswiki.conf.j2
-    dest: /etc/supervisor/conf.d/fswiki.conf
-    owner: "{{ exec_user }}"
-    group: fswiki
-    mode: "0644"
+#- name: Install supervisord
+#  apt:
+#    name: supervisor
+#
+#- name: Ensures supervisord dir exists
+#  become: yes
+#  file:
+#    path: "{{ item }}"
+#    state: directory
+#    owner: "{{ exec_user }}"
+#    group: fswiki
+#    recurse: yes
+#  loop:
+#    - /var/log/supervisor/
+#    - /etc/supervisor/conf.d/
+#
+#- name: Copy supervisord config file
+#  become: yes
+#  template:
+#    src: templates/etc/supervisor/conf.d/fswiki.conf.j2
+#    dest: /etc/supervisor/conf.d/fswiki.conf
+#    owner: "{{ exec_user }}"
+#    group: fswiki
+#    mode: "0644"
 
 - name: Copy freestylewiki setup.dat
   become: yes
@@ -126,16 +126,16 @@
     owner: "{{ exec_user }}"
     group: fswiki
 
-- name: Enable service supervisord, and stop it
-  become: yes
-  ansible.builtin.service:
-    name: supervisor
-    enabled: yes
-    state: stopped
-
-- name: Start supervisord
-  become: yes
-  ansible.builtin.service:
-    name: supervisor
-    enabled: yes
-    state: started
+#- name: Enable service supervisord, and stop it
+#  become: yes
+#  ansible.builtin.service:
+#    name: supervisor
+#    enabled: yes
+#    state: stopped
+#
+#- name: Start supervisord
+#  become: yes
+#  ansible.builtin.service:
+#    name: supervisor
+#    enabled: yes
+#    state: started
