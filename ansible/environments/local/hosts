@@ -1,6 +1,6 @@
 [all]
 10.33.1.1
-10.33.1.2
+#10.33.1.2
 
 [all:vars]
 ansible_ssh_port=22
@@ -13,5 +13,5 @@ ansible_python_interpreter=/usr/bin/python3
 10.33.1.1
 
 [mysql]
-10.33.1.2
+#10.33.1.2
 

@@ -10,7 +10,6 @@ packages:
   - git
   - python3-pip
   - vim
-  - libssl-dev
 
 groups_to_add:
   - name: wheel

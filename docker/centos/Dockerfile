@@ -14,7 +14,7 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # timezone
 RUN yum update -y
-RUN yum install -y tzdata initscripts bash-completion
+RUN yum install -y tzdata initscripts bash-completion which python3
 RUN yum clean all
 
 # sshd
@@ -26,23 +26,26 @@ RUN mkdir /var/run/sshd; \
 
 ENV TZ Asia/Tokyo
 ENV ROOT_PASSWORD root
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
+
+RUN localedef -f UTF-8 -i ja_JP ja_JP
+ENV LANG="ja_JP.UTF-8" \
+    LANGUAGE="ja_JP:ja" \
+    LC_ALL="ja_JP.UTF-8"
 
 # entrypoint
 RUN { \
     echo '#!/bin/bash -eu'; \
     echo 'ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime'; \
     echo 'echo "root:${ROOT_PASSWORD}" | chpasswd'; \
+    echo 'ssh-keygen -t rsa -N "" -f /etc/ssh/ssh_host_rsa_key'; \
+    echo 'mkdir /root/.ssh'; \
     echo 'exec "$@"'; \
     } > /usr/local/bin/entry_point.sh; \
     chmod +x /usr/local/bin/entry_point.sh;
 
 EXPOSE 22
 
-# -D in CMD below prevents sshd from becoming a daemon. -e is to log everything to stderr.
-ENTRYPOINT ["entry_point.sh"]
 VOLUME [ "/sys/fs/cgroup" ]
-CMD ["/usr/sbin/init"]
+ENTRYPOINT ["entry_point.sh"]
+CMD ["/usr/sbin/sshd", "-D", "-e"]
 
