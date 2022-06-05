@@ -66,7 +66,8 @@ Docker env run for development
 
 - デプロイの検証のため、dockerコンテナを起動する
 ```shell
-$ docker-compose up -d --build
+$ make build
+$ make run
 $ docker ps
 CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
 ce4f157d2c1f        fswiki-db-server:latest     "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        22/tcp, 0.0.0.0:3306->3306/tcp                       fswiki_mysql_1
