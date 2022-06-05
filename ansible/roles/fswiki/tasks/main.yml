@@ -76,7 +76,6 @@
     - README.md
     - app.psgi
     - cpanfile
-    - cpanfile.snapshot
     - get_accesslog.cgi
     - release.sh
     - wikidb.cgi

@@ -2,6 +2,10 @@
 #
 # fswikiインストール前の準備など
 #
+- name: Update apt
+  apt:
+    update_cache: yes
+
 - name: Install required packages
   apt:
     name: "{{ packages }}"
