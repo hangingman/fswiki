@@ -2,12 +2,8 @@
 #
 # fswikiインストール前の準備など
 #
-- name: Update apt
-  apt:
-    update_cache: yes
-
 - name: Install required packages
-  apt:
+  ansible.builtin.package:
     name: "{{ packages }}"
 
 - name: Update cerrificate of python3
