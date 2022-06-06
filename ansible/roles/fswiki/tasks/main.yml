@@ -24,18 +24,18 @@
     recurse: yes
   loop:
     - "/tmp/deploy/"
-    - "/home/{{ exec_user }}/fswiki/"
-    - "/home/{{ exec_user }}/fswiki/attach/"
-    - "/home/{{ exec_user }}/fswiki/backup/"
-    - "/home/{{ exec_user }}/fswiki/config/"
-    - "/home/{{ exec_user }}/fswiki/data/"
-    - "/home/{{ exec_user }}/fswiki/layout/"
-    - "/home/{{ exec_user }}/fswiki/log/"
+    - "{{ working_dir }}/fswiki/"
+    - "{{ working_dir }}/fswiki/attach/"
+    - "{{ working_dir }}/fswiki/backup/"
+    - "{{ working_dir }}/fswiki/config/"
+    - "{{ working_dir }}/fswiki/data/"
+    - "{{ working_dir }}/fswiki/layout/"
+    - "{{ working_dir }}/fswiki/log/"
 
 - name: Ensures default logs exist
   become: yes
   file:
-    path: "/home/{{ exec_user }}/fswiki/log/{{ item }}"
+    path: "{{ working_dir }}/fswiki/log/{{ item }}"
     state: touch
     owner: "{{ exec_user }}"
     group: fswiki
@@ -54,15 +54,15 @@
 
 - name: Copy config files if not exists
   become: yes
-  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/config/"
+  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/config/"
 
 - name: Copy data files if not exists
   become: yes
-  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/data/"
+  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/data/"
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
-  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} /home/fswiki/fswiki/
+  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} {{ working_dir }}/fswiki/
   loop:
     - docs
     - lib
@@ -85,7 +85,7 @@
   become_user: "{{ exec_user }}"
   shell: /bin/bash -lci "{{ item }}"
   args:
-    chdir: /home/fswiki/fswiki/
+    chdir: "{{ working_dir }}/fswiki/"
   loop:
     - perlbrew switch {{ perl_version }}
     - cpanm Carton
@@ -121,7 +121,7 @@
   become: yes
   template:
     src: templates/setup.dat.j2
-    dest: /home/fswiki/fswiki/setup.dat
+    dest: "{{ working_dir }}/fswiki/setup.dat"
     owner: "{{ exec_user }}"
     group: fswiki
 
