@@ -1,9 +1,9 @@
 FROM centos:centos7.9.2009
 
 # see: https://hub.docker.com/_/centos
+USER root
 ENV container docker
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
-systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
 rm -f /lib/systemd/system/multi-user.target.wants/*;\
 rm -f /etc/systemd/system/*.wants/*;\
 rm -f /lib/systemd/system/local-fs.target.wants/*; \
@@ -14,7 +14,7 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # timezone
 RUN yum update -y
-RUN yum install -y tzdata initscripts bash-completion which python3
+RUN yum install -y sudo tzdata initscripts bash-completion which python3
 RUN yum clean all
 
 # sshd
@@ -44,8 +44,6 @@ RUN { \
     chmod +x /usr/local/bin/entry_point.sh;
 
 EXPOSE 22
-
 VOLUME [ "/sys/fs/cgroup" ]
 ENTRYPOINT ["entry_point.sh"]
-CMD ["/usr/sbin/sshd", "-D", "-e"]
-
+CMD ["/sbin/init"]
