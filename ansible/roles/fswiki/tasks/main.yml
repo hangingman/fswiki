@@ -24,6 +24,8 @@
     recurse: yes
   loop:
     - "/tmp/deploy/"
+    - "/var/log/fswiki/"
+    - "/var/run/fswiki/"
     - "{{ working_dir }}/fswiki/"
     - "{{ working_dir }}/fswiki/attach/"
     - "{{ working_dir }}/fswiki/backup/"
@@ -35,15 +37,16 @@
 - name: Ensures default logs exist
   become: yes
   file:
-    path: "{{ working_dir }}/fswiki/log/{{ item }}"
+    path: "{{ item }}"
     state: touch
     owner: "{{ exec_user }}"
     group: fswiki
   loop:
-    - "{{ access_log_file }}"
-    - "{{ attach_log_file }}"
-    - "{{ freeze_file }}"
-    - "{{ download_count_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ access_log_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ attach_log_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ freeze_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ download_count_file }}"
+    - "/var/log/fswiki/fswiki.log"
 
 - name: Unarchive files
   unarchive:

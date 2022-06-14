@@ -8,7 +8,11 @@ WorkingDirectory=/opt/fswiki
 PIDFile=/var/run/fswiki.pid
 
 EnvironmentFile=/home/{{ exec_user }}/.perlbrew/init
-ExecStart=carton exec local/bin/start_server --daemonize --pid-file=/var/run/fswiki.pid --status-file=/opt/fswiki/fswiki.status -- starman --workers 4 app.psgi
+ExecStart=/bin/bash -c '\
+   source /home/{{ exec_user }}/.bashrc; \
+   exec carton exec /opt/fswiki/local/bin/start_server \
+   --pid-file=/var/run/fswiki/fswiki.pid --status-file=/opt/fswiki/fswiki.status -- starman --workers 4 app.psgi'
+
 StandardOutput=file:/var/log/fswiki/fswiki.log
 StandardError=file:/var/log/fswiki/fswiki.log
 
