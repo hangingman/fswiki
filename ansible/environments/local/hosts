@@ -1,14 +1,14 @@
 [all]
-fswiki_wiki_1
-#fswiki_mysql_1
+fswiki-wiki-1
+#fswiki-mysql-1
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 ansible_connection=docker
+ansible_remote_tmp=/tmp
 
 [wiki]
-fswiki_wiki_1
+fswiki-wiki-1
 
 [mysql]
-#fswiki_mysql_1
-
+#fswiki-mysql-1

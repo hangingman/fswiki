@@ -49,7 +49,7 @@ ce4f157d2c1f        fswiki-db-server:latest     "entry_point.sh /usr…"   2 min
 f6a4b9c9f246        fswiki-wiki-server:latest   "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:5000->5000/tcp   fswiki_wiki_1
 
 // コンテナに入る
-$ docker exec -it fswiki_wiki_1 bash
+$ docker exec -it fswiki-wiki-1 bash
 ```
 
 - fswikiのデプロイをローカルでテストする

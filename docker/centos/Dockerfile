@@ -46,4 +46,4 @@ RUN { \
 EXPOSE 22
 VOLUME [ "/sys/fs/cgroup" ]
 ENTRYPOINT ["entry_point.sh"]
-CMD ["/sbin/init"]
+CMD ["/usr/sbin/init"]
