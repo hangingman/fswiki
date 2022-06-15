@@ -126,5 +126,5 @@
 - name: Start systemctl unit file
   systemd:
     name: fswiki.service
-    state: started
+    state: restarted
   become: true
