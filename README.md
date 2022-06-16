@@ -66,3 +66,11 @@ ansible [core 2.12.6]
 $ chmod +x ./ansible-playbook.sh
 $ ./ansible-playbook.sh -i ansible/environments/local/hosts ansible/fswiki-playbook.yml
 ```
+
+- docker内部でfswikiをsystemctlから操作可能
+
+```shell
+$ sudo systemctl start fswiki
+$ sudo systemctl stop fswiki
+$ sudo systemctl restart fswiki
+```

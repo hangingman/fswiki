@@ -7,7 +7,6 @@ Type=simple
 WorkingDirectory=/opt/fswiki
 PIDFile=/var/run/fswiki.pid
 
-EnvironmentFile=/home/{{ exec_user }}/.perlbrew/init
 ExecStart=/bin/bash -c '\
    source /home/{{ exec_user }}/.bashrc; cd /opt/fswiki; \
    carton exec /opt/fswiki/local/bin/start_server --daemonize --log-file=/var/log/fswiki/fswiki.log \
