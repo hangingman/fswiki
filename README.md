@@ -32,53 +32,45 @@ $ ./setup.sh `pwd`
 $ carton exec plackup -r
 ```
 
-
 Run as service
 ==============
 
-- supervisorのインストール
-
-```sh
-$ sudo yum install python-setuptools
-$ sudo easy_install pip
-$ sudo pip install supervisor
-```
-
-- supervisorの設定
-
-```sh
-// ログ保存用ディレクトリ作成
-$ sudo mkdir /var/log/supervisord/
-
-// 個別設定を格納するディレクトリを作成
-$ sudo mkdir /etc/supervisord.d/
-
-// supervisorの設定ファイルをコピー
-$ sudo cp ./etc/fswiki.ini /etc/supervisord.d/fswiki.ini
-
-// supervisorの起動
-$ sudo start supervisord
-$ sudo enable supervisord
-```
 
 Docker env run for development
 ==============================
 
 - デプロイの検証のため、dockerコンテナを起動する
 ```shell
-$ docker-compose up -d --build
+$ make build
+$ make run
 $ docker ps
 CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
 ce4f157d2c1f        fswiki-db-server:latest     "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        22/tcp, 0.0.0.0:3306->3306/tcp                       fswiki_mysql_1
 f6a4b9c9f246        fswiki-wiki-server:latest   "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:5000->5000/tcp   fswiki_wiki_1
 
 // コンテナに入る
-$ docker exec -it fswiki_wiki_1 bash
+$ docker exec -it fswiki-wiki-1 bash
 ```
 
 - fswikiのデプロイをローカルでテストする
 
 ```shell
+$ python --version
+Python 3.8.5
+
+$ ansible --version
+ansible [core 2.12.6]
+...
+  python version = 3.8.5 (default, Aug  7 2021, 14:26:36) [GCC 8.3.0]
+
 $ chmod +x ./ansible-playbook.sh
 $ ./ansible-playbook.sh -i ansible/environments/local/hosts ansible/fswiki-playbook.yml
+```
+
+- docker内部でfswikiをsystemctlから操作可能
+
+```shell
+$ sudo systemctl start fswiki
+$ sudo systemctl stop fswiki
+$ sudo systemctl restart fswiki
 ```

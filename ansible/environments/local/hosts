@@ -1,17 +1,14 @@
 [all]
-10.33.1.1
-10.33.1.2
+fswiki-wiki-1
+#fswiki-mysql-1
 
 [all:vars]
-ansible_ssh_port=22
-ansible_ssh_user=root
-ansible_ssh_pass=fswiki2021
-ansible_sudo_pass=fswiki2021
 ansible_python_interpreter=/usr/bin/python3
+ansible_connection=docker
+ansible_remote_tmp=/tmp
 
 [wiki]
-10.33.1.1
+fswiki-wiki-1
 
 [mysql]
-10.33.1.2
-
+#fswiki-mysql-1

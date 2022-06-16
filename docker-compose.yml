@@ -1,7 +1,7 @@
 version: "3.9"  # optional since v1.27.0
 services:
   wiki:
-    build: ./docker
+    build: ./docker/centos
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
     privileged: true
@@ -9,30 +9,30 @@ services:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - run:/run
     ports:
-      - "5000:5000"
-      - "80:80"
+      - "5001:5000"
+      - "10080:80"
     networks:
       farad_net:
         ipv4_address: 10.33.1.1
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
-  mysql:
-    build: ./docker
-    image: fswiki-db-server:latest
-    hostname: fswiki-db-server
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - run:/run
-    ports:
-      - "3306:3306"
-    networks:
-      farad_net:
-        ipv4_address: 10.33.1.2
-    environment:
-      - TZ=Asia/Tokyo
-      - ROOT_PASSWORD=fswiki2021
+#  mysql:
+#    build: ./docker/centos
+#    image: fswiki-db-server:latest
+#    hostname: fswiki-db-server
+#    privileged: true
+#    volumes:
+#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+#      - run:/run
+#    ports:
+#      - "3306:3306"
+#    networks:
+#      farad_net:
+#        ipv4_address: 10.33.1.2
+#    environment:
+#      - TZ=Asia/Tokyo
+#      - ROOT_PASSWORD=fswiki2021
 
 volumes:
   run:

@@ -24,26 +24,29 @@
     recurse: yes
   loop:
     - "/tmp/deploy/"
-    - "/home/{{ exec_user }}/fswiki/"
-    - "/home/{{ exec_user }}/fswiki/attach/"
-    - "/home/{{ exec_user }}/fswiki/backup/"
-    - "/home/{{ exec_user }}/fswiki/config/"
-    - "/home/{{ exec_user }}/fswiki/data/"
-    - "/home/{{ exec_user }}/fswiki/layout/"
-    - "/home/{{ exec_user }}/fswiki/log/"
+    - "/var/log/fswiki/"
+    - "/var/run/fswiki/"
+    - "{{ working_dir }}/fswiki/"
+    - "{{ working_dir }}/fswiki/attach/"
+    - "{{ working_dir }}/fswiki/backup/"
+    - "{{ working_dir }}/fswiki/config/"
+    - "{{ working_dir }}/fswiki/data/"
+    - "{{ working_dir }}/fswiki/layout/"
+    - "{{ working_dir }}/fswiki/log/"
 
 - name: Ensures default logs exist
   become: yes
   file:
-    path: "/home/{{ exec_user }}/fswiki/log/{{ item }}"
+    path: "{{ item }}"
     state: touch
     owner: "{{ exec_user }}"
     group: fswiki
   loop:
-    - "{{ access_log_file }}"
-    - "{{ attach_log_file }}"
-    - "{{ freeze_file }}"
-    - "{{ download_count_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ access_log_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ attach_log_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ freeze_file }}"
+    - "{{ working_dir}}/fswiki/log/{{ download_count_file }}"
+    - "/var/log/fswiki/fswiki.log"
 
 - name: Unarchive files
   unarchive:
@@ -54,15 +57,15 @@
 
 - name: Copy config files if not exists
   become: yes
-  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/config/"
+  shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/config/"
 
 - name: Copy data files if not exists
   become: yes
-  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' /home/{{ exec_user }}/fswiki/data/"
+  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/data/"
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
-  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} /home/fswiki/fswiki/
+  shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} {{ working_dir }}/fswiki/
   loop:
     - docs
     - lib
@@ -76,7 +79,6 @@
     - README.md
     - app.psgi
     - cpanfile
-    - cpanfile.snapshot
     - get_accesslog.cgi
     - release.sh
     - wikidb.cgi
@@ -86,56 +88,43 @@
   become_user: "{{ exec_user }}"
   shell: /bin/bash -lci "{{ item }}"
   args:
-    chdir: /home/fswiki/fswiki/
+    chdir: "{{ working_dir }}/fswiki/"
   loop:
     - perlbrew switch {{ perl_version }}
     - cpanm Carton
     - cpanm --local-lib=~/perl5 local::lib
     - carton install
 
-- name: Install supervisord
-  apt:
-    name: supervisor
-
-- name: Ensures supervisord dir exists
-  become: yes
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ exec_user }}"
-    group: fswiki
-    recurse: yes
-  loop:
-    - /var/log/supervisor/
-    - /etc/supervisor/conf.d/
-
-- name: Copy supervisord config file
+- name: Copy systemctl unit file
   become: yes
   template:
-    src: templates/etc/supervisor/conf.d/fswiki.conf.j2
-    dest: /etc/supervisor/conf.d/fswiki.conf
-    owner: "{{ exec_user }}"
-    group: fswiki
+    src: templates/etc/systemd/system/fswiki.service.j2
+    dest: /etc/systemd/system/fswiki.service
+    owner: root
+    group: root
     mode: "0644"
 
 - name: Copy freestylewiki setup.dat
   become: yes
   template:
     src: templates/setup.dat.j2
-    dest: /home/fswiki/fswiki/setup.dat
+    dest: "{{ working_dir }}/fswiki/setup.dat"
     owner: "{{ exec_user }}"
     group: fswiki
 
-- name: Enable service supervisord, and stop it
-  become: yes
-  ansible.builtin.service:
-    name: supervisor
-    enabled: yes
-    state: stopped
+- name: Reload systemctl unit file
+  systemd:
+    daemon_reload: yes
+  become: true
 
-- name: Start supervisord
-  become: yes
-  ansible.builtin.service:
-    name: supervisor
+- name: Enable systemctl unit file
+  systemd:
+    name: fswiki.service
     enabled: yes
-    state: started
+  become: true
+
+- name: Start systemctl unit file
+  systemd:
+    name: fswiki.service
+    state: restarted
+  become: true

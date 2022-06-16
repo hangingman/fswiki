@@ -3,8 +3,20 @@
 # fswikiインストール前の準備など
 #
 - name: Install required packages
-  apt:
+  ansible.builtin.package:
     name: "{{ packages }}"
+
+- name: Install libssl-dev
+  ansible.builtin.package:
+    name: libssl-dev
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Install openssl-devel
+  ansible.builtin.package:
+    name:
+      - openssl
+      - openssl-devel
+  when: ansible_facts['os_family'] == 'RedHat'
 
 - name: Update cerrificate of python3
   shell: pip3 install --upgrade certifi

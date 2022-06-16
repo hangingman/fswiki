@@ -1,0 +1,26 @@
+[Unit]
+Description=freestyle wiki application server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/fswiki
+PIDFile=/var/run/fswiki.pid
+
+ExecStart=/bin/bash -c '\
+   source /home/{{ exec_user }}/.bashrc; cd /opt/fswiki; \
+   carton exec /opt/fswiki/local/bin/start_server --daemonize --log-file=/var/log/fswiki/fswiki.log \
+   --pid-file=/var/run/fswiki/fswiki.pid --status-file=/opt/fswiki/fswiki.status -- starman --workers 4 app.psgi'
+
+ExecStop=echo "stopping fswiki..."
+PIDFile=/var/run/fswiki/fswiki.pid
+KillMode=control-group
+KillSignal=SIGTERM
+
+Restart=always
+
+User={{ exec_user }}
+Group={{ exec_user }}
+
+[Install]
+WantedBy=multi-user.target
