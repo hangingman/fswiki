@@ -97,6 +97,21 @@
     - pdf
     - data
 
+- name: Change group and owner of static files
+  file:
+    dest: "{{ working_dir}}/fswiki/{{ item }}/"
+    owner: "{{ exec_user }}"
+    group: fswiki
+    recurse: yes
+  ignore_errors: yes
+  loop:
+    - attach
+    - backup
+    - config
+    - log
+    - pdf
+    - data
+
 - name: Install dependency libraries
   become: yes
   become_user: "{{ exec_user }}"
