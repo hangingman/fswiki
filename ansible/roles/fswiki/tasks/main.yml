@@ -59,10 +59,6 @@
   become: yes
   shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/config/"
 
-- name: Copy data files if not exists
-  become: yes
-  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/data/"
-
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
   shell: rsync -arz --delete --info=progress2 --owner --group /tmp/deploy/{{ item }} {{ working_dir }}/fswiki/
@@ -82,6 +78,24 @@
     - get_accesslog.cgi
     - release.sh
     - wikidb.cgi
+
+- name: Copy local data into remote server(rsync)
+  synchronize:
+    mode: push
+    src: "../{{ item }}/"
+    dest: "{{ working_dir}}/fswiki/{{ item }}/"
+    recursive: yes
+    delete: yes
+    rsync_opts:
+      - "-arzv"
+  ignore_errors: yes
+  loop:
+    - attach
+    - backup
+    - config
+    - log
+    - pdf
+    - data
 
 - name: Install dependency libraries
   become: yes

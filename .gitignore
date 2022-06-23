@@ -12,3 +12,6 @@ sitemap.xml
 
 cpanfile.snapshot
 .idea/
+!/ansible/environments/prod/hosts
+!/ansible/roles/fswiki/files/fswiki.tar.gz
+!/ansible/
