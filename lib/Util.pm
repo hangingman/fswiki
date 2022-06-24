@@ -5,6 +5,7 @@
 ################################################################################
 package Util;
 use strict;
+use Carp qw( confess );
 
 #===============================================================================
 # <p>
@@ -705,6 +706,7 @@ sub _die {
 	$arg = join("", ($arg,@rest));
 	my($pack,$file,$line,$sub) = caller(1);
 	$arg .= " at $file line $line." unless $arg=~/\n$/;
+	local $SIG{__DIE__} = \&confess;
 	CORE::die($arg);
 }
 
