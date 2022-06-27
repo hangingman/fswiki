@@ -3,7 +3,7 @@ Description=freestyle wiki application server
 After=network.target
 
 [Service]
-Type=simple
+Type=forking
 WorkingDirectory=/opt/fswiki
 PIDFile=/var/run/fswiki.pid
 
