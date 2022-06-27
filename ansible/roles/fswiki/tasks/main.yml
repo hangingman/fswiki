@@ -34,6 +34,8 @@
     - "{{ working_dir }}/fswiki/layout/"
     - "{{ working_dir }}/fswiki/log/"
 
+# Ansible fileモジュール
+#   指定したファイルが存在しない場合、空ファイルを作成する。既にファイルが存在する場合、タイムスタンプが更新される。
 - name: Ensures default logs exist
   become: yes
   file:
@@ -55,13 +57,10 @@
     owner: "{{ exec_user }}"
     group: fswiki
 
+# 存在するファイルを上書きしない! (cp -n)
 - name: Copy config files if not exists
   become: yes
   shell: "find /tmp/deploy/config -name *.dat -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/config/"
-
-- name: Copy data files if not exists
-  become: yes
-  shell: "find /tmp/deploy/data -name *.{ico,png,wiki} -print | xargs -I{} cp -n '{}' {{ working_dir }}/fswiki/data/"
 
 - name: Update source and directories can overwrite (docs, lib, plugin, ...)
   become: yes
@@ -82,6 +81,40 @@
     - get_accesslog.cgi
     - release.sh
     - wikidb.cgi
+
+# 上書きしたくないときはコメントアウト
+- name: Copy local data into remote server(rsync)
+  synchronize:
+    mode: push
+    src: "../{{ item }}/"
+    dest: "{{ working_dir}}/fswiki/{{ item }}/"
+    recursive: yes
+    delete: yes
+    rsync_opts:
+      - "-arzv"
+  ignore_errors: yes
+  loop:
+    - attach
+    - backup
+    - config
+    - log
+    - pdf
+    - data
+
+- name: Change group and owner of static files
+  file:
+    dest: "{{ working_dir}}/fswiki/{{ item }}/"
+    owner: "{{ exec_user }}"
+    group: fswiki
+    recurse: yes
+  ignore_errors: yes
+  loop:
+    - attach
+    - backup
+    - config
+    - log
+    - pdf
+    - data
 
 - name: Install dependency libraries
   become: yes

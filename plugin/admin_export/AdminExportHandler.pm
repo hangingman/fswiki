@@ -74,7 +74,7 @@ sub download_dump {
 
 	my Archive::Zip::Archive $zip = Archive::Zip->new();
 
-	my @export_dirs = ("data_dir", "config_dir", "backup_dir", "log_dir");
+	my @export_dirs = ("data_dir", "config_dir", "backup_dir", "log_dir", "attach_dir");
 	foreach my $dir (@export_dirs) {
 		my $real_dir = $wiki->config($dir);
 		my @files = glob "$real_dir/*";
