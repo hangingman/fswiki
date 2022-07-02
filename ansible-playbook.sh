@@ -11,7 +11,7 @@ if [ -e "${SCRIPT_DIR}/.env" ]; then
 fi
 set +o allexport
 
-# Get dependencies
+# Get dependencies (-f option force ansible to update role)
 ansible-galaxy collection install -r ansible/requirements.yml
 
 # Run Ansible

@@ -25,7 +25,7 @@
   loop:
     - "/tmp/deploy/"
     - "/var/log/fswiki/"
-    - "/var/run/fswiki/"
+    - "/run/fswiki/"
     - "{{ working_dir }}/fswiki/"
     - "{{ working_dir }}/fswiki/attach/"
     - "{{ working_dir }}/fswiki/backup/"
@@ -49,6 +49,7 @@
     - "{{ working_dir}}/fswiki/log/{{ freeze_file }}"
     - "{{ working_dir}}/fswiki/log/{{ download_count_file }}"
     - "/var/log/fswiki/fswiki.log"
+    - "/run/fswiki/fswiki.pid"
 
 - name: Unarchive files
   unarchive:
@@ -127,6 +128,19 @@
     - cpanm Carton
     - cpanm --local-lib=~/perl5 local::lib
     - carton install
+
+- name: Load perlbrew env
+  become: yes
+  become_user: "{{ exec_user }}"
+  command: /bin/bash -lci 'env | grep -e "PERLBREW\|PATH\|MANPATH" | sort'
+  register: perlbrew_env_command
+  args:
+    chdir: "{{ working_dir }}/fswiki/"
+
+- name: Copy env by using inline content
+  ansible.builtin.copy:
+    content: "{{ perlbrew_env_command.stdout }}"
+    dest: /etc/sysconfig/fswiki
 
 - name: Copy systemctl unit file
   become: yes

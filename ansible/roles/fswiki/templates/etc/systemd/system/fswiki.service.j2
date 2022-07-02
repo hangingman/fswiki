@@ -5,15 +5,18 @@ After=network.target
 [Service]
 Type=forking
 WorkingDirectory=/opt/fswiki
-PIDFile=/var/run/fswiki.pid
+PIDFile=/run/fswiki/fswiki.pid
 
-ExecStart=/bin/bash -c '\
-   source /home/{{ exec_user }}/.bashrc; cd /opt/fswiki; \
-   carton exec /opt/fswiki/local/bin/start_server --daemonize --log-file=/var/log/fswiki/fswiki.log \
-   --pid-file=/var/run/fswiki/fswiki.pid --status-file=/opt/fswiki/fswiki.status -- starman --workers 4 app.psgi'
+EnvironmentFile=/etc/sysconfig/fswiki
+ExecStart=/bin/bash -c 'carton exec /opt/fswiki/local/bin/start_server \
+   --daemonize --log-file=/var/log/fswiki/fswiki.log \
+   --pid-file=/run/fswiki/fswiki.pid --status-file=/opt/fswiki/fswiki.status -- starman --workers 4 app.psgi'
+
+StandardOutput = append:/var/log/fswiki/fswiki.log
+StandardError = append:/var/log/fswiki/fswiki.log
+SyslogIdentifier = fswiki
 
 ExecStop=echo "stopping fswiki..."
-PIDFile=/var/run/fswiki/fswiki.pid
 KillMode=control-group
 KillSignal=SIGTERM
 
