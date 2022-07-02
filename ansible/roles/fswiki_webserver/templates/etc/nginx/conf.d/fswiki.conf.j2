@@ -7,7 +7,7 @@ server {
     ssl_certificate /etc/letsencrypt/live/{{ server_host }}/cert.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{ server_host }}/privkey.pem;
 
-    access_log  /var/log/nginx/host.access.log  main;
+    access_log  /var/log/nginx/host.access.log;
     index index.html index.htm;
     root   /usr/share/nginx/html;
 

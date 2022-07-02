@@ -63,8 +63,9 @@ ansible [core 2.12.6]
 ...
   python version = 3.8.5 (default, Aug  7 2021, 14:26:36) [GCC 8.3.0]
 
+$ cd ansible/
 $ chmod +x ./ansible-playbook.sh
-$ ./ansible-playbook.sh -i ansible/environments/local/hosts ansible/fswiki-playbook.yml
+$ ./ansible-playbook.sh -i [local or production] fswiki-playbook.yml
 ```
 
 - docker内部でfswikiをsystemctlから操作可能

@@ -1,0 +1,5 @@
+---
+# サーバのホスト名を設定
+server_host: your-host.tld
+sitemap_path: /opt/fswiki/sitemap.xml
+

@@ -12,7 +12,7 @@ fi
 set +o allexport
 
 # Get dependencies (-f option force ansible to update role)
-ansible-galaxy collection install -r ansible/requirements.yml
+ansible-galaxy collection install -r requirements.yml
 
 # Run Ansible
 exec ansible-playbook "$@"
