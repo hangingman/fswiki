@@ -1,0 +1,43 @@
+---
+#
+# nginxインストール
+#
+- name: Install nginx
+  become: yes
+  ansible.builtin.package:
+    name: nginx
+    state: latest
+
+- name: Create cache directory
+  become: yes
+  file:
+    dest: /var/cache/nginx/cache
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Copy nginx conf file
+  become: yes
+  template:
+    src: templates/etc/nginx/conf.d/fswiki.conf.j2
+    dest: /etc/nginx/conf.d/fswiki.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Reload systemctl unit file
+  systemd:
+    daemon_reload: yes
+  become: true
+
+- name: Enable systemctl unit file
+  systemd:
+    name: nginx.service
+    enabled: yes
+  become: true
+
+- name: Start systemctl unit file
+  systemd:
+    name: nginx.service
+    state: restarted
+  become: true

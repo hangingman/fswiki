@@ -6,7 +6,6 @@ exec_user: fswiki
 working_dir: /opt
 
 # setup.datのデフォルト設定値
-server_host: localhost
 data_dir: ./data
 backup_dir: ./backup
 attach_dir: ./attach
@@ -43,3 +42,4 @@ proxy_port:
 proxy_user:
 proxy_pass:
 access_log_limit_kbyte: 1024
+

@@ -1,12 +1,8 @@
 ---
-collections:
-  - name: community.general
-    version: 2.3.0
-  - name: ansible.posix
-    version: 1.2.0
-  - name: nginxinc.nginx_controller
-    version: 3.8.0
+#collections:
 
 roles:
   - name: tobybro.perlbrew
+    src: https://github.com/tobybro/ansible-perlbrew.git
+    version: master
 
