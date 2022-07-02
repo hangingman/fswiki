@@ -15,3 +15,4 @@ cpanfile.snapshot
 !/ansible/environments/prod/hosts
 !/ansible/roles/fswiki/files/fswiki.tar.gz
 !/ansible/
+/ansible/roles/fswiki/files/fswiki.tar.gz

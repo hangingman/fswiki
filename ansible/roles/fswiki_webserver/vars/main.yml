@@ -1,0 +1,2 @@
+server_host: localhost
+sitemap_path: /usr/share/nginx/html/sitemap.xml

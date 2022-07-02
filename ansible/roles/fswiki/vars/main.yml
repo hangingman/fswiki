@@ -43,3 +43,4 @@ proxy_port:
 proxy_user:
 proxy_pass:
 access_log_limit_kbyte: 1024
+sitemap_path: /usr/share/nginx/html/sitemap.xml

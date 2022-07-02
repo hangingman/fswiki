@@ -16,8 +16,14 @@
     owner: www-data
     group: www-data
 
-#- name: Write the original nginx config file
-#  action: template src=./myapp.j2 dest=/etc/nginx/conf.d/myapp.conf
+- name: Copy nginx conf file
+  become: yes
+  template:
+    src: templates/etc/nginx/conf.d/fswiki.conf.j2
+    dest: /etc/nginx/conf.d/fswiki.conf
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Reload systemctl unit file
   systemd:
