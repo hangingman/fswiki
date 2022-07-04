@@ -16,7 +16,7 @@ use strict;
 sub new {
 	my $self = shift;
 	my $env  = shift;
-	$ENV{PATH_INFO} =~ s/^$ENV{SCRIPT_NAME}//;
+	$env->{PATH_INFO} =~ s/^$env->{SCRIPT_NAME}//;
 	return bless CGI::PSGI->new($env);
 }
 

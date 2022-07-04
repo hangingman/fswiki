@@ -1,7 +1,7 @@
 ###############################################################################
-# 
+#
 # ページを表示するプラグイン
-# 
+#
 ###############################################################################
 package plugin::core::ShowPage;
 use strict;
@@ -22,30 +22,30 @@ sub do_action {
 	my $self = shift;
 	my $wiki = shift;
 	my $cgi  = $wiki->get_CGI;
-	
+
 	my $pagename = $cgi->param("page");
 	if(!defined($pagename) || $pagename eq ""){
 		$pagename = $wiki->config("frontpage");
 		$cgi->param("page",$pagename);
 	}
-	
+
 	if($wiki->page_exists($pagename)){
 		# アクセスログの記録
 		if($wiki->config('log_dir') ne "" && $wiki->config('access_log_file') ne ""){
 			&write_log($wiki,$pagename);
 		}
-		
+
 		# 参照権限のチェック
 		if(!$wiki->can_show($pagename)){
 			$wiki->set_title("参照権限がありません");
 			return $wiki->error("参照権限がありません。");
 		}
-		
+
 		$wiki->set_title($pagename);
 		$wiki->do_hook("show"); # 本当はWiki.pmの中から呼びたい...
-		
+
 		return $wiki->process_wiki($wiki->get_page($pagename),1,1);
-		
+
 	} else {
 		return $wiki->call_handler("EDIT",$cgi);
 	}
@@ -55,16 +55,17 @@ sub do_action {
 # アクセスログの記録
 #==============================================================================
 sub write_log {
-	my $wiki = shift;
+	my Wiki $wiki = shift;
 	my $page = shift;
-	
-	my $ip  = $ENV{"REMOTE_ADDR"};
-	my $ref = $ENV{"HTTP_REFERER"};
-	my $ua  = $ENV{"HTTP_USER_AGENT"};
+	my $env = $wiki->get_CGI()->env;
+
+	my $ip  = $env->{"REMOTE_ADDR"};
+	my $ref = $env->{"HTTP_REFERER"};
+	my $ua  = $env->{"HTTP_USER_AGENT"};
 	if(!defined($ip)  || $ip  eq ""){ $ip  = "-"; }
 	if(!defined($ref) || $ref eq ""){ $ref = "-"; }
 	if(!defined($ua)  || $ua  eq ""){ $ua  = "-"; }
-	
+
 	my $tmp = time.".".$$;	# 現在時刻＆プロセス番号
 	my $logname = $wiki->config('log_dir')."/".$wiki->config('access_log_file');
 	my $readtmpname = $wiki->config('log_dir')."/".$tmp.".0.tmp";	# テンポラリ名は重複しない一意の名前に

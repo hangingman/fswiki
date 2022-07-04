@@ -197,16 +197,17 @@ sub count_up {
 # 添付ファイルのログ
 #===========================================================
 sub write_log(){
-	my $wiki = shift;
+	my Wiki $wiki = shift;
 	my $mode = shift;
 	my $page = shift;
 	my $file = shift;
 	if($wiki->config('log_dir') eq "" || $wiki->config('attach_log_file') eq ""){
 		return;
 	}
-	my $ip  = $ENV{"REMOTE_ADDR"};
-	my $ref = $ENV{"HTTP_REFERER"};
-	my $ua  = $ENV{"HTTP_USER_AGENT"};
+	my $env = $wiki->get_CGI()->env;
+	my $ip  = $env->{"REMOTE_ADDR"};
+	my $ref = $env->{"HTTP_REFERER"};
+	my $ua  = $env->{"HTTP_USER_AGENT"};
 	if($ip  eq ""){ $ip  = "-"; }
 	if($ref eq ""){ $ref = "-"; }
 	if($ua  eq ""){ $ua  = "-"; }
