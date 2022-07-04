@@ -67,9 +67,10 @@ sub url_decode{
 # </pre>
 #===============================================================================
 sub cookie_path {
-	my $wiki = shift;
+	my Wiki $wiki = shift;
+	my $env = $wiki->get_CGI()->env;
 	my $script_name = quotemeta($wiki->config('script_name'));
-	my $path = $ENV{'REQUEST_URI'};
+	my $path = $env->{'REQUEST_URI'};
 	$path =~ s/\?.*//;
 	$path =~ s/$script_name$//;
 	return $path;

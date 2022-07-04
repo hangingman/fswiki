@@ -19,8 +19,9 @@ sub new {
 #==============================================================================
 sub hook {
 	my $self = shift;
-	my $wiki = shift;
-	my $cgi  = $wiki->get_CGI();
+	my Wiki $wiki = shift;
+	my CGI2 $cgi  = $wiki->get_CGI();
+	my $env = $cgi->env;
 
 	# 管理者でログインしている場合はスパムフィルタは無効
 	my $login = $wiki->get_login_info();
@@ -36,7 +37,7 @@ sub hook {
 		chomp($line);
 		my $result = 1;
 		$result = RULE_MULTI_URL($content)    if($line eq 'RULE_MULTI_URL');
-		$result = RULE_NO_USERAGENT($content) if($line eq 'RULE_NO_USERAGENT');
+		$result = RULE_NO_USERAGENT($content, $env) if($line eq 'RULE_NO_USERAGENT');
 		return $wiki->redirect($cgi->param("page")) unless $result;
 	}
 
@@ -48,7 +49,7 @@ sub hook {
 		}
 	}
 
-	my $client = $ENV{'REMOTE_ADDR'};
+	my $client = $env->{'REMOTE_ADDR'};
 	my $ip_list = &Util::load_config_text($wiki,'spam_ip.dat');
 	foreach my $line (split(/\n/, $ip_list)){
 		my ($from, $to) = split(/-/, $line);
@@ -96,7 +97,8 @@ sub RULE_MULTI_URL {
 # USER-AGENTなしの場合に保存を拒否するルール
 #==============================================================================
 sub RULE_NO_USERAGENT {
-	return ($ENV{'HTTP_USER_AGENT'} ne '');
+	my $env = shift;
+	return ($env->{'HTTP_USER_AGENT'} ne '');
 }
 
 1;

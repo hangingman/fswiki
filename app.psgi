@@ -3,6 +3,7 @@ use Plack::App::File;
 use Plack::App::Directory;
 use Plack::Middleware::Session;
 use Plack::Middleware::Session::Cookie;
+use Plack::Middleware::ReverseProxy;
 use Plack::Session::Store::File;
 use lib ('./lib', './local/lib/perl5');
 use Wiki;
@@ -16,7 +17,11 @@ builder {
 	my $limit = $wiki->config('session_limit') || 30;
 	my $secret = $wiki->config('secret') || create_uuid(UUID_V4);
 
-    # PSGIを呼び出す前のPlack側の準備
+	# reverse-proxy環境で実際のIPアドレスを取得する対応
+	enable_if { $_[0]->{REMOTE_ADDR} eq '127.0.0.1' }
+    		'ReverseProxy';
+
+	# PSGIを呼び出す前のPlack側の準備
 	enable Session => (
 		store => Plack::Session::Store::File->new(dir => $dir),
 		state => Plack::Session::State::Cookie->new(
@@ -29,7 +34,6 @@ builder {
 	);
 
 	enable 'CSRFBlock', meta_tag => 'csrf-token';
-
 	# FreeStyleWiki フロントエンドPSGIモジュール
 	my WikiApplication $wiki_app = WikiApplication->new;
 

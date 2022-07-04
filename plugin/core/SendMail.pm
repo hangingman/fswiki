@@ -21,40 +21,38 @@ sub new {
 #===========================================================
 sub hook {
 	my $self = shift;
-	my $wiki = shift;
-	my $cgi  = $wiki->get_CGI;
-	
+	my Wiki $wiki = shift;
+	my CGI2 $cgi  = $wiki->get_CGI;
+	my $env = $cgi->env;
+
 	my $login    = $wiki->get_login_info();
 	my $pagename = $cgi->param("page");
 	my $content  = $cgi->param("content");
 	my $backup   = $wiki->get_backup($pagename);
 	my $diff     = plugin::core::Diff->new();
-	
+
 	my $subject;
 	my $tmpl;
-	
+
 	# タイトルとテンプレートを決定
 	if($content eq ""){
 		$subject = $wiki->config('mail_prefix')."$pagenameが削除されました";
-		
 	} elsif($backup eq "") {
 		$subject = $wiki->config('mail_prefix')."$pagenameが作成されました";
-		
 	} else {
 		$subject = $wiki->config('mail_prefix')."$pagenameが更新されました";
-		
 	}
-	
+
 	my $mail = "";
-	
+
 	if($wiki->config('mail_id')==1 && defined($login)){
 		$mail .= "ID:".$login->{id}."\n";
 	}
 	if($wiki->config('mail_remote_addr')==1){
-		$mail .= "IP:".$ENV{'REMOTE_ADDR'}."\n";
+		$mail .= "IP:".$env->{'REMOTE_ADDR'}."\n";
 	}
 	if($wiki->config('mail_user_agent')==1){
-		$mail .= "UA:".$ENV{'HTTP_USER_AGENT'}."\n";
+		$mail .= "UA:".$env->{'HTTP_USER_AGENT'}."\n";
 	}
 	if($wiki->config('mail_diff')==1){
 		my @list = $wiki->{storage}->get_backup_list($pagename);
@@ -76,7 +74,7 @@ sub hook {
 		$mail .= "----\n";
 		$mail .= $content."\n";
 	}
-	
+
 	&Util::send_mail($wiki,$subject,$mail);
 }
 
