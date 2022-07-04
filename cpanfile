@@ -21,5 +21,6 @@ requires 'Proclet', '== 0.35';
 requires 'Plack::Response', '== 1.0047';
 requires 'Plack::Middleware::Session', '== 0.30';
 requires 'Plack::Middleware::CSRFBlock', '>= 0.06';
+requires 'Plack::Middleware::ReverseProxy', '== 0.16';
 requires 'UUID::Tiny', '== 1.04';
 requires 'Archive::Zip', '== 1.68';
