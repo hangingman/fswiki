@@ -57,6 +57,7 @@
     dest: /tmp/deploy/
     owner: "{{ exec_user }}"
     group: fswiki
+  become: yes
 
 # 存在するファイルを上書きしない! (cp -n)
 - name: Copy config files if not exists
@@ -151,6 +152,7 @@
     group: root
     mode: "0644"
 
+# 上書きしたくないときはコメントアウト
 - name: Copy freestylewiki setup.dat
   become: yes
   template:

@@ -50,4 +50,5 @@
     state: present
     regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+  become: true
 

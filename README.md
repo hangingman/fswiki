@@ -55,15 +55,18 @@ $ docker exec -it fswiki-wiki-1 bash
 - fswikiのデプロイをローカルでテストする
 
 ```shell
-$ python --version
-Python 3.8.5
-
 $ ansible --version
-ansible [core 2.12.6]
-...
-  python version = 3.8.5 (default, Aug  7 2021, 14:26:36) [GCC 8.3.0]
+ansible 2.10.8
+  ...
+  python version = 3.9.2 (default, Feb 28 2021, 17:03:44) [GCC 10.2.1 20210110]
 
 $ cd ansible/
+```
+
+- varsを編集
+
+```shell
+$ vim group_vars/all.yml
 $ chmod +x ./ansible-playbook.sh
 $ ./ansible-playbook.sh -i [local or production] fswiki-playbook.yml
 ```
