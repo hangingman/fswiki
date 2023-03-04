@@ -12,6 +12,8 @@ requires 'Jcode', '== 2.07';
 requires 'DBI', '== 1.643';
 requires 'DBD::mysqlPP', '== 0.07';
 requires 'Sub::Util', '== 1.55';
+requires 'JSON';
+requires 'MIME::Base64';
 
 requires 'Starman', '== 0.4015';
 requires 'Server::Starter', '== 0.35';
