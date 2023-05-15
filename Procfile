@@ -1,1 +1,0 @@
-starman: carton exec start_server -- starman --workers 4 app.psgi
