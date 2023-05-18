@@ -1,0 +1,37 @@
+# fswikiのインストール
+
+## 概要
+
+## denoのインストール
+
+- denoしかインストールしないならば下記のようにする
+
+```shell
+$ curl -fsSL https://deno.land/x/install/install.sh | sh
+```
+
+- $HOME/.bashrc (もしくはそれと同じもの)に下記を追記する
+```
+export DENO_INSTALL="/home/ユーザー名/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+```
+
+- asdfが導入済みならばasdf-denoをインストールしたほうがよい
+
+```shell
+$ asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git
+$ asdf install deno 1.33.3
+$ asdf global deno 1.33.3
+
+$ deno --version
+deno 1.33.3 (release, x86_64-unknown-linux-gnu)
+v8 11.4.183.2
+typescript 5.0.4
+```
+
+## プロジェクト構造
+
+- https://github.com/MichaelCurrin/deno-project-template
+
+
+
