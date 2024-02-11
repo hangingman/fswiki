@@ -7,7 +7,7 @@ const name = args.name || "World";
 const app = new Application();
 
 app.use((ctx) => {
-    ctx.response.body = name;
+  ctx.response.body = name;
 });
 
 await app.listen({ port: 8000 });

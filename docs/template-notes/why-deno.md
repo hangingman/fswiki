@@ -1,13 +1,13 @@
-# Why Deno?
+# なぜDenoか?
 
-This project consists of a simple JavaScript project which is run with
-**Deno** - a fast, secure alternative to Node.js by the creator of Node.js.
+このプロジェクトは、次のコマンドで実行される単純な JavaScript プロジェクトで構成されています。
+**Deno** - Node.js の作成者による、Node.js の高速で安全な代替手段です。
 
-You'll notice there's **no** setup of ESLint, Prettier or Jest/Jasmine as
-dependencies or config file. This is because Deno can lint, format and test your
-code - all without extra dependencies. It can even run and compile TypeScript
-without having to install TypeScript.
+ESLint、Prettier、Jest/Jasmine のセットアップが**ない**ことがわかります。
+依存関係または設定ファイル。 これは、Deno が lint、フォーマット、テストを行うことができるためです。
+コード - すべて余分な依存関係なし。 TypeScript の実行とコンパイルも可能
+TypeScript をインストールする必要はありません。
 
-For resources and guides to Deno, see
-[Deno](https://michaelcurrin.github.io/dev-resources/resources/javascript/deno/)
-in my Dev Resources.
+Deno のリソースとガイドについては、次を参照してください。
+[deno](https://michaelcurrin.github.io/dev-resources/resources/javascript/deno/)
+私の開発リソースにあります。

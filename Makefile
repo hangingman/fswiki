@@ -16,7 +16,6 @@ all: hooks install fmt lint test build build-web
 h help:
 	@grep '^[a-z]' Makefile
 
-
 hooks:
 	cd .git/hooks && ln -s -f ../../hooks/pre-push pre-push
 
@@ -27,7 +26,6 @@ install:
 upgrade:
 	deno cache --reload deps.ts
 	deno cache --reload test_deps.ts
-
 
 fmt:
 	deno fmt $(IGNORE) --unstable
@@ -41,10 +39,8 @@ lint:
 test:
 	deno test
 
-
 run:
 	deno run --allow-net index.ts $(CONFIG) --name "$(name)"
-
 
 clean:
 	rm -rf $(OUT_DIR)
@@ -55,10 +51,13 @@ clean:
 watch: .mk-out
 	deno bundle $(CONFIG) --unstable --watch index.ts $(BUNDLED)
 
+# proto
+build-proto:
+	deno run --allow-read https://deno.land/x/grpc_basic@0.4.6/gen/dts.ts ./fswiki.proto > ./fswiki.d.ts
+
 # CLI app.
 build: .mk-out
 	deno bundle $(CONFIG) index.ts $(BUNDLED)
-		
 	deno compile $(CONFIG) --unstable -o $(COMPILED) index.ts
 
 # Frontend app.

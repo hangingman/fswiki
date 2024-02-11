@@ -1,45 +1,42 @@
-# Sample usage
+# 使用例
 
-After installing Deno, you can use the scripts/modules in this project.
-
+Deno をインストールした後、このプロジェクトのスクリプト/モジュールを使用できるようになります。
 
 ## CLI
 
-This projects comes with a CLI module which can be run like this in the
-terminal.
+このプロジェクトには、次のように実行できる CLI モジュールが付属しています。
+ターミナル。
 
-```consolee
-$ deno run index.ts --config tsconfig.json --name "friend"
+```console
+$ deno runindex.ts --config tsconfig.json --name "friend"
 Hello, friend!
 ```
 
-This can also be compiled to binary executable - read more in the [docs](/docs/)
-around Usage.
+これはバイナリ実行可能ファイルにコンパイルすることもできます - 詳細については [docs](/docs/) を参照してください。
+使い方について。
 
-You can also add instructions so someone can install your Deno package as a CLI tool using a single command. See these [CLI tool][] instructions.
+また、単一のコマンドを使用して Deno パッケージを CLI ツールとしてインストールできるように指示を追加することもできます。 これらの [CLI ツール][] の手順を参照してください。
 
-[CLI tool]: https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/javascript/deno/cli/install-cli-tool.html
+[CLI ツール]: https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/javascript/deno/cli/install-cli-tool.html
 
-### Note
+### 注記
 
-You might use this to make a tool, a game or a REST API. 
+これを使用してツール、ゲーム、または REST API を作成することができます。
 
-Though, if you are not using any frontend features around JavaScript, like working with `document` or
-making a website, then instead of JavaScript and Deno (or Node), I'd recommend
-using another language which runs on the server side and not in the browser. 
+ただし、「ドキュメント」や「ドキュメント」の操作など、JavaScript に関するフロントエンド機能を使用していない場合は、
+ウェブサイトを作成する場合、JavaScript と Deno (または Node) の代わりに、
+ブラウザではなくサーバー側で実行される別の言語を使用します。
 
-The _Go_ language is a great for performance and type safety, as not as low-level as C++ or Rust. Python is awesome for its easy of
-learning and working with - avoiding the
-[JS wat?!][] issues.
+_Go_ 言語は、C++ や Rust ほど低レベルではなく、パフォーマンスとタイプ セーフの点で優れています。 Python はその簡単さで素晴らしいです
+学び、取り組む - そして
+[JS ワット？！](https://github.com/MichaelCurrin/learn-to-code/blob/master/en/topics/scripting_langages/JavaScript/wat.md) の問題を回避していきましょう。
 
-[JS wat?!]: https://github.com/MichaelCurrin/learn-to-code/blob/master/en/topics/scripting_languages/JavaScript/wat.md
+## ブラウザ
 
-## Browser
+このプロジェクトは、Deno で TypeScript モジュールをバンドルできるようにセットアップされています。
+単一の JS ファイル。 これは、Web アプリのブラウザーで実行できます。
 
-This project is setup so you can Deno to bundle your TypeScript modules as a
-single JS file. This can then be run in the browser for your web app.
+[public](/public/) ディレクトリを見ると、JS ファイルが
+タイプを「module」として設定した「script」タグを使用してブラウザにロードされます。
 
-If you look at the [public](/public/) directory, you'll see the JS file gets
-loaded in the browser using a `script` tag with type set as `module`.
-
-Read more in the [Usage](/docs/usage.md) doc.
+詳細については、[使用法](https://github.com/MichaelCurrin/deno-project-template/blob/main/docs/usage.md) ドキュメントを参照してください。

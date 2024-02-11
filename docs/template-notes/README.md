@@ -1,11 +1,11 @@
-# Templates notes
+# テンプレートのメモ
 
-<!-- You can delete this directory on your copy of this template. -->
+<!-- このテンプレートのコピー上のこのディレクトリを削除できます。 -->
 
-Getting started:
+はじめる：
 
-- [Why Deno?](why-deno.md)
-- [Sample usage](sample-usage.md)
-- [Related projects](related-projects.md)
+- [なぜデノ?](./why-deno.md)
+- [使用例](./sample-usage.md)
+- [関連プロジェクト](./related-projects.md)
 
-See also my [Deno Cheatsheets](https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/javascript/deno/) guide. In particular around how to handle imports.
+私の [Deno Cheatsheets](https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/javascript/deno/) ガイドも参照してください。 特にインポートの処理方法に関して。
