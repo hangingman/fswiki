@@ -76,7 +76,7 @@ sub get_image_url {
 	my $asin = shift;
 
 	# Google Books APIのエンドポイントURL
-	my $url = qq(https://www.googleapis.com/books/v1/volumes?q=isbn:$asin);
+	my $url = qq(https://www.googleapis.com/books/v1/volumes?q=isbn:$asin&country=JP);
 	my $json = &Util::get_response($wiki, $url);
 
 	# レスポンスのJSONデータをパースする
