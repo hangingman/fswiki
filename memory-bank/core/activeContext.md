@@ -11,7 +11,8 @@
 ## **次のステップ**
 
 1. FreestyleWiki APIドキュメント（docs/API）の解析とmemory-bankへの反映
-    1. memory-bankに記録されたPerlの仕様情報(productContext.md, implementationDetails.md, technicalNotes.md)をTypeScriptの観点から整理・再記述する
+    1. memory-bankの記述をもとにして、docs/API/*.pm.htmlをマークダウンに書き換えます
+    2. もとのdocs/API/*.pm.htmlを削除し、インターフェースをTypescriptのものに設計変更します
 2. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
 3. ClineによるPerlコードの初期調査を開始
 4. KVキャッシュへのHTMLコンテンツの保存機能の実装
