@@ -10,9 +10,11 @@
 
 ## **次のステップ**
 
-1. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
-2. ClineによるPerlコードの初期調査を開始
-3. KVキャッシュへのHTMLコンテンツの保存機能の実装
+1. FreestyleWiki APIドキュメント（docs/API）の解析とmemory-bankへの反映
+    1. memory-bankに記録されたPerlの仕様情報(productContext.md, implementationDetails.md, technicalNotes.md)をTypeScriptの観点から整理・再記述する
+2. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
+3. ClineによるPerlコードの初期調査を開始
+4. KVキャッシュへのHTMLコンテンツの保存機能の実装
 
 ## **持ち越し課題**
 
@@ -38,3 +40,4 @@
 * D1データベースにテストページデータを投入
 * ローカル開発環境で`/wiki/TestPage`にアクセスし、D1から取得したページコンテンツがテキスト形式で表示されることを確認
 * 存在しないページへのアクセスで404レスポンスが返ることを確認
+* `docs/readme.html` の内容を解析し、memory-bank (`productContext.md`, `technicalNotes.md`, `implementationDetails.md`) に反映
