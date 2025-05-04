@@ -2,6 +2,11 @@
 
 FreestyleWikiのCloudflare Workersへの移植プロジェクトです。
 
+## ドキュメント
+
+プロジェクトに関する詳細なドキュメントは、`memory-bank` ディレクトリ以下に格納されています。
+特に、プロジェクトの概要、製品コンテキスト、システムパターン、技術コンテキスト、現在の状況、進捗状況、および詳細な運用ルールについては、`memory-bank/core` ディレクトリ内のMarkdownファイルを参照してください。
+
 ## Cloudflare Workers Local Development
 
 Cloudflare Workers環境でのローカル開発環境を構築し、Workerを起動する方法を説明します。
