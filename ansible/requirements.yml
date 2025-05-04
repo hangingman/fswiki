@@ -1,8 +1,0 @@
----
-#collections:
-
-roles:
-  - name: tobybro.perlbrew
-    src: https://github.com/tobybro/ansible-perlbrew.git
-    version: master
-
