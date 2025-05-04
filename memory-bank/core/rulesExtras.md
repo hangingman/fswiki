@@ -4,6 +4,12 @@
 
 こちらには、.clinerules に記載するには詳細すぎるポリシー、手順、サンプルコードなどを記述します。
 
+### **ローカル開発環境構築に関する補足**
+
+*   **Node.jsのバージョン管理:** プロジェクトではasdfを使用してNode.jsのバージョンを管理します。`.tool-versions` ファイルを参照してください。
+*   **wrangler init:** wranglerのバージョンによって初期化コマンドのオプションが異なる場合があります。既存のファイルが存在するディレクトリに初期化する際は注意が必要です。
+*   **データストアバインディング:** ローカル開発およびデプロイには、`wrangler.jsonc` にD1, KV, R2などのバインディング設定が必要です。詳細はCloudflare Workersのドキュメントを参照してください。
+
 ### **テスト実行ポリシー (Workers)**
 
 1. **テスト実行の基本ルール:**  
@@ -179,4 +185,4 @@ export function format\_wiki\_text(text: string): string {
     // 手動で書き換えるか、Clineの変換能力に依存
 
     return processedText;  
-}  
+}

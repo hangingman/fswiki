@@ -4,15 +4,7 @@
 
 ## **現在のタスク**
 
-1. **Cloudflare Workersローカル開発環境の構築 (wranglerを使用):**  
-   * **目標:** Cloudflare Workers \+ TypeScriptプロジェクトのローカル開発環境をセットアップし、基本的なWorkerの実行とデバッグができるようにする。  
-   * **内容:**  
-     * wrangler CLIツールのインストール。  
-     * wrangler init コマンドを使用した新しいWorkersプロジェクトの初期化（TypeScriptテンプレートを選択）。  
-     * wrangler dev コマンドを使用して、ローカル環境でWorkerを起動し、ホットリロード機能を確認する。  
-     * D1, KV, R2などのCloudflareサービスのローカルシミュレーション設定（必要に応じて）。  
-     * ローカル環境での基本的なデバッグ方法を確認する。  
-   * **進捗:** wrangler のインストールとプロジェクトの初期化を完了し、wrangler dev でデフォルトのWorkerが起動できることを確認しました。
+- **Cloudflare Workersローカル開発環境の構築 (wranglerを使用):** 完了
 
 ## **次のステップ**
 
@@ -27,6 +19,9 @@
 
 ## **このセッションで完了した作業 (2025/05/04)**
 
-* wrangler CLIツールのインストールとセットアップ。  
-* wrangler init を使用した新規Workersプロジェクトの初期化。  
-* wrangler dev によるローカルでのWorker起動確認。
+* asdfを使用したnodejs (v22.13.1) のインストールと設定
+* npmを使用したwrangler CLIツールのインストール
+* wrangler initコマンドを使用したCloudflare Workersプロジェクトの初期化 (既存ディレクトリへの対応含む)
+* wrangler.jsoncファイルへのD1, KV, R2バインディング設定の追加
+* wrangler devコマンドによるローカル開発サーバーの起動確認
+* README.mdファイルの更新

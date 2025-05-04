@@ -1,15 +1,11 @@
 # **Progress**
 
 ## **実装済み (2025/05/04 現在)**
-TBD
+* Cloudflare Workersローカル開発環境の構築 (wranglerを使用)
 
 ## **まだ必要な実装**
 
-* **Cloudflare Workersローカル開発環境の構築 (wranglerを使用):**  
-  * Cloudflareが提供する公式CLIツールwranglerを使用して、Workers \+ TypeScriptプロジェクトのローカル開発環境を構築
-  * wrangler init コマンドでTypeScriptテンプレートを選択し、プロジェクトを初期化
-  * wrangler dev コマンドを使用して、ローカル環境でWorkerをHTTPサーバーとして起動し、コードの変更をリアルタイムに反映させるホットリロード機能が利用できることを確認
-* **Wikiページ表示機能:**  
+* **Wikiページ表示機能:**
   * KVキャッシュからの読み取りロジック。  
   * D1からのページ本文、メタ情報、履歴の取得ロジック。  
   * 取得したテキストのHTMLレンダリング。  

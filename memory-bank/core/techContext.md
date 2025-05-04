@@ -9,16 +9,16 @@
 * **Cline:** PerlコードをJavaScript/TypeScriptに変換するためのマイグレーションツール  
 * **TypeScript:** 静的型付けによる開発効率と保守性の向上  
 * **Node.js / npm:** 開発環境、依存パッケージ管理  
-* **Wrangler CLI:** Cloudflare Workersの開発、デプロイ、管理ツール  
+* **Wrangler CLI:** Cloudflare Workersの開発、デプロイ、管理ツール (v4.14.1を使用)  
 * **Git:** バージョン管理システム  
-* (必要に応じて) テキスト整形、差分計算、ルーティングなどのJavaScript/TypeScriptライブラリ
+* (必要に応じて) テキスト整形、差分計算、ルーティングなどのJavaScript/TypeScriptライps
 
 ## **開発環境**
 
 * **OS:** Linux, macOS, Windows (WSL含む) など、Node.jsとWrangler CLIが動作する環境  
 * **エディタ:** VS Codeなど、TypeScript開発に適したエディタ  
-* **CLI:** Wrangler CLI (npm install \-g wrangler)  
-* **依存管理:** npm または yarn, pnpm  
+* **CLI:** Wrangler CLI  
+* **依存管理:** asdf (Node.js), npm (パッケージ) または yarn, pnpm  
 * **Cline実行環境:** Clineが動作する環境 (Perlが必要な場合あり)
 
 ## **技術的な制約**
