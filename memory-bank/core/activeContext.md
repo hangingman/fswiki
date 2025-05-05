@@ -10,12 +10,14 @@
 
 ## **次のステップ**
 
-1. FreestyleWiki APIドキュメント（docs/API）の解析とmemory-bankへの反映
-    1. memory-bankの記述をもとにして、docs/API/*.pm.htmlをマークダウンに書き換えます
-    2. もとのdocs/API/*.pm.htmlを削除し、インターフェースをTypescriptのものに設計変更します
-2. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
-3. ClineによるPerlコードの初期調査を開始
-4. KVキャッシュへのHTMLコンテンツの保存機能の実装
+1. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
+    a. WikiApplication.pmと同等の実装スタブをmockで作成
+    b. Wiki::Parser.pmの記法解析ロジックをTypeScriptで再現（正規表現の代わりにPeg.jsのようなパーサージェネレータの使用を検討）
+    c. Wiki::HTMLParser.pmのHTML生成ロジックをTypeScriptで再現
+    d. Util.pmのHTMLエスケープなど、関連ユーティリティ関数をTypeScriptで実装または代替手段を検討
+    e. 上記を組み合わせて、Wiki記法からHTMLへの変換関数を実装
+    f. 実装した変換関数を既存のページ表示ハンドラ（src/handlers/wiki.ts）に組み込み、HTMLとしてページを表示
+2. KVキャッシュへのHTMLコンテンツの保存機能の実装
 
 ## **持ち越し課題**
 
