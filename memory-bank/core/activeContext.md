@@ -14,6 +14,12 @@
     a. WikiApplication.pmと同等の実装スタブをmockで作成、画面表示を行う: 完了
     b. WikiApplication.pmの過去実装を確認し、必要なインターフェイスの骨子を整える: 完了
     c. Wiki::Parser.pmの記法解析ロジックをTypeScriptで再現（正規表現の代わりにPeg.jsのようなパーサージェネレータの使用を検討）
+        - **現在の状況:** `Wiki::Parser.pm`、`Wiki::Keyword.pm`、`Wiki::InterWiki.pm` のコード解析を行い、TypeScriptでの手動パースによる実装を進めている。`src/services/renderService.ts` に基本的な構造と一部のブロック要素（見出し、リスト、水平線、引用、説明リスト、テーブル）の識別ロジックと、インライン要素（太字、斜体、下線、取り消し線、ページリンク、URLリンク、WikiName）の識別ロジックの一部を移植した。複数行説明のバッファリングロジックも移植した。簡単なテストケース (`src/services/renderService.test.ts`) を作成し、コンパイル・実行して基本的なパース処理が動作することを確認した。プラグインの詳細なパース、キーワードとInterWikiNameの正確な識別・処理はまだ実装されていない。
+        - **次のセッションでの作業:**
+            - `src/services/renderService.ts` におけるプラグインの詳細なパースロジックの実装。
+            - `Wiki::Keyword.pm` および `Wiki::InterWiki.pm` の解析をさらに進め、`parseLineKeyword` 関数でのキーワードとInterWikiNameの正確な識別・処理ロジックを実装。
+            - `Wiki::Parser.pm` の `parse_line` メソッド内の残りのインライン記法（画像など）の移植。
+            - `data/Help%252FFSWiki.wiki` を使用したテストケースを拡充し、様々な記法が正しくパースされるかを確認。必要に応じてVitestなどのテストフレームワークを導入。
     d. Wiki::HTMLParser.pmのHTML生成ロジックをTypeScriptで再現
     e. Util.pmのHTMLエスケープなど、関連ユーティリティ関数をTypeScriptで実装または代替手段を検討
     f. 上記を組み合わせて、Wiki記法からHTMLへの変換関数を実装
