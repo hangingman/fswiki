@@ -1,6 +1,6 @@
 # **Progress**
 
-## **実装済み (2025/05/04 現在)**
+## **実装済み (2025/05/05 現在)**
 * Cloudflare Workersローカル開発環境の構築 (wranglerを使用)
 * D1データベースの初期スキーマ適用 (`pages`テーブルの作成)
 * **Wikiページ表示機能の基本実装:**
@@ -8,12 +8,19 @@
   * D1からのページ本文、メタ情報、履歴の取得
   * 取得したテキストの表示（現時点ではテキスト形式）
   * 存在しないページのハンドリング (404応答)
+* **WikiApplicationスタブの作成:**
+  * `src/services/wikiApplication.ts` ファイルの作成
+  * クラス名を `WikiApplication` に変更
 
 ## **まだ必要な実装**
 
 * **Wikiページ表示機能:**
   * 取得したテキストのHTMLレンダリング。
   * KVキャッシュへのHTMLコンテンツの保存。
+  * **WikiApplicationスタブを使用した画面表示の実装**
+  * WikiApplicationスタブを既存のページ表示ハンドラ (`src/handlers/wiki.ts`) から呼び出すように修正
+  * `src/handlers/wiki.ts`の`Env`インターフェースに`BUCKET`プロパティを追加し、TypeScriptエラーを解消
+* **WikiApplicationのインターフェイス骨子の整理**
 * **Wikiページ編集・保存機能:**
   * 編集フォーム表示ハンドラ。
   * 保存処理ハンドラ。

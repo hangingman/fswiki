@@ -1,10 +1,12 @@
 import { IRequest, IttyRouter } from 'itty-router';
 import { D1Database, KVNamespace } from '@cloudflare/workers-types';
+import { WikiApplication } from '../services/wikiApplication';
 
 // 環境変数インターフェース
 interface Env {
 	DB: D1Database;
 	CACHE: KVNamespace;
+	BUCKET: R2Bucket; // R2バインディングを追加
 }
 
 // Wikiページ表示ハンドラ
@@ -38,8 +40,12 @@ if (!pageData) {
 // TODO: KVキャッシュに保存するロジックを実装 (任意)
 // await env.CACHE.put(`page:${title}`, htmlContent, { expirationTtl: 3600 }); // 例: 1時間キャッシュ
 
-// 現時点では生のコンテンツを返す
-return new Response(pageData.content, { headers: { 'Content-Type': 'text/plain' } });
+// WikiApplicationスタブを使用してHTMLにレンダリング
+const wikiApplication = new WikiApplication(env);
+const htmlContent = await wikiApplication.renderWikiText(pageData.content);
+
+// HTMLコンテンツを返す
+return new Response(htmlContent, { headers: { 'Content-Type': 'text/html' } });
 }
 
 // TODO: 編集フォーム表示ハンドラ (後で実装)
