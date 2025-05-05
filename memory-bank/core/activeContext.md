@@ -12,7 +12,7 @@
 
 1. FreestyleWiki独自のテキスト整形ルールの解析とHTMLレンダリングロジックの実装
     a. WikiApplication.pmと同等の実装スタブをmockで作成、画面表示を行う: 完了
-    b. WikiApplication.pmの過去実装を確認し、必要なインターフェイスの骨子を整える
+    b. WikiApplication.pmの過去実装を確認し、必要なインターフェイスの骨子を整える: 完了
     c. Wiki::Parser.pmの記法解析ロジックをTypeScriptで再現（正規表現の代わりにPeg.jsのようなパーサージェネレータの使用を検討）
     d. Wiki::HTMLParser.pmのHTML生成ロジックをTypeScriptで再現
     e. Util.pmのHTMLエスケープなど、関連ユーティリティ関数をTypeScriptで実装または代替手段を検討
@@ -28,8 +28,12 @@
 4. MySQLからのデータ移行機能の実装
 5. 移植された機能のリグレッションテストの実施
 
-## **このセッションで完了した作業 (2025/05/04)**
+## **このセッションで完了した作業 (2025/05/05)**
 
+* WikiApplication.pmの過去実装を確認し、TypeScriptで`WikiApplication`クラスのインターフェイス骨子（`handleRequest`メソッド）を定義
+* `src/index.ts`を修正し、リクエスト処理を`WikiApplication.handleRequest`に委譲するように変更
+* 不要になった`src/handlers/wiki.ts`を削除
+* ローカル開発サーバー（`npx wrangler dev`）を起動し、`/wiki/TestPage`へのアクセスでページが表示されることを確認
 * asdfを使用したnodejs (v22.13.1) のインストールと設定
 * npmを使用したwrangler CLIツールのインストール
 * wrangler initコマンドを使用したCloudflare Workersプロジェクトの初期化 (既存ディレクトリへの対応含む)

@@ -11,7 +11,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { handleWikiPageRequest } from './handlers/wiki'; // 作成したハンドラをインポート
+import { WikiApplication } from './services/wikiApplication'; // WikiApplicationをインポート
 
 // 環境変数インターフェース (wrangler.jsoncで定義したBindingに対応)
 interface Env {
@@ -22,37 +22,8 @@ interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const url = new URL(request.url);
-		const path = url.pathname;
-
-		// Wikiページ表示ルートのパターンマッチ
-		const wikiPageMatch = path.match(/^\/wiki\/(.+)$/);
-
-		if (request.method === 'GET' && wikiPageMatch) {
-			// パスパラメータからタイトルを取得し、handleWikiPageRequestに渡す
-			const title = wikiPageMatch[1];
-			// handleWikiPageRequestを呼び出す (Requestオブジェクトとタイトルを渡す)
-			return handleWikiPageRequest(request, title, env, ctx);
-		}
-
-		// TODO: その他のルートを追加 (編集、保存、履歴など)
-		// if (request.method === 'GET' && path.match(/^\/wiki\/(.+)\/edit$/)) {
-		//   // handleEditPageRequestを呼び出す
-		// }
-		// if (request.method === 'POST' && path.match(/^\/wiki\/(.+)\/save$/)) {
-		//   // handleSavePageRequestを呼び出す
-		// }
-
-
-		// デフォルトルート (既存の例を残しておくか、削除するかは検討)
-		switch (path) {
-			case '/message':
-				return new Response('Hello, World!');
-			case '/random':
-				return new Response(crypto.randomUUID());
-			default:
-				// ルートが見つからない場合のハンドラ
-				return new Response('Not Found', { status: 404 });
-		}
+		// WikiApplicationのインスタンスを作成し、リクエスト処理を委譲
+		const wikiApplication = new WikiApplication(env);
+		return wikiApplication.handleRequest(request);
 	},
 } satisfies ExportedHandler<Env>;
