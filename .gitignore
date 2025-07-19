@@ -16,3 +16,5 @@ cpanfile.snapshot
 !/ansible/roles/fswiki/files/fswiki.tar.gz
 !/ansible/
 /ansible/roles/fswiki/files/fswiki.tar.gz
+
+.gemini/extensions/github/*.json
