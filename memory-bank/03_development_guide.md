@@ -4,30 +4,157 @@
 
 *   Docker
 *   Docker Compose
-*   Perlbrew (ローカル実行の場合)
-*   Ansible (デプロイテストの場合)
 
 ### セットアップ手順
 
 1.  **Docker環境での開発:**
-    *   デプロイの検証のため、Dockerコンテナを起動します。
-    ```shell
-    $ make build
-    $ make run
-    $ docker ps
-    # CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
-    # ce4f157d2c1f        fswiki-db-server:latest     "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        22/tcp, 0.0.0.0:3306->3306/tcp                       fswiki_mysql_1
-    # f6a4b9c9f246        fswiki-wiki-server:latest   "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:5000->5000/tcp   fswiki_wiki_1
+    *   FSWikiをDocker環境で動作させるための設定を行います。
 
-    # コンテナに入る
-    $ docker exec -it fswiki_wiki_1 bash
-    ```
-    *   Docker内部でfswikiをsystemctlから操作可能です。
-    ```shell
-    $ sudo systemctl start fswiki
-    $ sudo systemctl stop fswiki
-    $ sudo systemctl restart fswiki
-    ```
+    *   **`docker/debian/Dockerfile` の修正:**
+        `debian:bookworm-slim` をベースイメージとし、PerlbrewとCarton、および必要なビルド依存関係をインストールします。
+        ```dockerfile
+        FROM debian:bookworm-slim
+
+        # 環境変数の設定
+        ENV TZ Asia/Tokyo
+        ENV ROOT_PASSWORD root
+        ENV LANG ja_JP.UTF-8
+        ENV LANGUAGE ja_JP:ja
+        ENV LC_ALL ja_JP.UTF-8
+
+        # ベースパッケージとビルドツールのインストール
+        RUN apt-get update -y && \
+            apt-get install -y \
+            tzdata \
+            init \
+            bash-completion \
+            python3 \
+            locales-all \
+            curl \
+            perl \
+            liblocal-lib-perl \
+            build-essential \
+            libssl-dev \
+            zlib1g-dev \
+            libbz2-dev \
+            liblzma-dev \
+            libdb-dev \
+            libgdbm-dev \
+            libgdbm-compat-dev \
+            libreadline-dev \
+            uuid-dev && \
+            apt-get clean
+
+        # SSHのセットアップ
+        RUN mkdir -p /var/run/sshd && \
+            apt-get install -y openssh-server && \
+            sed -i 's/^#\(PermitRootLogin\).*/\1 yes/' /etc/ssh/sshd_config && \
+            sed -i 's/^\(UsePAM yes\)/# \1/' /etc/ssh/sshd_config && \
+            apt clean
+
+        # PerlbrewとCartonのインストール
+        # perlbrewのインストール、Perl 5.30.2のビルド、cpanmのインストールをまとめて実行
+        RUN curl -L http://install.perlbrew.pl | bash && \
+            echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc && \
+            /bin/bash -c "source ~/.bashrc && \
+            perlbrew init && \
+            perlbrew --notest install 5.30.2 && \
+            perlbrew switch 5.30.2 && \
+            # cpanm自体をインストール
+            curl -L https://cpanmin.us | perl - App::cpanminus && \
+            # cpanmを使ってCartonをインストール
+            cpanm Carton"
+
+        # 作業ディレクトリの設定とcpanfileのコピー
+        WORKDIR /app
+        COPY cpanfile ./
+        COPY start-dev.sh /usr/local/bin/start-dev.sh
+        RUN chmod +x /usr/local/bin/start-dev.sh
+
+        # entrypoint
+        RUN { \
+            echo '#!/bin/bash -eu'; \
+            echo 'ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime'; \
+            echo 'echo "root:${ROOT_PASSWORD}" | chpasswd'; \
+            echo 'exec "$@"' ; \
+            } > /usr/local/bin/entry_point.sh; \
+            chmod +x /usr/local/bin/entry_point.sh;
+
+        EXPOSE 22
+
+        ENTRYPOINT ["entry_point.sh"]
+        CMD ["/usr/sbin/sshd", "-D", "-e"]
+        ```
+
+    *   **`docker-compose.yml` の修正:**
+        ビルドコンテキストをプロジェクトルートに設定し、コンテナ起動時に `carton install` を条件付きで実行し、`plackup` を起動するようにします。
+        ```yaml
+        services:
+          wiki:
+            build:
+              context: .
+              dockerfile: ./docker/debian/Dockerfile
+            image: fswiki-wiki-server:latest
+            hostname: fswiki-wiki-server
+            volumes:
+              - run:/run
+              - .:/app
+            ports:
+              - "5001:5000"
+              - "10080:80"
+            networks:
+              farad_net:
+                ipv4_address: 10.33.1.1
+            environment:
+              - TZ=Asia/Tokyo
+              - ROOT_PASSWORD=fswiki2021
+            working_dir: /app
+            command: ./start-dev.sh
+        #  mysql:
+        #    build: ./docker/debian
+        #    image: fswiki-db-server:latest
+        #    hostname: fswiki-db-server
+        #    privileged: true
+        #    volumes:
+        #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        #      - run:/run
+        #    ports:
+        #      - "3306:3306"
+        #    networks:
+        #      farad_net:
+        #        ipv4_address: 10.33.1.2
+        #    environment:
+        #      - TZ=Asia/Tokyo
+        #      - ROOT_PASSWORD=fswiki2021
+
+        volumes:
+          run:
+
+        networks:
+          farad_net:
+            driver: bridge
+            enable_ipv6: false
+            ipam:
+              driver: default
+              config:
+                - subnet: 10.33.0.0/21
+                  gateway: 10.33.0.1
+        ```
+
+    *   **Dockerコンテナのビルドと起動:**
+        ```shell
+        docker compose down && docker compose up -d --build
+        ```
+
+    *   **初期設定の実行:**
+        `setup.sh` はCGI環境向けのため、PSGI環境では手動で必要なディレクトリを作成します。
+        ```shell
+        docker compose exec wiki bash -c "mkdir -p /app/backup /app/attach /app/pdf /app/log /app/data /app/config /app/theme /app/tmpl /app/tools"
+        docker compose exec wiki bash -c "touch /app/log/access.log /app/log/attach.log /app/log/freeze.log /app/log/download_count.log"
+        ```
+
+    *   **FSWikiへのアクセス:**
+        ブラウザから `http://localhost:5001` にアクセスします。
 
 2.  **Perlbrewを使ったローカル実行:**
     ```sh
@@ -53,22 +180,6 @@
 
     # Perlのアプリケーションサーバを起動
     $ carton exec plackup -r
-    ```
-
-3.  **Ansibleを使ったデプロイテスト:**
-    ```shell
-    $ ansible --version
-    # ansible 2.10.8
-    #   ...
-    #   python version = 3.9.2 (default, Feb 28 2021, 17:03:44) [GCC 10.2.1 20210110]
-
-    $ cd ansible/
-    ```
-    *   varsを編集
-    ```shell
-    $ vim group_vars/all.yml
-    $ chmod +x ./ansible-playbook.sh
-    $ ./ansible-playbook.sh -i [local or production] fswiki-playbook.yml
     ```
 
 ### setup.datの設定
