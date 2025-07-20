@@ -269,4 +269,5 @@ fly.ioを操作するためのMCPサーバー `flymcp` をインストールし�
 3.  **インストール:**
     ```bash
     sudo mv /tmp/flymcp/flymcp /usr/local/bin/
+    rm -rf /tmp/flymcp
     ```

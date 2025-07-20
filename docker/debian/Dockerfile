@@ -22,7 +22,7 @@ WORKDIR /app
 COPY . /app/
 
 # Perlモジュールのインストール
-RUN carton install --exclude develop
+RUN carton install --deployment
 
 # ポートの公開
 EXPOSE 5000
