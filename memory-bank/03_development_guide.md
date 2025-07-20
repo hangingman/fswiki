@@ -20,7 +20,7 @@
     # f6a4b9c9f246        fswiki-wiki-server:latest   "entry_point.sh /usr…"   2 minutes ago       Up 2 minutes        0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:5000->5000/tcp   fswiki_wiki_1
 
     # コンテナに入る
-    $ docker exec -it fswiki-wiki-1 bash
+    $ docker exec -it fswiki_wiki_1 bash
     ```
     *   Docker内部でfswikiをsystemctlから操作可能です。
     ```shell
@@ -31,27 +31,27 @@
 
 2.  **Perlbrewを使ったローカル実行:**
     ```sh
-    // perlbrewの導入
+    # perlbrewの導入
     $ curl -L http://install.perlbrew.pl | bash
     $ echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc
     $ source ~/.bashrc
     $ perlbrew init
 
-    // perl v5.30.2の導入
+    # perl v5.30.2の導入
     $ perlbrew install 5.30.2
     $ perlbrew switch perl-5.30.2
     $ perl -v
     # v5.30.2
 
-    // carton
+    # carton
     $ cpanm Carton
     $ cpanm --local-lib=~/perl5 local::lib
     $ carton install
 
-    // 初回起動の場合(作業ディレクトリを引数で渡す)
+    # 初回起動の場合(作業ディレクトリを引数で渡す)
     $ ./setup.sh `pwd`
 
-    // Perlのアプリケーションサーバを起動
+    # Perlのアプリケーションサーバを起動
     $ carton exec plackup -r
     ```
 
@@ -87,7 +87,7 @@ FreeStyle Wikiでは、ページが変更された場合に管理者にメール
 
 ```
 <FilesMatch "\.(pm|dat|wiki|log)$">
-  deny from ali
+  deny from all
 </FilesMatch>
 ```
 
@@ -119,7 +119,7 @@ BEGIN {
     chdir("C:/Apache/htdocs/fswiki");
 ```
 
-3.5.1以降はApache::Registory環境下でも完全に動作することを確認していますが、それ以前にバージョンでは差分表示やPDF生成など一部の機能の動作に支障がありますApache::PerlRun環境下であれば問題ありません。
+3.5.1以降はApache::Registry環境下でも完全に動作することを確認していますが、それ以前のバージョンでは差分表示やPDF生成など一部の機能の動作に支障があります。Apache::PerlRun環境下であれば問題ありません。
 
 ## ビルドとテスト
 
