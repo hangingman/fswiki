@@ -28,4 +28,4 @@ RUN carton install --exclude develop
 EXPOSE 5000
 
 # アプリケーションの起動
-CMD ["plackup", "-r", "-p", "5000", "--listen", "0.0.0.0"]
+CMD ["starman", "--listen", "0.0.0.0:5000", "app.psgi"]
