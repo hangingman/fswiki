@@ -68,9 +68,8 @@
         # 作業ディレクトリの設定とcpanfileのコピー
         WORKDIR /app
         COPY cpanfile ./
-
-        # carton install をビルド時に実行
-        RUN /bin/bash -c "source ~/perl5/perlbrew/etc/bashrc && carton install"
+        COPY start-dev.sh /usr/local/bin/start-dev.sh
+        RUN chmod +x /usr/local/bin/start-dev.sh
 
         # entrypoint
         RUN { \
@@ -90,7 +89,6 @@
     *   **`docker-compose.yml` の修正:**
         ビルドコンテキストをプロジェクトルートに設定し、コンテナ起動時に `carton install` を条件付きで実行し、`plackup` を起動するようにします。
         ```yaml
-        version: "3.9"  # optional since v1.27.0
         services:
           wiki:
             build:
@@ -98,9 +96,7 @@
               dockerfile: ./docker/debian/Dockerfile
             image: fswiki-wiki-server:latest
             hostname: fswiki-wiki-server
-            privileged: true
             volumes:
-              - /sys/fs/cgroup:/sys/fs/cgroup:ro
               - run:/run
               - .:/app
             ports:
@@ -113,7 +109,7 @@
               - TZ=Asia/Tokyo
               - ROOT_PASSWORD=fswiki2021
             working_dir: /app
-            command: bash -c "source /root/perl5/perlbrew/etc/bashrc && [ ! -f cpanfile.snapshot ] && carton install && carton exec plackup -r -p 5000"
+            command: ./start-dev.sh
         #  mysql:
         #    build: ./docker/debian
         #    image: fswiki-db-server:latest
@@ -153,8 +149,8 @@
     *   **初期設定の実行:**
         `setup.sh` はCGI環境向けのため、PSGI環境では手動で必要なディレクトリを作成します。
         ```shell
-        docker exec fswiki-wiki-1 bash -c "mkdir -p /app/backup /app/attach /app/pdf /app/log /app/data /app/config /app/theme /app/tmpl /app/tools"
-        docker exec fswiki-wiki-1 bash -c "touch /app/log/access.log /app/log/attach.log /app/log/freeze.log /app/log/download_count.log"
+        docker compose exec wiki bash -c "mkdir -p /app/backup /app/attach /app/pdf /app/log /app/data /app/config /app/theme /app/tmpl /app/tools"
+        docker compose exec wiki bash -c "touch /app/log/access.log /app/log/attach.log /app/log/freeze.log /app/log/download_count.log"
         ```
 
     *   **FSWikiへのアクセス:**

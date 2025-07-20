@@ -53,10 +53,8 @@ RUN curl -L http://install.perlbrew.pl | bash && \
 # 作業ディレクトリの設定とcpanfileのコピー
 WORKDIR /app
 COPY cpanfile ./
-
-
-# carton install をビルド時に実行
-RUN /bin/bash -c "source ~/perl5/perlbrew/etc/bashrc && carton install"
+COPY start-dev.sh /usr/local/bin/start-dev.sh
+RUN chmod +x /usr/local/bin/start-dev.sh
 
 # entrypoint
 RUN { \
