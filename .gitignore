@@ -18,3 +18,4 @@ cpanfile.snapshot
 /ansible/roles/fswiki/files/fswiki.tar.gz
 
 .gemini/extensions/github/*.json
+.gemini/extensions/flymcp/

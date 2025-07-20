@@ -240,3 +240,33 @@ BEGIN {
     ```
 *   **テスト:**
     *   テストの実行方法は現在ドキュメント化されていません (TBD)。
+
+### 補助ツールのセットアップ
+
+#### flymcp (fly.io操作用)
+
+fly.ioを操作するためのMCPサーバー `flymcp` をインストールします。
+
+**前提条件:**
+
+*   Go 1.21以上
+*   `flyctl` CLIがインストールされ、PATHが通っていること
+
+**インストール手順:**
+
+1.  **ソースコードのクローン:**
+    ```bash
+    git clone https://github.com/superfly/flymcp.git /tmp/flymcp
+    ```
+
+2.  **ビルド:**
+    ```bash
+    cd /tmp/flymcp
+    go mod download
+    go build -o flymcp
+    ```
+
+3.  **インストール:**
+    ```bash
+    sudo mv /tmp/flymcp/flymcp /usr/local/bin/
+    ```
