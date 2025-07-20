@@ -30,3 +30,16 @@
     *   PerlでWebコンテンツを取得するためのライブラリ群。外部リソースへのアクセスなどに使用されます。
 *   **Algorithm::Diff**:
     *   2つのデータセット間の差分（diff）を計算するためのモジュール。Wikiの変更履歴表示などに利用される可能性があります。
+
+## FSWikiコアモジュールAPIリファレンス
+
+FSWikiのコア機能を提供する主要なPerlモジュールのAPIリファレンスは、`docs/API/` ディレクトリにHTML形式で生成されています。これらのドキュメントは、`makedoc.pl` スクリプトによってPerlモジュールのPOD（Plain Old Documentation）から自動生成されたものです。
+
+*   **Wiki.pm**: FSWikiの主要なAPIを提供します。ページ操作、ユーザー管理、プラグイン管理、URL生成など、Wikiの核となる機能のほとんどがこのモジュールに集約されています。
+    *   [詳細APIリファレンス (docs/API/Wiki.pm.html)](/docs/API/Wiki.pm.html)
+*   **Util.pm**: FSWiki全体で使用されるユーティリティ関数群を提供します。URLエンコード/デコード、HTMLエスケープ、設定ファイルの読み書き、メール送信など、様々な補助機能が含まれます。
+    *   [詳細APIリファレンス (docs/API/Util.pm.html)](/docs/API/Util.pm.html)
+*   **Wiki::Parser.pm**: Wikiフォーマットの文字列をパースし、書式に対応したフックメソッドの呼び出しを行います。Wiki::Parserを継承し、これらのフックメソッドをオーバーライドすることで任意のフォーマットへの変換が可能です。
+    *   [詳細APIリファレンス (docs/API/Parser.pm.html)](/docs/API/Parser.pm.html)
+
+これらのAPIドキュメントは、FSWikiの内部動作を理解し、プラグイン開発などを行う上で非常に重要です。
