@@ -8,7 +8,6 @@ pdf/
 config/
 data/
 tmp/
-cpanfile.snapshot
 Makefile
 release.sh
 setup.sh

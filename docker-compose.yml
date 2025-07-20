@@ -2,13 +2,13 @@
 services:
   wiki:
     build:
-      context: . # ここを修正: ビルドコンテキストをプロジェクトルートに設定
-      dockerfile: ./docker/debian/Dockerfile # Dockerfileのパスを明示的に指定
+      context: .
+      dockerfile: ./docker/debian/Dockerfile
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
     volumes:
       - run:/run
-      - .:/app # ここを追加: ホストの現在のディレクトリをコンテナの/appにマウント
+      - .:/app
     ports:
       - "5001:5000"
       - "10080:80"
@@ -18,8 +18,7 @@ services:
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
-    working_dir: /app # 作業ディレクトリを/appに設定
-    command: ./start-dev.sh # スタートアップスクリプトに分離
+    working_dir: /app
 #  mysql:
 #    build: ./docker/debian
 #    image: fswiki-db-server:latest

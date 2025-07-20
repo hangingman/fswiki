@@ -10,7 +10,6 @@ local/
 .htaccess
 sitemap.xml
 
-cpanfile.snapshot
 .idea/
 !/ansible/inventories/prod/hosts
 !/ansible/roles/fswiki/files/fswiki.tar.gz
