@@ -1,12 +1,5 @@
 .git/
 .gemini/
-local/
-log/
-backup/
-attach/
-pdf/
-config/
-data/
 tmp/
 Makefile
 release.sh

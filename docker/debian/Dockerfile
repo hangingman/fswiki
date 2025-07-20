@@ -19,7 +19,7 @@ RUN apt-get update -y && \
 
 # 作業ディレクトリの設定とcpanfileのコピー
 WORKDIR /app
-COPY cpanfile cpanfile.snapshot ./
+COPY . /app/
 
 # Perlモジュールのインストール
 RUN carton install --exclude develop
