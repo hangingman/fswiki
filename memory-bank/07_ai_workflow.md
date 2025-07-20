@@ -53,3 +53,22 @@ graph TD
         D4 -- コミット・プッシュ前に --> D5[make testの実行];
     end
 ```
+
+### Gemini CLI 拡張機能 (MCPサーバー)
+
+Gemini CLIは、MCP (Machine-to-Claude Protocol) サーバーを介して機能を拡張できます。これにより、ローカルのコマンドやツールをGeminiから利用できるようになります。
+
+#### 設定ファイル
+
+設定はJSONファイルで行い、以下の2つの場所に配置できます。
+
+*   **ユーザーホーム:** `~/.gemini/gemini-settings.json` (macOS/Linux) または `%APPDATA%\Gemini\gemini-settings.json` (Windows)
+    *   すべてのプロジェクトに共通の設定を記述します。
+*   **ワークスペース:** プロジェクトルートの `.gemini/extensions/` ディレクトリ以下
+    *   プロジェクト固有の設定を記述します。ファイル名は任意ですが、 `*-extension.json` のような命名が推奨されます。
+
+#### プロジェクトでの利用
+
+このプロジェクトでは、プロジェクト固有のツール設定を `.gemini/extensions/` 以下に配置します。例えば、`fly.io` を操作するための `flymcp` は、`.gemini/extensions/flymcp/gemini-extension.json` に設定されています。
+
+**注意:** ワークスペースの設定ファイルは、セキュリティ上の理由からGitの追跡対象外とすることが推奨されます。当プロジェクトでも `.gitignore` にて除外設定を行っています。
