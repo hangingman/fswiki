@@ -1,7 +1,7 @@
 version: "3.9"  # optional since v1.27.0
 services:
   wiki:
-    build: ./docker/centos
+    build: ./docker/debian
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
     privileged: true
@@ -18,7 +18,7 @@ services:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
 #  mysql:
-#    build: ./docker/centos
+#    build: ./docker/debian
 #    image: fswiki-db-server:latest
 #    hostname: fswiki-db-server
 #    privileged: true
