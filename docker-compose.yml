@@ -1,13 +1,16 @@
 version: "3.9"  # optional since v1.27.0
 services:
   wiki:
-    build: ./docker/debian
+    build:
+      context: . # ここを修正: ビルドコンテキストをプロジェクトルートに設定
+      dockerfile: ./docker/debian/Dockerfile # Dockerfileのパスを明示的に指定
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - run:/run
+      - .:/app # ここを追加: ホストの現在のディレクトリをコンテナの/appにマウント
     ports:
       - "5001:5000"
       - "10080:80"
@@ -17,6 +20,8 @@ services:
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
+    working_dir: /app # 作業ディレクトリを/appに設定
+    command: bash -c "source /root/perl5/perlbrew/etc/bashrc && [ ! -f cpanfile.snapshot ] && carton install && carton exec plackup -r -p 5000" # ここを追加: plackupを起動
 #  mysql:
 #    build: ./docker/debian
 #    image: fswiki-db-server:latest
@@ -46,4 +51,3 @@ networks:
       config:
         - subnet: 10.33.0.0/21
           gateway: 10.33.0.1
-
