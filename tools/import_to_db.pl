@@ -7,6 +7,7 @@ use DBI;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use File::Spec;
 use File::Path qw(make_path remove_tree);
+use Encode qw(decode FB_CROAK);
 
 # --- 設定 ---
 my $zip_file = shift @ARGV; # 第1引数でzipファイルへのパスを受け取る
@@ -54,7 +55,7 @@ print "Data import completed.\n";
 
 # 5. クリーンアップ
 print "5. Cleaning up temporary files...\n";
-remove_tree($tmp_dir);
+# remove_tree($tmp_dir);
 print "Cleanup completed.\n";
 
 $dbh->disconnect();
@@ -107,23 +108,46 @@ sub import_data {
 
     eval {
         foreach my $file (@files) {
+            print "Processing file: $file\n"; # デバッグログ
             my $file_path = File::Spec->catfile($data_dir, $file);
-            my $content = do { local $/; open my $fh, '<:utf8', $file_path or die "Can't open $file_path: $!"; <$fh> };
+            my $content;
+            # エンコーディングを自動判別して読み込み
+            open my $fh, '<:raw', $file_path or die "Can't open $file_path: $!";
+            my $raw_content = do { local $/; <$fh> };
+            close $fh;
+
+            # UTF-8, Shift_JIS, EUC-JPの順にデコードを試みる
+            if (eval { $content = decode('UTF-8', $raw_content, Encode::FB_CROAK); 1 }) {
+                # UTF-8として成功
+            } elsif (eval { $content = decode('Shift_JIS', $raw_content, Encode::FB_CROAK); 1 }) {
+                # Shift_JISとして成功
+            } elsif (eval { $content = decode('EUC-JP', $raw_content, Encode::FB_CROAK); 1 }) {
+                # EUC-JPとして成功
+            } else {
+                # どれでもない場合はUTF-8で強制デコードし、不正な文字は置換
+                $content = decode('UTF-8', $raw_content, 0x00000004); # Encode::FB_XMLCHAR
+                warn "Warning: Could not decode $file_path with UTF-8, Shift_JIS, or EUC-JP. Forcing UTF-8 with character replacement.\n";
+            }
+
             my $mtime = (stat($file_path))[9];
 
             if ($file =~ /\.wiki$/) {
                 my $page_name = $file;
                 $page_name =~ s/\.wiki$//;
+                print "  Page name (wiki): $page_name\n"; # デバッグログ
                 $data_sth->execute($page_name, $content, $mtime);
                 print "  Imported wiki: $page_name\n";
             } elsif ($file =~ /\.bak$/) {
                 my $page_name = $file;
                 $page_name =~ s/\.bak$//;
+                print "  Page name (backup): $page_name\n"; # デバッグログ
                 $backup_sth->execute($page_name, $content, $mtime);
                 print "  Imported backup: $page_name\n";
-            } elsif ($file =~ /\.attr$/) {
+            }
+            elsif ($file =~ /\.attr$/) {
                 my $page_name = $file;
                 $page_name =~ s/\.attr$//;
+                print "  Page name (attr): $page_name\n"; # デバッグログ
                 # .attrファイルは key=value 形式なのでパースが必要
                 my @lines = split /\n/, $content;
                 foreach my $line (@lines) {
