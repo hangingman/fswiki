@@ -1,4 +1,4 @@
-FROM perl:5.38.2-slim-threaded-bookworm
+FROM perl:5.38
 
 # 環境変数の設定
 ENV TZ Asia/Tokyo
@@ -17,15 +17,21 @@ RUN apt-get update -y && \
     /usr/sbin/locale-gen ja_JP.UTF-8 && \
     apt-get clean
 
-# 作業ディレクトリの設定とcpanfileのコピー
 WORKDIR /app
-COPY . /app/
 
-# Perlモジュールのインストール
+# 1. 依存関係定義ファイルのみを先にコピー
+COPY cpanfile /app/
+# リポジトリにあるsnapshotをコピー
+COPY ./cpanfile.snapshot /app/
+
+
+
+# 3. 依存関係をインストール
+# この時点で local/bin/plackup などが「コンテナ内の正しいshebang」で生成される
 RUN carton install --deployment
 
-# ポートの公開
-EXPOSE 5000
+# 4. アプリケーションのソースコードをコピー
+COPY . /app/
 
-# アプリケーションの起動
-CMD ["starman", "--listen", "0.0.0.0:5000", "app.psgi"]
+# 5. アプリケーションを実行
+CMD ["carton", "exec", "plackup", "-p", "8080", "app.psgi"]
