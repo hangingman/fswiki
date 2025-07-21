@@ -1,0 +1,16 @@
+.git/
+.gemini/
+tmp/
+Makefile
+release.sh
+setup.sh
+.editorconfig
+.gitignore
+.perl-version
+.vscode/
+AGENTS.md
+GEMINI.md
+README.md
+docs/
+memory-bank/
+local/

@@ -10,7 +10,6 @@ local/
 .htaccess
 sitemap.xml
 
-cpanfile.snapshot
 .idea/
 !/ansible/inventories/prod/hosts
 !/ansible/roles/fswiki/files/fswiki.tar.gz
@@ -18,3 +17,4 @@ cpanfile.snapshot
 /ansible/roles/fswiki/files/fswiki.tar.gz
 
 .gemini/extensions/github/*.json
+.gemini/extensions/flymcp/

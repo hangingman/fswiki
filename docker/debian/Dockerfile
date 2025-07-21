@@ -1,71 +1,38 @@
-FROM debian:bookworm-slim
+FROM perl:5.38
 
 # 環境変数の設定
 ENV TZ Asia/Tokyo
-ENV ROOT_PASSWORD root
 ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
+ENV PERL5LIB /app/local/lib/perl5
+ENV PATH /app/local/bin:$PATH
 
 # ベースパッケージとビルドツールのインストール
 RUN apt-get update -y && \
-    apt-get install -y \
+    apt-get install --no-install-recommends -y \
     tzdata \
-    init \
-    bash-completion \
-    python3 \
-    locales-all \
     curl \
-    perl \
-    liblocal-lib-perl \
+    libmariadb-dev \
+    libjpeg-dev libpng-dev libtiff-dev libgif-dev \
+    locales \
     build-essential \
-    libssl-dev \
-    zlib1g-dev \
-    libbz2-dev \
-    liblzma-dev \
-    libdb-dev \
-    libgdbm-dev \
-    libgdbm-compat-dev \
-    libreadline-dev \
-    uuid-dev && \
-    apt-get clean
+    carton && \
+    /usr/sbin/locale-gen ja_JP.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# SSHのセットアップ
-RUN mkdir -p /var/run/sshd && \
-    apt-get install -y openssh-server && \
-    sed -i 's/^#\(PermitRootLogin\).*/\1 yes/' /etc/ssh/sshd_config && \
-    sed -i 's/^\(UsePAM yes\)/# \1/' /etc/ssh/sshd_config && \
-    apt clean
-
-# PerlbrewとCartonのインストール
-# perlbrewのインストール、Perl 5.30.2のビルド、cpanmのインストールをまとめて実行
-RUN curl -L http://install.perlbrew.pl | bash && \
-    echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc && \
-    /bin/bash -c "source ~/.bashrc && \
-    perlbrew init && \
-    perlbrew --notest install 5.30.2 && \
-    perlbrew switch 5.30.2 && \
-    # cpanm自体をインストール
-    curl -L https://cpanmin.us | perl - App::cpanminus && \
-    # cpanmを使ってCartonをインストール
-    cpanm Carton"
-
-# 作業ディレクトリの設定とcpanfileのコピー
 WORKDIR /app
-COPY cpanfile ./
-COPY start-dev.sh /usr/local/bin/start-dev.sh
-RUN chmod +x /usr/local/bin/start-dev.sh
 
-# entrypoint
-RUN { \
-    echo '#!/bin/bash -eu'; \
-    echo 'ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime'; \
-    echo 'echo "root:${ROOT_PASSWORD}" | chpasswd'; \
-    echo 'exec "$@"' ; \
-    } > /usr/local/bin/entry_point.sh; \
-    chmod +x /usr/local/bin/entry_point.sh;
+# 1. 依存関係定義ファイルのみを先にコピー
+COPY cpanfile /app/
+# リポジトリにあるsnapshotをコピー
+COPY ./cpanfile.snapshot /app/
 
-EXPOSE 22
+# 2. 依存関係をインストール
+# この時点で local/bin/plackup などが「コンテナ内の正しいshebang」で生成される
+RUN carton install --deployment
 
-ENTRYPOINT ["entry_point.sh"]
-CMD ["/usr/sbin/sshd", "-D", "-e"]
+# 3. アプリケーションのソースコードをコピー
+COPY . /app/
+
+# 4. アプリケーションを実行
+CMD ["carton", "exec", "starman", "--listen", ":8080", "app.psgi"]
