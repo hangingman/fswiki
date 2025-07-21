@@ -88,13 +88,19 @@ sub get_connection {
 	my $hDB = $self->{db}->{$farm}->{handle};
 
 	if ( !defined($self->{db}->{$farm}->{handle}) ) {
-		my $dbdriver = $self->{db_driver};
-		my $dbname = $self->{db_name};
-		my $dbhost = $self->{db_host};
-		my $user = $self->{db_user};
-		my $pass = $self->{db_pass};
+		my $dbdriver = $ENV{'DB_DRIVER'} || $self->{db_driver};
+		my $dbname = $ENV{'DB_NAME'} || $self->{db_name};
+		my $dbhost = $ENV{'DB_HOST'} || $self->{db_host};
+		my $user = $ENV{'DB_USER'} || $self->{db_user};
+		my $pass = $ENV{'DB_PASS'} || $self->{db_pass};
 
-		my $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
+		my $dsn;
+		if ($dbdriver eq 'mysql') {
+		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
+		} else { # SQLite by default
+		    $dsn = "dbi:$dbdriver:database=$dbname";
+		}
+
 		$hDB = DBI->connect($dsn, $user, $pass, {PrintError=>0});
 		die "$DBI::errstr " if (!$hDB);
 		# キャッシュ
