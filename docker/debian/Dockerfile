@@ -3,10 +3,12 @@ FROM perl:5.38
 # 環境変数の設定
 ENV TZ Asia/Tokyo
 ENV LANG ja_JP.UTF-8
+ENV PERL5LIB /app/local/lib/perl5
+ENV PATH /app/local/bin:$PATH
 
 # ベースパッケージとビルドツールのインストール
 RUN apt-get update -y && \
-    apt-get install -y \
+    apt-get install --no-install-recommends -y \
     tzdata \
     curl \
     libmariadb-dev \
@@ -15,7 +17,8 @@ RUN apt-get update -y && \
     build-essential \
     carton && \
     /usr/sbin/locale-gen ja_JP.UTF-8 && \
-    apt-get clean
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -24,14 +27,12 @@ COPY cpanfile /app/
 # リポジトリにあるsnapshotをコピー
 COPY ./cpanfile.snapshot /app/
 
-
-
-# 3. 依存関係をインストール
+# 2. 依存関係をインストール
 # この時点で local/bin/plackup などが「コンテナ内の正しいshebang」で生成される
 RUN carton install --deployment
 
-# 4. アプリケーションのソースコードをコピー
+# 3. アプリケーションのソースコードをコピー
 COPY . /app/
 
-# 5. アプリケーションを実行
-CMD ["carton", "exec", "plackup", "-p", "8080", "app.psgi"]
+# 4. アプリケーションを実行
+CMD ["carton", "exec", "starman", "--listen", ":8080", "app.psgi"]
