@@ -98,20 +98,41 @@ sub import_data {
     closedir($dh);
 
     my $data_ins_sql = "INSERT INTO `data_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
-    my $sth = $dbh->prepare($data_ins_sql);
+    my $backup_ins_sql = "INSERT INTO `backup_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
+    my $attr_ins_sql = "INSERT INTO `attr_tbl` (`page`, `key`, `value`, `lastmodified`) VALUES (?, ?, ?, ?)";
+
+    my $data_sth = $dbh->prepare($data_ins_sql);
+    my $backup_sth = $dbh->prepare($backup_ins_sql);
+    my $attr_sth = $dbh->prepare($attr_ins_sql);
 
     eval {
         foreach my $file (@files) {
-            next if $file !~ /\.wiki$/;
-            my $page_name = $file;
-            $page_name =~ s/\.wiki$//;
-
             my $file_path = File::Spec->catfile($data_dir, $file);
             my $content = do { local $/; open my $fh, '<:utf8', $file_path or die "Can't open $file_path: $!"; <$fh> };
             my $mtime = (stat($file_path))[9];
 
-            $sth->execute($page_name, $content, $mtime);
-            print "  Imported: $page_name\n";
+            if ($file =~ /\.wiki$/) {
+                my $page_name = $file;
+                $page_name =~ s/\.wiki$//;
+                $data_sth->execute($page_name, $content, $mtime);
+                print "  Imported wiki: $page_name\n";
+            } elsif ($file =~ /\.bak$/) {
+                my $page_name = $file;
+                $page_name =~ s/\.bak$//;
+                $backup_sth->execute($page_name, $content, $mtime);
+                print "  Imported backup: $page_name\n";
+            } elsif ($file =~ /\.attr$/) {
+                my $page_name = $file;
+                $page_name =~ s/\.attr$//;
+                # .attrファイルは key=value 形式なのでパースが必要
+                my @lines = split /\n/, $content;
+                foreach my $line (@lines) {
+                    next unless $line =~ /^([^=]+)=(.*)$/;
+                    my ($key, $value) = ($1, $2);
+                    $attr_sth->execute($page_name, $key, $value, $mtime);
+                    print "  Imported attr: $page_name ($key)\n";
+                }
+            }
         }
         $dbh->commit();
     };
