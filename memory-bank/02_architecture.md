@@ -17,6 +17,7 @@ graph TD
     subgraph Webサーバー
         B1(Server::Starter)
         B2(Starman)
+        B3(Docker Compose)
     end
 
     subgraph Perlアプリケーション
@@ -32,6 +33,7 @@ graph TD
 
     B1 -- プロセス管理 --> B2;
     B2 -- PSGIインターフェース --> C1;
+    B3 -- ローカル開発用 --> C1;
     C1 -- リクエスト処理 --> C2;
     C2 -- コア機能呼び出し --> C3;
     C3 -- データアクセス --> D1;
@@ -43,7 +45,8 @@ graph TD
 *   **クライアント (Webブラウザ):** ユーザーがFSWikiにアクセスし、コンテンツを閲覧・編集するためのインターフェースです。
 *   **Webサーバー:**
     *   **Server::Starter:** アプリケーションプロセスの起動、停止、再起動を管理し、リクエストをワーカープロセスに分散します。
-    *   **Starman:** PSGI (Perl Web Server Gateway Interface) アプリケーションを実行するための高速なPerl HTTPサーバーです。
+    *   **Starman:** PSGI (Perl Web Server Gateway Interface) アプリケーションを実行するための高速なPerl HTTPサーバーです。本番環境でのデプロイに使用されます。
+    *   **Docker Compose:** ローカル開発環境において、`plackup` を使用してFSWikiアプリケーションを起動・管理するために使用されます。
 *   **Perlアプリケーション:**
     *   **Plack:** PSGIアプリケーションを実行するためのフレームワークです。`app.psgi` がエントリポイントとなり、ミドルウェア（セッション管理、CSRF保護など）を提供し、リクエストをアプリケーション本体にルーティングします。
     *   **WikiApplication.pm:** `app.psgi` から呼び出される主要なPSGIアプリケーションモジュールです。`Wiki.pm` のインスタンスを初期化し、リクエストの処理フロー（ユーザー認証、プラグインのロード、アクションハンドラの呼び出し、HTMLレンダリングなど）を統括します。

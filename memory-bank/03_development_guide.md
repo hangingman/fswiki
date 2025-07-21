@@ -10,136 +10,18 @@
 1.  **Docker環境での開発:**
     *   FSWikiをDocker環境で動作させるための設定を行います。
 
-    *   **`docker/debian/Dockerfile` の修正:**
-        `debian:bookworm-slim` をベースイメージとし、PerlbrewとCarton、および必要なビルド依存関係をインストールします。
-        ```dockerfile
-        FROM debian:bookworm-slim
+    *   **`docker/debian/Dockerfile` の設定:**
+        `docker/debian/Dockerfile` は、FSWikiアプリケーションをDockerコンテナ内で実行するためのイメージをビルドします。
+        このDockerfileは、`perl:5.38` をベースイメージとして使用し、必要なシステムパッケージとPerlモジュールをインストールします。
+        特に、`carton install --deployment` を実行することで、`cpanfile.snapshot` に基づいて依存関係を厳密にインストールし、再現可能なビルドを保証します。
+        また、イメージサイズを最適化するために、`apt-get install` に `--no-install-recommends` オプションを使用し、ビルド後に不要なaptキャッシュをクリーンアップします。
+        最終的に、`Starman` を使用してPSGIアプリケーション (`app.psgi`) をポート `8080` で起動します。
 
-        # 環境変数の設定
-        ENV TZ Asia/Tokyo
-        ENV ROOT_PASSWORD root
-        ENV LANG ja_JP.UTF-8
-        ENV LANGUAGE ja_JP:ja
-        ENV LC_ALL ja_JP.UTF-8
-
-        # ベースパッケージとビルドツールのインストール
-        RUN apt-get update -y && \
-            apt-get install -y \
-            tzdata \
-            init \
-            bash-completion \
-            python3 \
-            locales-all \
-            curl \
-            perl \
-            liblocal-lib-perl \
-            build-essential \
-            libssl-dev \
-            zlib1g-dev \
-            libbz2-dev \
-            liblzma-dev \
-            libdb-dev \
-            libgdbm-dev \
-            libgdbm-compat-dev \
-            libreadline-dev \
-            uuid-dev && \
-            apt-get clean
-
-        # SSHのセットアップ
-        RUN mkdir -p /var/run/sshd && \
-            apt-get install -y openssh-server && \
-            sed -i 's/^#\(PermitRootLogin\).*/\1 yes/' /etc/ssh/sshd_config && \
-            sed -i 's/^\(UsePAM yes\)/# \1/' /etc/ssh/sshd_config && \
-            apt clean
-
-        # PerlbrewとCartonのインストール
-        # perlbrewのインストール、Perl 5.30.2のビルド、cpanmのインストールをまとめて実行
-        RUN curl -L http://install.perlbrew.pl | bash && \
-            echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc && \
-            /bin/bash -c "source ~/.bashrc && \
-            perlbrew init && \
-            perlbrew --notest install 5.30.2 && \
-            perlbrew switch 5.30.2 && \
-            # cpanm自体をインストール
-            curl -L https://cpanmin.us | perl - App::cpanminus && \
-            # cpanmを使ってCartonをインストール
-            cpanm Carton"
-
-        # 作業ディレクトリの設定とcpanfileのコピー
-        WORKDIR /app
-        COPY cpanfile ./
-        COPY start-dev.sh /usr/local/bin/start-dev.sh
-        RUN chmod +x /usr/local/bin/start-dev.sh
-
-        # entrypoint
-        RUN { \
-            echo '#!/bin/bash -eu'; \
-            echo 'ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime'; \
-            echo 'echo "root:${ROOT_PASSWORD}" | chpasswd'; \
-            echo 'exec "$@"' ; \
-            } > /usr/local/bin/entry_point.sh; \
-            chmod +x /usr/local/bin/entry_point.sh;
-
-        EXPOSE 22
-
-        ENTRYPOINT ["entry_point.sh"]
-        CMD ["/usr/sbin/sshd", "-D", "-e"]
-        ```
-
-    *   **`docker-compose.yml` の修正:**
-        ビルドコンテキストをプロジェクトルートに設定し、コンテナ起動時に `carton install` を条件付きで実行し、`plackup` を起動するようにします。
-        ```yaml
-        services:
-          wiki:
-            build:
-              context: .
-              dockerfile: ./docker/debian/Dockerfile
-            image: fswiki-wiki-server:latest
-            hostname: fswiki-wiki-server
-            volumes:
-              - run:/run
-              - .:/app
-            ports:
-              - "5001:5000"
-              - "10080:80"
-            networks:
-              farad_net:
-                ipv4_address: 10.33.1.1
-            environment:
-              - TZ=Asia/Tokyo
-              - ROOT_PASSWORD=fswiki2021
-            working_dir: /app
-            command: ./start-dev.sh
-        #  mysql:
-        #    build: ./docker/debian
-        #    image: fswiki-db-server:latest
-        #    hostname: fswiki-db-server
-        #    privileged: true
-        #    volumes:
-        #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-        #      - run:/run
-        #    ports:
-        #      - "3306:3306"
-        #    networks:
-        #      farad_net:
-        #        ipv4_address: 10.33.1.2
-        #    environment:
-        #      - TZ=Asia/Tokyo
-        #      - ROOT_PASSWORD=fswiki2021
-
-        volumes:
-          run:
-
-        networks:
-          farad_net:
-            driver: bridge
-            enable_ipv6: false
-            ipam:
-              driver: default
-              config:
-                - subnet: 10.33.0.0/21
-                  gateway: 10.33.0.1
-        ```
+    *   **`docker-compose.yml` の設定:**
+        `docker-compose.yml` は、ローカル開発環境でFSWikiアプリケーションを起動するための設定を提供します。
+        この設定では、`docker/debian/Dockerfile` を使用して `wiki` サービスをビルドし、ホストのポート `5001` をコンテナのポート `8080` にマッピングします。
+        これにより、ブラウザから `http://localhost:5001` でFSWikiにアクセスできるようになります。
+        `command` フィールドでは、`plackup` を使用してアプリケーションを起動し、ローカル開発に適した設定（例: 自動リロード機能）を提供します。
 
     *   **Dockerコンテナのビルドと起動:**
         ```shell
