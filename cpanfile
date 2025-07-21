@@ -10,7 +10,8 @@ requires 'Regexp::Assemble';
 requires 'TeX::Hyphen';
 requires 'Jcode';
 requires 'DBI';
-requires 'DBD::mysql';
+
+
 requires 'Sub::Util';
 requires 'JSON';
 requires 'MIME::Base64';

@@ -24,7 +24,8 @@ services:
       - DB_PASS=password
     working_dir: /app
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
   mysql:
     image: mysql:8.0
     platform: linux/amd64
@@ -40,6 +41,10 @@ services:
       - TZ=Asia/Tokyo
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=fswiki
+    healthcheck:
+      test: ["CMD", "mysql", "--protocol=tcp", "-h", "localhost", "-u", "root", "-ppassword", "-e", "SELECT 1"]
+      timeout: 60s
+      retries: 30
 
 volumes:
   run:

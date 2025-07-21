@@ -157,6 +157,20 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  DBD-mysql-5.012
+    pathname: D/DV/DVEEDEN/DBD-mysql-5.012.tar.gz
+    provides:
+      DBD::mysql 5.012
+      DBD::mysql::GetInfo undef
+      DBD::mysql::db 5.012
+      DBD::mysql::dr 5.012
+      DBD::mysql::st 5.012
+    requirements:
+      DBI 1.609
+      Data::Dumper 0
+      Devel::CheckLib 1.09
+      ExtUtils::MakeMaker 0
+      perl 5.008001
   DBD-mysqlPP-0.07
     pathname: T/TS/TSUCCHI/DBD-mysqlPP-0.07.tar.gz
     provides:
@@ -314,13 +328,16 @@ DISTRIBUTIONS
       Test::More 0.98
       parent 0
       perl 5.008001
-  Devel-PPPort-3.68
-    pathname: A/AT/ATOOMIC/Devel-PPPort-3.68.tar.gz
+  Devel-CheckLib-1.16
+    pathname: M/MA/MATTN/Devel-CheckLib-1.16.tar.gz
     provides:
-      Devel::PPPort 3.68
+      Devel::CheckLib 1.16
     requirements:
+      Exporter 0
       ExtUtils::MakeMaker 0
-      FindBin 0
+      File::Spec 0
+      File::Temp 0.16
+      perl 5.004050
   Devel-StackTrace-2.05
     pathname: D/DR/DROLSKY/Devel-StackTrace-2.05.tar.gz
     provides:
@@ -753,7 +770,7 @@ DISTRIBUTIONS
       JSON::MaybeXS 1.004008
     requirements:
       Carp 0
-      Cpanel::JSON::XS 2.3310
+      Cpanel::JSON::XS 4.38
       ExtUtils::MakeMaker 0
       JSON::PP 2.27300
       Scalar::Util 0
@@ -1254,16 +1271,6 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Scalar-List-Utils-1.55
-    pathname: P/PE/PEVANS/Scalar-List-Utils-1.55.tar.gz
-    provides:
-      List::Util 1.55
-      List::Util::XS 1.55
-      Scalar::Util 1.55
-      Sub::Util 1.55
-    requirements:
-      ExtUtils::MakeMaker 0
-      perl 5.006
   Scope-Guard-0.21
     pathname: C/CH/CHOCOLATE/Scope-Guard-0.21.tar.gz
     provides:
