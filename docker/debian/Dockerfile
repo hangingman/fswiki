@@ -23,7 +23,7 @@ RUN apt-get update -y && \
 WORKDIR /app
 
 # logディレクトリと必要なログファイルを作成
-RUN mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}
+RUN bash -c "mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}"
 
 # 1. 依存関係定義ファイルのみを先にコピー
 COPY cpanfile /app/
