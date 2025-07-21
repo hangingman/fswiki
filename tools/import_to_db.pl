@@ -2,8 +2,7 @@
 use strict;
 use warnings;
 use Cwd;
-use lib ('./lib', './local/lib/perl5');
-use Wiki;
+
 use DBI;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use File::Spec;

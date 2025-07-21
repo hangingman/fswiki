@@ -89,6 +89,23 @@ services:
       - mysql
 ```
 
+**デバッグ中に判明した重要な知見:**
+
+*   **`docker-compose.yml`の`environment`による環境変数の上書き:**
+    `docker-compose.yml`の`environment`セクションで`PATH`や`PERL5LIB`のような環境変数を定義すると、`Dockerfile`で設定された同名の環境変数を上書きしてしまいます。これにより、コンテナ内のPerl実行環境が壊れ、`carton`やPerlモジュールが見つからなくなる問題が発生しました。
+    **解決策:** `docker-compose.yml`の`environment`セクションからは、`Dockerfile`で設定されるべき環境変数（`PATH`, `PERL5LIB`など）を削除し、アプリケーション固有の環境変数（`DB_DRIVER`, `DB_HOST`など）のみを記述するようにします。
+
+*   **ボリュームマウントによる`local`ディレクトリの上書き:**
+    `docker-compose.yml`の`volumes: - .:/app`という設定は、ホストのカレントディレクトリをコンテナの`/app`にマウントします。この際、`Dockerfile`の`RUN carton install --deployment`でインストールされたモジュールが格納される`/app/local`ディレクトリが、ホスト側の空のディレクトリで上書きされてしまい、`carton`がモジュールを見つけられなくなる問題が発生しました。
+    **解決策:** `wiki`サービスの`volumes`に`local-deps:/app/local`を追加し、最下層に`local-deps: {}`を定義することで、`/app/local`ディレクトリを名前付きボリュームとして保護し、ホストからの上書きを防ぎます。
+
+*   **`carton exec`の重要性:**
+    Perlの依存関係管理には`carton`を使用しており、Perlスクリプトを実行する際には`carton exec`を介して実行することが重要です。これにより、`carton`が管理しているモジュールがPerlの検索パス（`@INC`）に自動的に追加され、モジュールが見つからない問題を回避できます。
+
+*   **`plugin/dbi/extension`ディレクトリの欠如:**
+    `plugin/dbi/StandardDatabaseStorage.pm`の`_load_extension`サブルーチンが、存在しない`plugin/dbi/extension`ディレクトリを読み込もうとして`readdir() attempted on invalid dirhandle DIR`エラーが発生しました。
+    **解決策:** `plugin/dbi/extension`ディレクトリを作成することで、このエラーを解消しました。
+
 ### 4.3. インポートツールの開発 (`tools/import_to_db.pl`)
 
 `wikidb.cgi` のロジックを参考に、`admin_export` で作成されたzipファイルを展開し、中のデータをDBに登録するCLIツールを開発します。

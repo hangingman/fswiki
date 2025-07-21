@@ -8,6 +8,7 @@ services:
     hostname: fswiki-wiki-server
     volumes:
       - .:/app
+      - local-deps:/app/local
     ports:
       - "5001:8080"
     networks:
@@ -16,15 +17,12 @@ services:
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
-      - PERL5LIB=/app/local/lib/perl5
-      - PATH=/app/local/bin:$PATH
       - DB_DRIVER=mysql
       - DB_HOST=mysql
       - DB_NAME=fswiki
       - DB_USER=root
       - DB_PASS=password
     working_dir: /app
-    command: carton exec plackup -p 8080 --listen 0.0.0.0 app.psgi
     depends_on:
       - mysql
   mysql:
@@ -46,6 +44,7 @@ services:
 volumes:
   run:
   mysql-data:
+  local-deps: {}
 
 networks:
   farad_net:
