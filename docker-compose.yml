@@ -7,7 +7,8 @@ services:
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
     volumes:
-      - run:/run
+      - .:/app
+      - local-deps:/app/local
     ports:
       - "5001:8080"
     networks:
@@ -16,29 +17,39 @@ services:
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
-      - PERL5LIB=/app/local/lib/perl5
-      - PATH=/app/local/bin:$PATH
+      - DB_DRIVER=mysql
+      - DB_HOST=mysql
+      - DB_NAME=fswiki
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASS:-password}
     working_dir: /app
-    command: carton exec plackup -p 8080 --listen 0.0.0.0 app.psgi
-#  mysql:
-#    build: ./docker/debian
-#    image: fswiki-db-server:latest
-#    hostname: fswiki-db-server
-#    privileged: true
-#    volumes:
-#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-#      - run:/run
-#    ports:
-#      - "3306:3306"
-#    networks:
-#      farad_net:
-#        ipv4_address: 10.33.1.2
-#    environment:
-#      - TZ=Asia/Tokyo
-#      - ROOT_PASSWORD=fswiki2021
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mysql:
+    image: mysql:8.0
+    platform: linux/amd64
+    hostname: fswiki-db-server
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      farad_net:
+        ipv4_address: 10.33.1.2
+    environment:
+      - TZ=Asia/Tokyo
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=fswiki
+    healthcheck:
+      test: ["CMD", "mysql", "--protocol=tcp", "-h", "localhost", "-u", "root", "-ppassword", "-e", "SELECT 1"]
+      timeout: 60s
+      retries: 30
 
 volumes:
   run:
+  mysql-data:
+  local-deps: {}
 
 networks:
   farad_net:

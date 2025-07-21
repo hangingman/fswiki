@@ -80,7 +80,7 @@ farmconf_file = farmconf.dat
 script_name = wiki.cgi
 
 # ストレージのクラス名
-storage = Wiki::DefaultStorage
+storage = plugin::dbi::StandardDatabaseStorage
 
 # バックアップ世代数（0だと無制限）
 backup = 1
