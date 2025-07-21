@@ -83,7 +83,7 @@ FSWikiはデータベースとしてMySQL互換データベースを使用しま
 Fly.ioにデプロイする場合、機密性の高いデータベース接続情報（ホスト、ポート、データベース名、ユーザー名、パスワード）は、`flyctl secrets set` コマンドを使用してFly.ioのシークレットとして設定します。これにより、これらの情報がGitリポジトリにコミットされることを防ぎ、安全に管理できます。
 
 ```bash
-flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YOUR_TIDB_DATABASE" DB_USER="YOUR_TIDB_USER" DB_PASSWORD="YOUR_TIDB_PASSWORD" --app fswiki
+flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YOUR_TIDB_DATABASE" DB_USER="YOUR_TIDB_USER" DB_PASS="YOUR_TIDB_PASSWORD" --app fswiki
 ```
 
 `YOUR_TIDB_...` の部分は、実際のTiDBの接続情報に置き換えてください。`--app fswiki` は、対象のFly.ioアプリケーション名を指定します。
@@ -94,7 +94,7 @@ flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YO
 
 ```yaml
     environment:
-      - DB_DRIVER=mysql
+      - DBI_DRIVER=mysql
       - DB_HOST=mysql
       - DB_NAME=fswiki
       - DB_USER=${DB_USER:-root}
