@@ -74,6 +74,35 @@ FreeStyle Wikiでは、ページが変更された場合に管理者にメール
 
 また、rssやamazonなど、一部のプラグインはプログラム中からHTTPで外部のサーバに接続します。プロキシを使用している場合はproxy_host、proxy_port、proxy_user、proxy_passを設定しておく必要があります（proxy_userとproxy_passは認証が必要な場合のみ）。
 
+### データベース設定
+
+FSWikiはデータベースとしてMySQL互換データベースを使用します。データベース接続情報は環境変数を通じてアプリケーションに提供されます。
+
+#### Fly.ioでの設定
+
+Fly.ioにデプロイする場合、機密性の高いデータベース接続情報（ホスト、ポート、データベース名、ユーザー名、パスワード）は、`flyctl secrets set` コマンドを使用してFly.ioのシークレットとして設定します。これにより、これらの情報がGitリポジトリにコミットされることを防ぎ、安全に管理できます。
+
+```bash
+flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YOUR_TIDB_DATABASE" DB_USER="YOUR_TIDB_USER" DB_PASS="YOUR_TIDB_PASSWORD" --app fswiki
+```
+
+`YOUR_TIDB_...` の部分は、実際のTiDBの接続情報に置き換えてください。`--app fswiki` は、対象のFly.ioアプリケーション名を指定します。
+
+#### ローカル開発環境での設定
+
+ローカル開発環境では、`docker-compose.yml` を通じてデータベース接続情報がDockerコンテナに環境変数として渡されます。`docker-compose.yml` の `wiki` サービス内の `environment` セクションを確認してください。
+
+```yaml
+    environment:
+      - DBI_DRIVER=mysql
+      - DB_HOST=mysql
+      - DB_NAME=fswiki
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASS:-password}
+```
+
+`DB_USER` と `DB_PASS` は、ホスト環境変数があればそれを使用し、なければデフォルト値（`root` と `password`）を使用するよう設定されています。これにより、ローカル環境では追加の `.env` ファイルやPerlアプリケーションでの環境変数読み込み設定は不要です。
+
 ### セキュリティ
 
 上記で解説したインストール方法ではsetup.datや各種データを保存しているディレクトリをHTTPで参照できてしまいます。セキュリティ上問題になるようであれば.htaccessを使用してアクセス制限を行ってください。
