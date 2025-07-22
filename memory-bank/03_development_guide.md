@@ -21,7 +21,7 @@
         `docker-compose.yml` は、ローカル開発環境でFSWikiアプリケーションを起動するための設定を提供します。
         この設定では、`docker/debian/Dockerfile` を使用して `wiki` サービスをビルドし、ホストのポート `5001` をコンテナのポート `8080` にマッピングします。
         これにより、ブラウザから `http://localhost:5001` でFSWikiにアクセスできるようになります。
-        `command` フィールドでは、`env-exec` スクリプトを介して `Starman` を使用してアプリケーションを起動します。
+        `command` フィールドでは、`env-exec` スクリプトを介して `Starman` を使用してアプリケーションを起動します。`env-exec` は、Perlの実行パス（`PATH`）とライブラリパス（`PERL5LIB`）を適切に設定し、Dockerコンテナ内で複数のPerlバージョンが共存する問題（詳細は[技術ノート: Docker環境におけるPerlの複数バージョン問題と解決策](../details/technical_notes.md#docker環境におけるperlの複数バージョン問題と解決策)を参照）を解決します。これにより、`Starman` やその他のPerlスクリプトが常に意図したPerl環境で実行されることが保証されます。
 
     *   **Dockerコンテナのビルドと起動:**
         ```shell
