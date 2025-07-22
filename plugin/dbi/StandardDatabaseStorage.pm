@@ -32,6 +32,7 @@ sub new {
 	$self->{db_name}   = $wiki->{'config'}->{'db_name'};
 	$self->{db_user}   = $wiki->{'config'}->{'db_user'};
 	$self->{db_pass}   = $wiki->{'config'}->{'db_pass'};
+	$self->{db_port}   = $wiki->{'config'}->{'db_port'};
 
 	# Farmでのパスの置換え
 	my $cgi = $wiki->{CGI};
@@ -91,12 +92,13 @@ sub get_connection {
 		my $dbdriver = $ENV{'DB_DRIVER'} || $self->{db_driver};
 		my $dbname = $ENV{'DB_NAME'} || $self->{db_name};
 		my $dbhost = $ENV{'DB_HOST'} || $self->{db_host};
+		my $dbport = $ENV{'DB_PORT'} || $self->{db_port};
 		my $user = $ENV{'DB_USER'} || $self->{db_user};
 		my $pass = $ENV{'DB_PASS'} || $self->{db_pass};
 
 		my $dsn;
 		if ($dbdriver eq 'mysql') {
-		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost";
+		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost;port=$dbport";
 		} else { # SQLite by default
 		    $dsn = "dbi:$dbdriver:database=$dbname";
 		}
