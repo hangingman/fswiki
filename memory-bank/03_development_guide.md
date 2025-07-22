@@ -116,7 +116,7 @@ flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YO
 
 ```yaml
     environment:
-      - DBI_DRIVER=mysql
+      - DB_DRIVER=mysql
       - DB_HOST=mysql
       - DB_NAME=fswiki
       - DB_USER=${DB_USER:-root}

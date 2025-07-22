@@ -98,7 +98,7 @@ sub get_connection {
 
 		my $dsn;
 		if ($dbdriver eq 'mysql') {
-		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost;port=$dbport";
+		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost;port=$dbport;mysql_ssl=1";
 		} else { # SQLite by default
 		    $dsn = "dbi:$dbdriver:database=$dbname";
 		}

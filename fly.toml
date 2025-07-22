@@ -23,4 +23,4 @@ primary_region = 'nrt'
   dockerfile = "docker/debian/Dockerfile"
 
 [env]
-  DBI_DRIVER = "mysql"
+  DB_DRIVER = "mysql"
