@@ -43,6 +43,7 @@ WORKDIR /app
 RUN bash -c "mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}"
 
 # 1. 依存関係定義ファイルのみを先にコピー
+RUN cpanm Carton::Snapshot --notest --quiet
 RUN cpanm App::cpm --notest --quiet
 
 COPY ./cpanfile /app
