@@ -1,10 +1,10 @@
 FROM perl:5.38
 
 # 環境変数の設定
-ENV TZ Asia/Tokyo
-ENV LANG ja_JP.UTF-8
-ENV PERL5LIB /app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi
-ENV PATH /usr/local/bin:/app/local/bin:$PATH
+ENV TZ=Asia/Tokyo
+ENV LANG=ja_JP.UTF-8
+ENV PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi
+ENV PATH=/usr/local/bin:/app/local/bin:$PATH
 
 # ベースパッケージのインストール
 RUN apt-get update -y && \
@@ -39,22 +39,10 @@ RUN apt-get update -y && \
 
 WORKDIR /app
 
-# logディレクトリと必要なログファイルを作成
-RUN bash -c "mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}"
-
-# 1. 依存関係定義ファイルのみを先にコピー
-RUN cpanm Carton::Snapshot --notest --quiet
-
 COPY ./cpanfile /app
-COPY ./cpanfile.snapshot /app
+RUN cpanm Carton --notest --quiet
+ENV PERL_CPANM_OPT="--notest"
 
-# 2. 依存関係をインストール
-RUN curl -fsSL https://raw.githubusercontent.com/skaji/cpm/main/cpm | /usr/local/bin/perl - install -g App::cpm
-RUN cpm --version
-RUN cpm install --without-develop --without-test
+# 下記コマンドでcpanfile.snapshotを生成
+# `docker compose -f docker-compose.dev.yml exec dev carton install`
 
-# 3. アプリケーションのソースコードをコピー
-COPY . /app/
-
-# 4. アプリケーションを実行
-CMD ["carton", "exec", "perl", "-S", "starman", "--listen", ":8080", "app.psgi"]

@@ -13,7 +13,7 @@ requires 'TeX::Hyphen';
 requires 'Jcode';
 requires 'DBI';
 requires 'DBD::mysql';
-
+requires 'Carton::Snapshot';
 requires 'Sub::Util';
 requires 'JSON';
 requires 'MIME::Base64';

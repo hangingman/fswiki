@@ -1,0 +1,15 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - .:/app
+      # インストールしたモジュール(local/)を永続化
+      - perl_modules:/app/local
+    # コンテナを起動したままにする設定
+    tty: true
+    stdin_open: true
+
+volumes:
+  perl_modules:
