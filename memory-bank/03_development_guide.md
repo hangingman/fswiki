@@ -11,17 +11,17 @@
     *   FSWikiをDocker環境で動作させるための設定を行います。
 
     *   **`docker/debian/Dockerfile` の設定:**
-        `docker/debian/Dockerfile` は、FSWikiアプリケーションをDockerコンテナ内で実行するためのイメージをビルドします。
+        `docker/debian/Dockerfile` は、FSWikiアプリケーションをDockerコンテナ内で実行するための本番用イメージをビルドします。
         このDockerfileは、`perl:5.38` をベースイメージとして使用し、必要なシステムパッケージとPerlモジュールをインストールします。
-        特に、`carton install --deployment` を実行することで、`cpanfile.snapshot` に基づいて依存関係を厳密にインストールし、再現可能なビルドを保証します。
+        依存関係のインストールには `cpm` を使用し、`cpanfile.snapshot` に基づいてモジュールを厳密にインストールすることで、再現可能なビルドを保証します。
         また、イメージサイズを最適化するために、`apt-get install` に `--no-install-recommends` オプションを使用し、ビルド後に不要なaptキャッシュをクリーンアップします。
-        最終的に、`Starman` を使用してPSGIアプリケーション (`app.psgi`) をポート `8080` で起動します。
+        最終的に、`env-exec` スクリプトを介して `Starman` を使用し、PSGIアプリケーション (`app.psgi`) をポート `8080` で起動します。
 
     *   **`docker-compose.yml` の設定:**
         `docker-compose.yml` は、ローカル開発環境でFSWikiアプリケーションを起動するための設定を提供します。
         この設定では、`docker/debian/Dockerfile` を使用して `wiki` サービスをビルドし、ホストのポート `5001` をコンテナのポート `8080` にマッピングします。
         これにより、ブラウザから `http://localhost:5001` でFSWikiにアクセスできるようになります。
-        `command` フィールドでは、`plackup` を使用してアプリケーションを起動し、ローカル開発に適した設定（例: 自動リロード機能）を提供します。
+        `command` フィールドでは、`env-exec` スクリプトを介して `Starman` を使用してアプリケーションを起動します。`env-exec` は、Perlの実行パス（`PATH`）とライブラリパス（`PERL5LIB`）を適切に設定し、Dockerコンテナ内で複数のPerlバージョンが共存する問題（詳細は[技術ノート: Docker環境におけるPerlの複数バージョン問題と解決策](../details/technical_notes.md#docker環境におけるperlの複数バージョン問題と解決策)を参照）を解決します。これにより、`Starman` やその他のPerlスクリプトが常に意図したPerl環境で実行されることが保証されます。
 
     *   **Dockerコンテナのビルドと起動:**
         ```shell
@@ -37,6 +37,28 @@
 
     *   **FSWikiへのアクセス:**
         ブラウザから `http://localhost:5001` にアクセスします。
+
+    *   **Docker環境におけるPerlの複数バージョン問題と解決策:**
+        Docker環境でPerlアプリケーションを運用する際に発生しうる、Perlの複数バージョン共存問題とその解決策については、以下の技術ノートを参照してください。
+        [技術ノート: Docker環境におけるPerlの複数バージョン問題と解決策](../details/technical_notes.md#docker環境におけるperlの複数バージョン問題と解決策)
+
+    *   **`cpanfile.snapshot` の運用と開発環境:**
+        本プロジェクトでは、依存関係のバージョンを固定し、再現可能なビルドを実現するために `cpanfile.snapshot` を使用します。`cpanfile.snapshot` は、`cpanfile` に記述された依存関係に基づいて `carton install` を実行することで生成されます。
+
+        開発者が `cpanfile` を更新した場合、クリーンな環境で `cpanfile.snapshot` を生成・更新する必要があります。この目的のために、開発専用のDocker環境が用意されています。
+
+        *   **`docker/dev/Dockerfile` の設定:**
+            `docker/dev/Dockerfile` は、`cpanfile.snapshot` を生成するための開発専用コンテナイメージをビルドします。このイメージは、`perl:5.38` をベースに、`Carton` やその他の開発ツールをインストールします。
+
+        *   **`docker-compose.dev.yml` の設定:**
+            `docker-compose.dev.yml` は、`docker/dev/Dockerfile` を使用して `dev` サービスを定義します。このサービスは、`cpanfile.snapshot` の生成に必要な環境を提供し、`perl_modules` ボリュームを使用してインストールされたモジュールを永続化します。
+
+        *   **`cpanfile.snapshot` の生成手順:**
+            `cpanfile` を更新した後、以下のコマンドを実行して `cpanfile.snapshot` を生成・更新します。
+            ```bash
+            docker compose -f docker-compose.dev.yml exec dev carton install
+            ```
+            このコマンドは、`dev` サービスコンテナ内で `carton install` を実行し、`cpanfile.snapshot` を更新します。更新された `cpanfile.snapshot` はGitにコミットしてください。
 
 2.  **Perlbrewを使ったローカル実行:**
     ```sh

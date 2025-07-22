@@ -19,3 +19,64 @@ FSWikiのリリース履歴と主要な変更点は、`docs/changes.html` に詳
 より詳細な変更履歴は、以下のファイルを参照してください。
 
 [docs/changes.html](/docs/changes.html)
+
+## Docker環境におけるPerlの複数バージョン問題と解決策
+
+### 根本原因の再確認
+
+問題の核心は、**Dockerイメージ内に2つの異なるバージョンのPerlが共存していること**、そして**アプリケーションサーバー（Starman）の起動スクリプトが、意図しない古い方のPerl（`/usr/bin/perl` v5.36.0）を明示的に指定してしまっていること**にあります。
+
+  * **意図した環境**: `Dockerfile` で `FROM perl:5.38` を指定したことで導入された **Perl 5.38.4** (`/usr/local/bin/perl`)
+  * **実際に使用された環境**: DebianのOSにデフォルトで含まれている **Perl 5.36.0** (`/usr/bin/perl`)
+
+`carton install` でインストールされた `DBD::mysql` などのモジュールはPerl 5.38.4の管理下に置かれます。しかし、Starmanが古いPerl 5.36.0で起動されるため、そのモジュールパス（`@INC`）には5.38.4用のディレクトリが含まれず、「Can't locate DBD/mysql.pm」エラーが発生します。
+
+### 解決策
+
+この問題を解決するには、アプリケーションが常に意図したPerlバージョン（この場合は5.38.4）で実行されるように起動方法を修正します。以下にいくつかの具体的な解決策を提示します。
+
+#### 1. Shebangを `#!/usr/bin/env perl` に変更する（推奨）
+
+`carton` や `starman` の実行スクリプトのShebang（1行目の `#!...`）を修正するのが最もクリーンでポータブルな解決策です。
+
+  * **変更前**: `#!/usr/bin/perl`
+  * **変更後**: `#!/usr/bin/env perl`
+
+`#!/usr/bin/env perl` は、環境変数 `PATH` を検索して最初に見つかった `perl` を使用します。Fly.ioのコンテナ環境では `/usr/local/bin` が `/usr/bin` より優先されるため、これにより自動的に `/usr/local/bin/perl` (v5.38.4) が選択されるようになります。
+
+ローカルの `cpanfile.snapshot` や `local/` ディレクトリにあるスクリプトのShebangを修正してください。
+
+#### 2. 実行コマンドで明示的にPerlを指定する
+
+Shebangを直接編集できない場合や、より確実に制御したい場合は、`fly.toml` の `[processes]` (またはDockerfileの `CMD`) でPerlインタープリタを明示的に指定してスクリプトを起動します。
+
+`carton` が管理する `PATH` を利用して `starman` を見つける `-S` オプションと組み合わせるのが効果的です。
+
+```toml
+# fly.toml
+
+[processes]
+  # 例
+  web = "carton exec -- perl -S starman --port $PORT --workers 3 app.psgi"
+```
+
+このコマンドは、まず `carton` が設定した環境下で、`PATH` の通った `perl` (つまりv5.38.4) を使って、同じく `PATH` から `starman` スクリプトを探して実行します。これにより、Shebangの設定に依存せず、常に正しいPerlで起動できます。
+
+#### 3. Dockerfileでシンボリックリンクを張る
+
+Dockerfile内で、システムのPerlを新しいPerlへのシンボリックリンクで上書きする方法もあります。これはやや強引ですが、既存のスクリプトを一切変更したくない場合に有効です。
+
+```dockerfile
+# Dockerfile
+
+FROM perl:5.38
+
+# ... (他のRUNコマンドなど) ...
+
+# システムのperlを新しいperlに強制的に差し替える
+RUN ln -sf /usr/local/bin/perl /usr/bin/perl
+
+# ... (以降のビルドステップ) ...
+```
+
+この方法を取ることで、`#!/usr/bin/perl` というShebangを持つすべてのスクリプトが、自動的に `/usr/local/bin/perl` を使うようになります。

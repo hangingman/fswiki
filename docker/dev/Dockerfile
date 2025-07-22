@@ -39,21 +39,9 @@ RUN apt-get update -y && \
 
 WORKDIR /app
 
-# logディレクトリと必要なログファイルを作成
-RUN bash -c "mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}"
-
-# 1. 依存関係定義ファイルのみを先にコピー
-RUN cpanm App::cpm --notest --quiet
-
 COPY ./cpanfile /app
-COPY ./cpanfile.snapshot /app
+RUN cpanm Carton --notest --quiet
 
-# 2. 依存関係をインストール
-RUN cpm --version
-RUN cpm install --without-develop --without-test
+# 下記コマンドでcpanfile.snapshotを生成
+# `docker compose -f docker-compose.dev.yml exec dev carton install`
 
-# 3. アプリケーションのソースコードをコピー
-COPY . /app
-
-# 4. アプリケーションを実行
-CMD ["./env-exec", "/app/local/bin/starman", "--listen", ":8080", "app.psgi"]
