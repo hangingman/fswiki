@@ -125,6 +125,25 @@ flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YO
 
 `DB_USER` と `DB_PASS` は、ホスト環境変数があればそれを使用し、なければデフォルト値（`root` と `password`）を使用するよう設定されています。これにより、ローカル環境では追加の `.env` ファイルやPerlアプリケーションでの環境変数読み込み設定は不要です。
 
+#### リモートデータベースのテーブル作成
+
+開発環境からリモートのデータベース（Fly.io上のTiDBなど）に対して、テーブルスキーマのみを作成することができます。
+
+`docker-compose.dev.yml` で定義された開発用コンテナ (`dev` サービス) を利用し、環境変数を直接渡して `tools/import_to_db.pl` スクリプトを実行します。
+
+```bash
+docker compose -f docker-compose.dev.yml exec dev bash -c " \
+  DB_DRIVER=mysql \
+  DB_HOST='<YOUR_TIDB_HOST>:<YOUR_TIDB_PORT>' \
+  DB_NAME='<YOUR_TIDB_DATABASE>' \
+  DB_USER='<YOUR_TIDB_USER>' \
+  DB_PASS='<YOUR_TIDB_PASSWORD>' \
+  perl tools/import_to_db.pl --schema-only"
+```
+
+`<YOUR_TIDB_...>` の部分は、実際の接続情報に置き換えてください。
+
+
 ### セキュリティ
 
 上記で解説したインストール方法ではsetup.datや各種データを保存しているディレクトリをHTTPで参照できてしまいます。セキュリティ上問題になるようであれば.htaccessを使用してアクセス制限を行ってください。

@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Cwd;
+use Getopt::Long; # 追加
 
 use DBI;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
@@ -9,9 +10,15 @@ use File::Spec;
 use File::Path qw(make_path remove_tree);
 use Encode qw(decode FB_CROAK);
 
+# --- オプション解析 ---
+my $schema_only = 0;
+GetOptions('schema-only' => \$schema_only);
+
 # --- 設定 ---
-my $zip_file = shift @ARGV; # 第1引数でzipファイルへのパスを受け取る
-die "Usage: $0 <path_to_export.zip>" unless $zip_file;
+my $zip_file = shift @ARGV; # zipファイルへのパスを受け取る
+if (!$schema_only) {
+    die "Usage: $0 <path_to_export.zip>" unless $zip_file;
+}
 
 my $tmp_dir = File::Spec->catdir(Cwd::cwd(), 'tmp_import');
 
@@ -24,8 +31,28 @@ my $db_pass   = $ENV{'DB_PASS'}   || '';
 
 # --- メイン処理 ---
 
-# 1. zipファイルを解凍
-print "1. Unzipping $zip_file to $tmp_dir...\n";
+# 1. DB接続
+print "1. Connecting to database...\n";
+my $dsn = "dbi:$db_driver:database=$db_name;host=$db_host;mysql_ssl=1"; # SSL接続を有効化
+my $dbh = DBI->connect($dsn, $db_user, $db_pass, { PrintError => 1, RaiseError => 1, AutoCommit => 0 });
+die "DBI connect failed: $DBI::errstr" unless $dbh;
+$dbh->do('SET NAMES utf8mb4');
+print "Database connected.\n";
+
+# 2. テーブル作成
+print "2. Creating tables...\n";
+create_tables($dbh);
+print "Tables created.\n";
+
+# --schema-onlyが指定されている場合はここで終了
+if ($schema_only) {
+    $dbh->disconnect();
+    print "Done (schema only).\n";
+    exit 0;
+}
+
+# 3. zipファイルを解凍
+print "3. Unzipping $zip_file to $tmp_dir...\n";
 remove_tree($tmp_dir) if -d $tmp_dir;
 make_path($tmp_dir);
 
@@ -33,19 +60,6 @@ my $zip = Archive::Zip->new();
 die 'Error reading zip file' unless $zip->read($zip_file) == AZ_OK;
 $zip->extractTree('', "$tmp_dir/");
 print "Unzip completed.\n";
-
-# 2. DB接続
-print "2. Connecting to database...\n";
-my $dsn = "dbi:$db_driver:database=$db_name;host=$db_host";
-my $dbh = DBI->connect($dsn, $db_user, $db_pass, { PrintError => 1, RaiseError => 1, AutoCommit => 0 });
-die "DBI connect failed: $DBI::errstr" unless $dbh;
-$dbh->do('SET NAMES utf8mb4');
-print "Database connected.\n";
-
-# 3. テーブル作成
-print "3. Creating tables...\n";
-create_tables($dbh);
-print "Tables created.\n";
 
 # 4. データインポート
 print "4. Importing data...\n";
