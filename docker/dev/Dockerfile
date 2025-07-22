@@ -41,7 +41,6 @@ WORKDIR /app
 
 COPY ./cpanfile /app
 RUN cpanm Carton --notest --quiet
-ENV PERL_CPANM_OPT="--notest"
 
 # 下記コマンドでcpanfile.snapshotを生成
 # `docker compose -f docker-compose.dev.yml exec dev carton install`

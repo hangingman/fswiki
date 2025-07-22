@@ -22,7 +22,7 @@ services:
       - DB_NAME=fswiki
       - DB_USER=${DB_USER:-root}
       - DB_PASS=${DB_PASS:-password}
-    command: carton exec perl -S starman --listen :8080 app.psgi
+    command: ./env-exec /app/local/bin/starman --listen :8080 app.psgi
     working_dir: /app
     depends_on:
       mysql:

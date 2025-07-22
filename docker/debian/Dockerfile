@@ -1,10 +1,10 @@
 FROM perl:5.38
 
 # 環境変数の設定
-ENV TZ Asia/Tokyo
-ENV LANG ja_JP.UTF-8
-ENV PERL5LIB /app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi
-ENV PATH /usr/local/bin:/app/local/bin:$PATH
+ENV TZ=Asia/Tokyo
+ENV LANG=ja_JP.UTF-8
+ENV PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi
+ENV PATH=/usr/local/bin:/app/local/bin:$PATH
 
 # ベースパッケージのインストール
 RUN apt-get update -y && \
@@ -54,7 +54,7 @@ RUN cpm --version
 RUN cpm install --without-develop --without-test
 
 # 3. アプリケーションのソースコードをコピー
-COPY . /app/
+COPY . /app
 
 # 4. アプリケーションを実行
-CMD ["carton", "exec", "perl", "-S", "starman", "--listen", ":8080", "app.psgi"]
+CMD ["./env-exec", "/app/local/bin/starman", "--listen", ":8080", "app.psgi"]
