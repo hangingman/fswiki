@@ -1,3 +1,5 @@
+requires 'perl', '>= 5.38.0';
+
 requires 'Algorithm::Diff';
 requires 'WWW::RobotRules';
 requires 'LWP';
@@ -10,13 +12,15 @@ requires 'Regexp::Assemble';
 requires 'TeX::Hyphen';
 requires 'Jcode';
 requires 'DBI';
-
+requires 'DBD::mysql';
 
 requires 'Sub::Util';
 requires 'JSON';
 requires 'MIME::Base64';
-
+requires 'Digest::SHA1';
+requires 'WWW::Form::UrlEncoded';
 requires 'Starman';
+requires 'HTTP::Parser::XS';
 requires 'Server::Starter';
 requires 'CGI::PSGI';
 requires 'CGI::Compile';

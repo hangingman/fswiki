@@ -45,20 +45,16 @@ WORKDIR /app
 RUN bash -c "mkdir -p log && touch log/{access.log,attach.log,freeze.log,download_count.log}"
 
 # 1. 依存関係定義ファイルのみを先にコピー
-COPY cpanfile /app/
-# リポジトリにあるsnapshotをコピー
+COPY ./cpanfile /app/
 COPY ./cpanfile.snapshot /app/
 
 # 2. 依存関係をインストール
-# この時点で local/bin/plackup などが「コンテナ内の正しいshebang」で生成される
-# Devel::CheckLibはテストが失敗するため、--forceで強制インストール
-RUN cpanm --force Devel::CheckLib
-# DBD::mysqlをインストール
-RUN cpanm DBD::mysql
-RUN carton install --deployment
+RUN curl -fsSL https://raw.githubusercontent.com/skaji/cpm/main/cpm | /usr/local/bin/perl - install -g App::cpm
+RUN cpm --version
+RUN cpm install --without-develop --without-test
 
 # 3. アプリケーションのソースコードをコピー
 COPY . /app/
 
 # 4. アプリケーションを実行
-CMD ["carton", "exec", "starman", "--listen", ":8080", "app.psgi"]
+CMD ["carton", "exec", "perl", "-S", "starman", "--listen", ":8080", "app.psgi"]
