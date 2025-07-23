@@ -1,4 +1,6 @@
 use Plack::Builder;
+use lib File::Spec->catdir('lib'); # libディレクトリをインクルードパスに追加
+use IPWhitelist;
 use Plack::App::File;
 use Plack::App::Directory;
 use Plack::Middleware::Session;
@@ -11,6 +13,7 @@ use WikiApplication;
 use UUID::Tiny ':std';
 
 builder {
+	enable 'IPWhitelist';
 	# セッション、クッキーの設定をconfig.datから取得
 	my $wiki = Wiki->new('setup.dat', $env);
 	my $dir = $wiki->config('session_dir', $wiki->config('log_dir'));
