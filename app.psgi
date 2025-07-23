@@ -11,15 +11,32 @@ use WikiApplication;
 use UUID::Tiny ':std';
 
 builder {
+    # Redirect middleware
+    enable sub {
+        my $app = shift;
+        return sub {
+            my $env = shift;
+            my $primary_host = $ENV{'PRIMARY_HOST'};
+            my $custom_domain = $ENV{'CUSTOM_DOMAIN'};
+
+            if ($primary_host && $custom_domain && $env->{HTTP_HOST} eq $primary_host) {
+                my $location = 'https://' . $custom_domain . $env->{REQUEST_URI};
+                return [ 301, [ 'Location' => $location ], [ 'Redirecting to ' . $location ] ];
+            }
+
+            return $app->($env);
+        };
+    };
+
+    # reverse-proxy環境で実際のIPアドレスを取得する対応
+    enable_if { $_[0]->{REMOTE_ADDR} eq '127.0.0.1' }
+        'ReverseProxy';
+
 	# セッション、クッキーの設定をconfig.datから取得
 	my $wiki = Wiki->new('setup.dat', $env);
 	my $dir = $wiki->config('session_dir', $wiki->config('log_dir'));
 	my $limit = $wiki->config('session_limit') || 30;
 	my $secret = $wiki->config('secret') || create_uuid(UUID_V4);
-
-	# reverse-proxy環境で実際のIPアドレスを取得する対応
-	enable_if { $_[0]->{REMOTE_ADDR} eq '127.0.0.1' }
-    		'ReverseProxy';
 
 	# PSGIを呼び出す前のPlack側の準備
 	enable Session => (

@@ -22,6 +22,8 @@ services:
       - DB_NAME=fswiki
       - DB_USER=${DB_USER:-root}
       - DB_PASS=${DB_PASS:-password}
+      #- PRIMARY_HOST=localhost:5001
+      #- CUSTOM_DOMAIN=fswiki.example.com
     command: ./env-exec /app/local/bin/starman --listen :8080 app.psgi
     working_dir: /app
     depends_on:
