@@ -11,10 +11,9 @@ local/
 sitemap.xml
 
 .idea/
-!/ansible/inventories/prod/hosts
-!/ansible/roles/fswiki/files/fswiki.tar.gz
-!/ansible/
-/ansible/roles/fswiki/files/fswiki.tar.gz
 
 .gemini/extensions/github/*.json
 .gemini/extensions/flymcp/
+
+tmp_import/
+*.zip

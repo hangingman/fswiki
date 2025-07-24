@@ -10,6 +10,7 @@
 @./memory-bank/06_git_workflow.md
 @./memory-bank/07_ai_workflow.md
 @./memory-bank/08_conversation_guidelines.md
+@./memory-bank/09_database_migration.md
 
 ---
 *このドキュメントはAIによって管理されており、チームの合意に基づいて更新されることがあります。*

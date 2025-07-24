@@ -3,6 +3,6 @@ set -e
 
 # 環境変数の設定
 export PATH="/usr/local/bin:/app/local/bin:$PATH"
-export PERL5LIB="/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi:$PERL5LIB"
+export PERL5LIB="/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu:$PERL5LIB"
 
 exec "$@"

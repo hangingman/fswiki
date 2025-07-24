@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use Cwd;
@@ -112,9 +112,9 @@ sub import_data {
     my @files = readdir($dh);
     closedir($dh);
 
-    my $data_ins_sql = "INSERT INTO `data_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
-    my $backup_ins_sql = "INSERT INTO `backup_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
-    my $attr_ins_sql = "INSERT INTO `attr_tbl` (`page`, `key`, `value`, `lastmodified`) VALUES (?, ?, ?, ?)";
+    my $data_ins_sql = "REPLACE INTO `data_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
+    my $backup_ins_sql = "REPLACE INTO `backup_tbl` (`page`, `source`, `lastmodified`) VALUES (?, ?, ?)";
+    my $attr_ins_sql = "REPLACE INTO `attr_tbl` (`page`, `key`, `value`, `lastmodified`) VALUES (?, ?, ?, ?)";
 
     my $data_sth = $dbh->prepare($data_ins_sql);
     my $backup_sth = $dbh->prepare($backup_ins_sql);

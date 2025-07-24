@@ -3,7 +3,7 @@ FROM perl:5.38
 # 環境変数の設定
 ENV TZ=Asia/Tokyo
 ENV LANG=ja_JP.UTF-8
-ENV PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu:/app/local/lib/perl5/x86_64-linux-gnu-thread-multi
+ENV PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu
 ENV PATH=/usr/local/bin:/app/local/bin:$PATH
 
 # ベースパッケージのインストール
@@ -40,7 +40,7 @@ RUN apt-get update -y && \
 WORKDIR /app
 
 COPY ./cpanfile /app
-RUN cpanm Carton --notest --quiet
+RUN cpanm --local-lib=/app/local Carton --notest --quiet
 
 # 下記コマンドでcpanfile.snapshotを生成
 # `docker compose -f docker-compose.dev.yml exec dev carton install`
