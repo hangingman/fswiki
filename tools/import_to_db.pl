@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Cwd;
 use Getopt::Long; # 追加
+use URI::Escape; # 追加
 
 use DBI;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
@@ -146,20 +147,20 @@ sub import_data {
             my $mtime = (stat($file_path))[9];
 
             if ($file =~ /\.wiki$/) {
-                my $page_name = $file;
+                my $page_name = uri_unescape($file);
                 $page_name =~ s/\.wiki$//;
                 print "  Page name (wiki): $page_name\n"; # デバッグログ
                 $data_sth->execute($page_name, $content, $mtime);
                 print "  Imported wiki: $page_name\n";
             } elsif ($file =~ /\.bak$/) {
-                my $page_name = $file;
+                my $page_name = uri_unescape($file);
                 $page_name =~ s/\.bak$//;
                 print "  Page name (backup): $page_name\n"; # デバッグログ
                 $backup_sth->execute($page_name, $content, $mtime);
                 print "  Imported backup: $page_name\n";
             }
             elsif ($file =~ /\.attr$/) {
-                my $page_name = $file;
+                my $page_name = uri_unescape($file);
                 $page_name =~ s/\.attr$//;
                 print "  Page name (attr): $page_name\n"; # デバッグログ
                 # .attrファイルは key=value 形式なのでパースが必要

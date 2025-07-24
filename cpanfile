@@ -13,6 +13,7 @@ requires 'TeX::Hyphen';
 requires 'Jcode';
 requires 'DBI';
 requires 'DBD::mysql';
+requires 'URI::Escape';
 requires 'Carton::Snapshot';
 requires 'Sub::Util';
 requires 'JSON';
