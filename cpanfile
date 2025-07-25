@@ -32,3 +32,5 @@ requires 'Plack::Middleware::CSRFBlock';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'UUID::Tiny';
 requires 'Archive::Zip';
+requires 'Test::More';
+requires 'Perl::Critic';

@@ -1,0 +1,26 @@
+
+# .perlcriticrc
+
+# Severity levels:
+# 1 - Gentle (Don't bother people with this)
+# 2 - Stern (Probably a good idea to fix)
+# 3 - Harsh (There's a bug in your code)
+# 4 - Cruel (It's not even Perl)
+# 5 - Brutal (You're fired)
+
+severity = 3
+
+# .editorconfig settings
+[CodeLayout::RequireConsistentNewlines]
+[CodeLayout::RequireFinalNewline]
+[CodeLayout::RequireTidyCode]
+[CodeLayout::RequireTrailingWhitespace]
+[ValuesAndExpressions::RequireUTF8]
+
+# Custom settings based on .editorconfig
+[CodeLayout::ProhibitHardTabs]
+allow_leading_tabs = 1
+
+[CodeLayout::ProhibitTrailingWhitespace]
+
+[Miscellanea::ProhibitUselessNoCritic]

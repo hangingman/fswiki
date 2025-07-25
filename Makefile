@@ -1,10 +1,18 @@
-.PHONY: all run build
+.PHONY: all run build deps test lint
 
 run:
 	docker compose down
 	docker compose up -d --build
-	ssh-keygen -f "$${HOME}/.ssh/known_hosts" -R "10.33.1.1"
-	ssh-keygen -f "$${HOME}/.ssh/known_hosts" -R "10.33.1.2"
 
 build:
 	docker compose build --no-cache
+
+deps:
+	docker compose -f docker-compose.dev.yml up -d
+	docker compose -f docker-compose.dev.yml exec dev carton install
+
+test: deps
+	docker compose -f docker-compose.dev.yml exec dev prove -l -Iplugin t
+
+lint: deps
+	docker compose -f docker-compose.dev.yml exec dev perlcritic lib plugin
