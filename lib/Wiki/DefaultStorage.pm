@@ -11,6 +11,8 @@
 package Wiki::DefaultStorage;
 use File::Copy;
 use strict;
+use Util;
+use JSON;
 our ($MODTIME_FILE, $PAGE_LIST_FILE);
 
 # ページの最終更新日時を記録するファイル
@@ -702,7 +704,20 @@ sub load_config {
     my $self = shift;
     my $wiki = $self->{wiki};
     my $config_file = $wiki->config('config_file');
-    return Util::load_config_hash($wiki, $config_file);
+
+    my $json_text = Util::load_config_text($wiki, $config_file);
+    if ($json_text eq '') {
+        return {};
+    }
+    my $config_hash;
+    eval {
+        $config_hash = decode_json($json_text);
+    };
+    if ($@) {
+        # JSONパースエラーの場合、空のハッシュリファレンスを返す
+        return {};
+    }
+    return $config_hash;
 }
 
 #===============================================================================
@@ -715,7 +730,9 @@ sub save_config {
     my $hash = shift;
     my $wiki = $self->{wiki};
     my $config_file = $wiki->config('config_file');
-    Util::save_config_hash($wiki, $config_file, $hash);
+
+    my $json_text = encode_json($hash);
+    Util::save_config_text($wiki, $config_file, $json_text);
 }
 
 1;

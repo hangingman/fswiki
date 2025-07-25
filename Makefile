@@ -12,7 +12,7 @@ deps:
 	docker compose -f docker-compose.dev.yml exec dev carton install
 
 test: deps
-	docker compose -f docker-compose.dev.yml exec dev prove -l -Iplugin t
+	docker compose -f docker-compose.dev.yml exec dev prove -l -Iplugin -r t
 
 lint: deps
 	docker compose -f docker-compose.dev.yml exec dev perlcritic lib plugin

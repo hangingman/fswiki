@@ -6,6 +6,7 @@
 package Util;
 use strict;
 use Carp qw( confess );
+use File::Spec;
 
 #===============================================================================
 # <p>
@@ -356,8 +357,9 @@ sub load_config_text {
 	my $wiki     = shift;
 	my $filename = shift;
 	my $fullpath = $filename;
-	if(defined($wiki)){
-		$fullpath = $wiki->config('config_dir')."/$filename";
+
+	if(defined($wiki) && !File::Spec->file_name_is_absolute($filename)){
+		$fullpath = File::Spec->catfile($wiki->config('config_dir'), $filename);
 	}
 
 	if(defined($wiki->{config_cache}->{$fullpath})){
@@ -415,8 +417,8 @@ sub save_config_text {
 	$text =~ s/\r/\n/g;
 
 	my $fullpath = $filename;
-	if(defined($wiki)){
-		$fullpath = $wiki->config('config_dir')."/$filename";
+	if(defined($wiki) && !File::Spec->file_name_is_absolute($filename)){
+		$fullpath = File::Spec->catfile($wiki->config('config_dir'), $filename);
 	}
 
 	my $tmpfile = "$fullpath.tmp";
