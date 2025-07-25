@@ -10,6 +10,31 @@ services:
     # コンテナを起動したままにする設定
     tty: true
     stdin_open: true
+    environment: # devサービスからmysqlサービスに接続するための環境変数を追加
+      - DB_DRIVER=mysql
+      - DB_HOST=mysql
+      - DB_NAME=fswiki_test # テスト用に別のDB名を使用
+      - DB_USER=root
+      - DB_PASS=password
+    depends_on:
+      mysql:
+        condition: service_healthy # mysqlサービスがhealthyになるまで待つ
+
+  mysql: # mysqlサービスを追加
+    image: mysql:8.0
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: fswiki_test # テスト用に別のDB名を使用
+    ports:
+      - "3307:3306" # ホストのポートを3307にマッピング（既存の3306と衝突しないように）
+    volumes:
+      - mysql_dev_data:/var/lib/mysql # 開発用mysqlのデータを永続化
+    healthcheck: # ヘルスチェックを追加
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 volumes:
   perl_modules:
+  mysql_dev_data: # 開発用mysqlのデータボリュームを追加
