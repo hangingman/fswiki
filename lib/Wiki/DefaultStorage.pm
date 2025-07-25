@@ -693,4 +693,29 @@ sub finalize {
 	undef($self->{wiki});
 }
 
+#===============================================================================
+# <p>
+#   設定を読み込みます。
+# </p>
+#===============================================================================
+sub load_config {
+    my $self = shift;
+    my $wiki = $self->{wiki};
+    my $config_file = $wiki->config('config_file');
+    return Util::load_config_hash($wiki, $config_file);
+}
+
+#===============================================================================
+# <p>
+#   設定を保存します。
+# </p>
+#===============================================================================
+sub save_config {
+    my $self = shift;
+    my $hash = shift;
+    my $wiki = $self->{wiki};
+    my $config_file = $wiki->config('config_file');
+    Util::save_config_hash($wiki, $config_file, $hash);
+}
+
 1;

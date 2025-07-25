@@ -26,6 +26,7 @@ sub new {
 	# 設定を読み込み
 	my $setupfile = shift || 'setup.dat';
 	my $env   = shift;
+	# まずはsetup.datからストレージタイプを読み込む
 	$self->{"config"} = &Util::load_config_hash(undef, $setupfile);
 	die "setup file ${setupfile} not found" if (keys %{$self->{"config"}} == 0);
 	$self->{"config"}->{"plugin_dir"} = "."         unless exists($self->{"config"}->{"plugin_dir"});
@@ -58,6 +59,9 @@ sub new {
 		eval ("use ".$self->{config}->{"storage"}.";");
 		$self->{"storage"} = $self->{config}->{"storage"}->new($self);
 	}
+
+	# ストレージから設定を読み込む
+	$self->{"config"} = $self->{"storage"}->load_config();
 
 	return bless $self,$class;
 }
@@ -1562,6 +1566,8 @@ sub config {
 	my $value = shift;
 	if(defined($value)){
 		$self->{config}->{$name} = $value;
+		# 設定が変更されたらストレージに保存
+		$self->{"storage"}->save_config($self->{config});
 	} else {
 		return $self->{config}->{$name};
 	}

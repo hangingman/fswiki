@@ -773,4 +773,43 @@ sub finalize {
 	undef($self->{wiki});
 }
 
+#===============================================================================
+# <p>
+#   設定を保存します。
+# </p>
+#===============================================================================
+sub save_config {
+    my $self = shift;
+    my $hash = shift;
+
+    my $dbh = $self->get_connection();
+
+    foreach my $key (keys(%$hash)) {
+        my $value = $hash->{$key};
+        my $sth = $dbh->prepare("REPLACE INTO config (key_name, value) VALUES (?, ?)");
+        $sth->execute($key, $value);
+    }
+}
+
+#===============================================================================
+# <p>
+#   設定を読み込みます。
+# </p>
+#===============================================================================
+sub load_config {
+    my $self = shift;
+    my $dbh = $self->get_connection();
+
+    my $hash = {};
+    my $sth = $dbh->prepare("SELECT key_name, value FROM config");
+    $sth->execute();
+
+    while (my ($key, $value) = $sth->fetchrow_array) {
+        $hash->{$key} = $value;
+    }
+
+    return $hash;
+}
+
+
 1;

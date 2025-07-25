@@ -109,9 +109,9 @@ sub escapeHTML {
 		'<' => '&lt;',
 		'>' => '&gt;',
 	);
-	$retstr =~ s/([&\"<>])/$table{$1}/go;
-	$retstr =~ s/&amp;#([0-9]{1,5});/&#$1;/go;
-	$retstr =~ s/&#(0*(0|9|10|13|38|60|62));/&amp;#$1;/g;
+	$retstr =~ s/([&"<>])/$table{$1}/go;
+	$retstr =~ s/&amp;#([0-9]{1,5});/&#$1}/go;
+	$retstr =~ s/&#(0*(0|9|10|13|38|60|62));/&amp;#$1}/g;
 	return $retstr;
 }
 
@@ -301,7 +301,7 @@ sub smartphone {
 # load_config_hash関数で使用するアンエスケープ用関数
 #===============================================================================
 {
-	my %table = ("\\\\" => "\\", "\\n" => "\n", "\\r" => "\r");
+	my %table = ("\\" => "\", "\n" => "\n", "\r" => "\r");
 
 	sub _unescape {
 		my $value = shift;
@@ -330,8 +330,8 @@ sub load_config_hash {
 		if(index($line,"#")==0 || $line eq "\n" || $line eq "\r" || $line eq "\r\n"){
 			next;
 		}
-		my ($name, @spl) = map {/^"(.*)"$/ ? scalar($_ = $1, s/\"\"/\"/g, $_) : $_}
-		                     ("=$line" =~ /=\s*(\"[^\"]*(?:\"\"[^\"]*)*\"|[^=]*)/g);
+		my ($name, @spl) = map {/^"(.*)"$/ ? scalar($_ = $1, s/""/"/g, $_) : $_}
+		                     ("=$line" =~ /=(\s*"[^"]*(?:""[^"]*)*"|[^=]*)/g);
 
 		$name  = &trim(_unescape($name));
 		my $value = &trim(_unescape(join('=', @spl)));
@@ -357,7 +357,7 @@ sub load_config_text {
 	my $filename = shift;
 	my $fullpath = $filename;
 	if(defined($wiki)){
-		$fullpath = $wiki->config('config_dir')."/$filename";
+		$fullpath = $wiki->config('config_dir')."/".$filename;
 	}
 
 	if(defined($wiki->{config_cache}->{$fullpath})){
@@ -416,7 +416,7 @@ sub save_config_text {
 
 	my $fullpath = $filename;
 	if(defined($wiki)){
-		$fullpath = $wiki->config('config_dir')."/$filename";
+		$fullpath = $wiki->config('config_dir')."/".$filename;
 	}
 
 	my $tmpfile = "$fullpath.tmp";
@@ -456,7 +456,7 @@ sub sync_update_config {
 
 	my $fullpath = $filename;
 	if(defined($wiki)){
-		$fullpath = $wiki->config('config_dir')."/$filename";
+		$fullpath = $wiki->config('config_dir')."/".$filename;
 	}
 
 	my $tmpfile = "$fullpath.tmp";
@@ -496,10 +496,13 @@ sub _make_quoted_text {
 		$value =~ s/\n/\\n/g;
 		$value =~ s/\r/\\r/g;
 
-		$text .= qq{"$key"="$value"\n};
+		$text .= qq{""$key""=""$value""\n};
 	}
 	return $text;
 }
+
+
+
 
 #===============================================================================
 # <p>
@@ -515,7 +518,7 @@ sub _make_quoted_text {
 sub file_lock {
 	my $lock  = shift() . ".lock";
 	my $retry = shift || 5;
-	debug("file_lock($$): $lock");
+	debug("file_lock($): $lock");
 
 	if(-e $lock){
 		my $mtime = (stat($lock))[9];
@@ -539,7 +542,7 @@ sub file_lock {
 sub file_unlock {
 	my $lock  = shift() . ".lock";
 	rmdir($lock);
-#	debug("file_unlock($$): $lock");
+#	debug("file_unlock($): $lock");
 }
 
 #===============================================================================
@@ -693,42 +696,4 @@ sub make_content_disposition {
 	my ($filename, $disposition) = @_;
 	my $ua = $ENV{"HTTP_USER_AGENT"};
 	my $encoded = ($ua =~ /MSIE/ ? &Jcode::convert($filename, 'sjis') : Jcode->new($filename)->mime_encode(''));
-	return { "Content-Disposition" => "$disposition;filename=\".$encoded.\"" };
-}
-
-#===============================================================================
-# <p>
-#   CGI::Carpモジュールの代わりにdie関数をオーバーライドします。
-#    エラーメッセージを生成した後に本物のdie関数を呼び出します。
-# </p>
-#===============================================================================
-sub _die {
-	my ($arg,@rest) = @_;
-	$arg = join("", ($arg,@rest));
-	my($pack,$file,$line,$sub) = caller(1);
-	$arg .= " at $file line $line." unless $arg=~/\n$/;
-	local $SIG{__DIE__} = \&confess;
-	CORE::die($arg);
-}
-
-#===============================================================================
-# <p>
-#   exit関数をオーバーライドします。
-# </p>
-#===============================================================================
-sub _exit {
-	CORE::die('safe_die');
-}
-
-#===============================================================================
-# <p>
-#   dieとexitのオーバライド操作を解除します。
-# </p>
-#===============================================================================
-sub restore_die{
-	our @original_exit_handler;
-	*CORE::GLOBAL::die = $original_exit_handler[0];
-	*CORE::GLOBAL::exit = $original_exit_handler[1];
-}
-
-1;
+	return { "Content-Disposition" => "$disposition;filename=\"."$encoded.\
