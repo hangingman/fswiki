@@ -295,6 +295,25 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  DBD-SQLite-1.76
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.76.tar.gz
+    provides:
+      DBD::SQLite 1.76
+      DBD::SQLite::Constants undef
+      DBD::SQLite::GetInfo undef
+      DBD::SQLite::VirtualTable 1.76
+      DBD::SQLite::VirtualTable::Cursor 1.76
+      DBD::SQLite::VirtualTable::FileContent undef
+      DBD::SQLite::VirtualTable::FileContent::Cursor undef
+      DBD::SQLite::VirtualTable::PerlData undef
+      DBD::SQLite::VirtualTable::PerlData::Cursor undef
+    requirements:
+      DBI 1.57
+      ExtUtils::MakeMaker 0
+      File::Spec 0.82
+      Test::More 0.88
+      Tie::Hash 0
+      perl 5.006
   DBD-mysql-5.012
     pathname: D/DV/DVEEDEN/DBD-mysql-5.012.tar.gz
     provides:

@@ -3,11 +3,12 @@
 # DBI対応の標準データベース・ストレージ
 # </p>
 ###############################################################################
-package plugin::dbi::StandardDatabaseStorage;
+package StandardDatabaseStorage;
 use strict;
 use warnings;
 use Wiki::DefaultStorage;
 use DBI;
+use JSON;
 our @ISA;
 
 # バージョン情報
@@ -784,11 +785,13 @@ sub save_config {
 
     my $dbh = $self->get_connection();
 
-    foreach my $key (keys(%$hash)) {
-        my $value = $hash->{$key};
-        my $sth = $dbh->prepare("REPLACE INTO config (key_name, value) VALUES (?, ?)");
-        $sth->execute($key, $value);
-    }
+    # 既存の設定をクリア
+    $dbh->do("DELETE FROM config_tbl");
+
+    # 新しい設定をJSON形式で保存
+    my $json_text = encode_json($hash);
+    my $sth = $dbh->prepare("INSERT INTO config_tbl (key_name, value) VALUES (?, ?)");
+    $sth->execute('config', $json_text);
 }
 
 #===============================================================================
@@ -800,15 +803,26 @@ sub load_config {
     my $self = shift;
     my $dbh = $self->get_connection();
 
-    my $hash = {};
-    my $sth = $dbh->prepare("SELECT key_name, value FROM config");
-    $sth->execute();
-
-    while (my ($key, $value) = $sth->fetchrow_array) {
-        $hash->{$key} = $value;
+    my $json_text = '';
+    my $sth = $dbh->prepare("SELECT value FROM config_tbl WHERE key_name = ?");
+    $sth->execute('config');
+    my @row = $sth->fetchrow_array();
+    if (@row) {
+        $json_text = $row[0];
     }
 
-    return $hash;
+    if ($json_text eq '') {
+        return {};
+    }
+    my $config_hash;
+    eval {
+        $config_hash = decode_json($json_text);
+    };
+    if ($@) {
+        # JSONパースエラーの場合、空のハッシュリファレンスを返す
+        return {};
+    }
+    return $config_hash;
 }
 
 

@@ -12,8 +12,7 @@ services:
     ports:
       - "5001:8080"
     networks:
-      farad_net:
-        ipv4_address: 10.33.1.1
+      fswiki_net:
     environment:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
@@ -38,8 +37,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      farad_net:
-        ipv4_address: 10.33.1.2
+      fswiki_net:
     environment:
       - TZ=Asia/Tokyo
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
@@ -55,11 +53,5 @@ volumes:
   local-deps: {}
 
 networks:
-  farad_net:
+  fswiki_net:
     driver: bridge
-    enable_ipv6: false
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.33.0.0/21
-          gateway: 10.33.0.1

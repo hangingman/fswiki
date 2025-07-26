@@ -34,3 +34,4 @@ requires 'UUID::Tiny';
 requires 'Archive::Zip';
 requires 'Test::More';
 requires 'Perl::Critic';
+requires 'DBD::SQLite';

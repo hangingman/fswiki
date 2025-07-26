@@ -56,3 +56,5 @@ RUN cpanm --local-lib=/app/local Carton --notest --quiet
 # 下記コマンドでcpanfile.snapshotを生成
 # `docker compose -f docker-compose.dev.yml exec dev carton install`
 
+# コンテナを起動したままにするためのコマンド
+CMD ["tail", "-f", "/dev/null"]
