@@ -42,6 +42,7 @@ RUN mkdir -p /usr/share/keyrings && \
 RUN apt-get update -y && \
     apt-get install --no-install-recommends -y \
     libmysqlclient-dev \
+    mysql-client \
     libjpeg-dev libpng-dev libtiff-dev libgif-dev \
     libtool autoconf automake \
     build-essential && \
@@ -57,4 +58,7 @@ RUN cpanm --local-lib=/app/local Carton --notest --quiet
 # `docker compose -f docker-compose.dev.yml exec dev carton install`
 
 # コンテナを起動したままにするためのコマンド
+COPY env-exec /usr/local/bin/env-exec
+RUN chmod +x /usr/local/bin/env-exec
+
 CMD ["tail", "-f", "/dev/null"]

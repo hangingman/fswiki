@@ -1,2 +1,7 @@
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_mysql_root_password';
-FLUSH PRIVILEGES;
+CREATE DATABASE IF NOT EXISTS fswiki_test;
+USE fswiki_test;
+
+CREATE TABLE IF NOT EXISTS config_tbl (
+    key_name VARCHAR(255) PRIMARY KEY,
+    value TEXT
+);

@@ -80,3 +80,40 @@ RUN ln -sf /usr/local/bin/perl /usr/bin/perl
 ```
 
 この方法を取ることで、`#!/usr/bin/perl` というShebangを持つすべてのスクリプトが、自動的に `/usr/local/bin/perl` を使うようになります。
+
+## Docker Compose環境における環境変数の上書き問題と解決策
+
+### 問題点
+
+`docker-compose.yml` の `environment` セクションで定義された環境変数は、`Dockerfile` の `ENV` 命令で設定された環境変数を**上書き**します。
+
+これにより、`Dockerfile` で `ENV PATH=/app/local/bin:$PATH` のように既存のパスに追記する形で定義していたとしても、`docker-compose.yml` の `environment` セクションに `PATH` の記述がない場合、コンテナ実行時には `Dockerfile` で追加したはずの `/app/local/bin` が `PATH` から失われてしまいます。
+
+`PERL5LIB` など、アプリケーションのライブラリ解決に不可欠な他の環境変数についても同様の問題が発生し、結果として「モジュールが見つからない」といったエラーや、意図しないコマンドが実行される原因となります。
+
+### 解決策
+
+この問題を解決するには、`Dockerfile` で定義している重要な環境変数を、`docker-compose.yml` の `environment` セクションに**明示的に再定義**します。
+
+**修正例 (`docker-compose.yml`):**
+
+```yaml
+services:
+  wiki:
+    # ... 他の設定 ...
+    environment:
+      # アプリケーション固有の環境変数
+      - TZ=Asia/Tokyo
+      - DB_HOST=mysql
+      
+      # Dockerfileから転記・再定義する環境変数
+      - PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu
+      - PATH=/usr/local/bin:/app/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+```
+
+**重要な注意点:**
+
+*   **`PATH` は完全な値を記述する:** `PATH` を再定義する際は、`$PATH` のような変数は展開されないため、コンテナのデフォルトパスと `Dockerfile` で追加したパスをすべて含んだ、完全な文字列を記述する必要があります。
+*   **開発環境と本番環境の両方を確認する:** `docker-compose.dev.yml` のような開発環境用のファイルが存在する場合は、そちらにも同様の修正が必要です。
+
+この対応により、`docker compose` 経由で起動した場合でも、コンテナは常に期待された環境変数を持って動作することが保証され、開発環境と本番環境の挙動の差異をなくし、安定したアプリケーション実行環境を構築できます。

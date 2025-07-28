@@ -21,6 +21,8 @@ services:
       - DB_NAME=fswiki
       - DB_USER=${DB_USER:-root}
       - DB_PASS=${DB_PASS:-password}
+      - PERL5LIB=/app/local/lib/perl5:/app/local/lib/perl5/x86_64-linux-gnu
+      - PATH=/usr/local/bin:/app/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       #- PRIMARY_HOST=localhost:5001
       #- CUSTOM_DOMAIN=fswiki.example.com
     command: ./env-exec /app/local/bin/starman --listen :8080 app.psgi

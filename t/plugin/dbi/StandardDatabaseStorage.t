@@ -7,7 +7,7 @@ use DBI;
 use JSON;
 
 # テスト対象モジュール
-use StandardDatabaseStorage;
+use plugin::dbi::StandardDatabaseStorage;
 
 # ダミーのWikiオブジェクト
 my $dummy_wiki = bless {}, 'DummyWiki';
