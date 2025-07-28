@@ -17,7 +17,7 @@ services:
       - TZ=Asia/Tokyo
       - ROOT_PASSWORD=fswiki2021
       - DB_DRIVER=mysql
-      - DB_HOST=mysql
+      - DB_HOST=fswiki-mysql-dev
       - DB_NAME=fswiki_test
       - DB_USER=${root:-root}
       - DB_PASS=${DB_PASS:-password}
@@ -28,8 +28,11 @@ services:
       mysql:
         condition: service_healthy
   mysql:
+    container_name: fswiki-mysql-dev
     image: mysql:8.0
     platform: linux/amd64
+    networks:
+      fswiki_dev_net:
     
     volumes:
       - mysql-dev-data:/var/lib/mysql

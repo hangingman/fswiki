@@ -117,3 +117,60 @@ services:
 *   **開発環境と本番環境の両方を確認する:** `docker-compose.dev.yml` のような開発環境用のファイルが存在する場合は、そちらにも同様の修正が必要です。
 
 この対応により、`docker compose` 経由で起動した場合でも、コンテナは常に期待された環境変数を持って動作することが保証され、開発環境と本番環境の挙動の差異をなくし、安定したアプリケーション実行環境を構築できます。
+
+## Perlモジュールのロード問題と解決策
+
+### 問題点
+
+Perlでは、`use` ステートメントでモジュールをロードする際、モジュール名とファイルパスの階層構造が一致している必要があります。例えば、`plugin/dbi/StandardDatabaseStorage.pm` というファイルパスのモジュールは、`package plugin::dbi::StandardDatabaseStorage;` と宣言されている必要があります。
+
+もし、ファイルパスが `plugin/dbi/StandardDatabaseStorage.pm` であるにもかかわらず、モジュール内で `package StandardDatabaseStorage;` のように宣言されている場合、Perlはファイルを見つけることはできても、期待するパッケージ名とファイル内のパッケージ宣言が一致しないため、モジュールのロードに失敗します。
+
+### 解決策
+
+モジュールの `package` 宣言を、そのファイルの配置場所の階層構造と一致するように修正します。
+
+**修正例 (`plugin/dbi/StandardDatabaseStorage.pm`):**
+
+```perl
+# 修正前
+package StandardDatabaseStorage;
+
+# 修正後
+package plugin::dbi::StandardDatabaseStorage;
+```
+
+この修正により、Perlはモジュールを正しくロードできるようになります。
+
+## Docker Composeのネットワーク問題と解決策
+
+### 問題点
+
+`docker-compose.yml` で複数のサービスを定義し、それらのサービス間で通信を行う場合、すべてのサービスが同じDockerネットワークに属している必要があります。
+
+もし、一部のサービスがネットワークに明示的に参加していない場合、それらのサービスはデフォルトのネットワークに接続されるか、全くネットワークに接続されないため、他のサービスから名前解決ができず、通信が失敗します。
+
+### 解決策
+
+すべてのサービスが同じネットワークに明示的に参加するように `networks` エントリを追加します。
+
+**修正例 (`docker-compose.dev.yml`):**
+
+```yaml
+services:
+  dev:
+    # ...
+    networks:
+      fswiki_dev_net:
+
+  mysql:
+    # ...
+    networks:
+      fswiki_dev_net:
+
+networks:
+  fswiki_dev_net:
+    driver: bridge
+```
+
+この対応により、すべてのサービスが同じネットワーク上で名前解決可能となり、コンテナ間の通信が円滑に行われるようになります。

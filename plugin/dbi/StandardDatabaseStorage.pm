@@ -3,7 +3,7 @@
 # DBI対応の標準データベース・ストレージ
 # </p>
 ###############################################################################
-package StandardDatabaseStorage;
+package plugin::dbi::StandardDatabaseStorage;
 use strict;
 use warnings;
 use Wiki::DefaultStorage;
