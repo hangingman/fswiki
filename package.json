@@ -1,0 +1,15 @@
+{
+  "name": "fswiki-modern",
+  "private": true,
+  "workspaces": [
+    "plugin/*",
+    "theme/*"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

@@ -32,3 +32,5 @@ requires 'Plack::Middleware::CSRFBlock';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'UUID::Tiny';
 requires 'Archive::Zip';
+requires 'Mojolicious', '>= 9.00';
+requires 'Test::Mojo';

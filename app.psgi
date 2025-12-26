@@ -8,6 +8,8 @@ use Plack::Session::Store::File;
 use lib ('./lib', './local/lib/perl5');
 use Wiki;
 use WikiApplication;
+use FSWiki::Mojo;
+use Mojo::Server::PSGI;
 use UUID::Tiny ':std';
 
 builder {
@@ -56,6 +58,7 @@ builder {
 
 	# Plack::Middleware::Sessionにセッション情報を設定する
 	mount "/fswiki/wiki.cgi" => sub {$wiki_app->run_psgi(@_);};
+	mount "/v2" => Mojo::Server::PSGI->new(app => FSWiki::Mojo->new)->to_psgi_app;
 	mount "/fswiki/theme" => Plack::App::Directory->new({ root => './theme' })->to_app;
 	mount "/fswiki/plugin" => Plack::App::Directory->new({ root => './plugin' })->to_app;
 };
