@@ -1,4 +1,3 @@
-
 services:
   wiki:
     build:
@@ -6,60 +5,24 @@ services:
       dockerfile: ./docker/debian/Dockerfile
     image: fswiki-wiki-server:latest
     hostname: fswiki-wiki-server
+    restart: always
     volumes:
-      - .:/app
-      - local-deps:/app/local
-    ports:
-      - "5001:8080"
-    networks:
-      farad_net:
-        ipv4_address: 10.33.1.1
+      - /opt/fswiki/config:/app/config
+      - /opt/fswiki/data:/app/data
+      - /opt/fswiki/log:/app/log
+      - /opt/fswiki/attach:/app/attach
+      - /opt/fswiki/backup:/app/backup
     environment:
       - TZ=Asia/Tokyo
-      - ROOT_PASSWORD=fswiki2021
-      - DB_DRIVER=mysql
-      - DB_HOST=mysql
-      - DB_NAME=fswiki
-      - DB_USER=${DB_USER:-root}
-      - DB_PASS=${DB_PASS:-password}
-      #- PRIMARY_HOST=localhost:5001
-      #- CUSTOM_DOMAIN=fswiki.example.com
     command: ./env-exec /app/local/bin/starman --listen :8080 app.psgi
     working_dir: /app
-    depends_on:
-      mysql:
-        condition: service_healthy
-  mysql:
-    image: mysql:8.0
-    platform: linux/amd64
-    hostname: fswiki-db-server
-    volumes:
-      - mysql-data:/var/lib/mysql
+
+  nginx:
+    image: nginx:alpine
+    restart: always
     ports:
-      - "3306:3306"
-    networks:
-      farad_net:
-        ipv4_address: 10.33.1.2
-    environment:
-      - TZ=Asia/Tokyo
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
-      - MYSQL_DATABASE=fswiki
-    healthcheck:
-      test: ["CMD", "mysql", "--protocol=tcp", "-h", "localhost", "-u", "root", "-ppassword", "-e", "SELECT 1"]
-      timeout: 60s
-      retries: 30
-
-volumes:
-  run:
-  mysql-data:
-  local-deps: {}
-
-networks:
-  farad_net:
-    driver: bridge
-    enable_ipv6: false
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.33.0.0/21
-          gateway: 10.33.0.1
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - wiki

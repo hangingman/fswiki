@@ -35,6 +35,25 @@ $ carton exec plackup -r
 Run as service
 ==============
 
+本番環境でDocker Composeを使用して実行する手順です。
+
+### 1. 永続化用ディレクトリの作成
+
+ホスト側でWikiデータを保持するためのディレクトリを作成します。
+
+```bash
+sudo mkdir -p /opt/fswiki/data /opt/fswiki/config /opt/fswiki/log /opt/fswiki/attach /opt/fswiki/backup
+sudo chown -R 1000:1000 /opt/fswiki  # コンテナ内の実行ユーザーに合わせる
+```
+
+### 2. 起動
+
+```bash
+docker compose up -d
+```
+
+Nginxがリバースプロキシとして起動し、ポート80でWikiにアクセス可能になります。
+
 
 Docker env run for development
 ==============================
