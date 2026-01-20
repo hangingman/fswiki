@@ -17,3 +17,6 @@ sitemap.xml
 
 tmp_import/
 *.zip
+
+# Environment variables
+.env

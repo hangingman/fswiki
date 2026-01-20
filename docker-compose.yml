@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/debian/Dockerfile
-    image: fswiki-wiki-server:latest
+    image: ${GCP_LOCATION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
     hostname: fswiki-wiki-server
     restart: always
     volumes:
