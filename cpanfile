@@ -12,7 +12,7 @@ requires 'Regexp::Assemble';
 requires 'TeX::Hyphen';
 requires 'Jcode';
 requires 'DBI';
-requires 'DBD::mysql';
+requires 'DBD::MariaDB';
 requires 'URI::Escape';
 requires 'Carton::Snapshot';
 requires 'Sub::Util';

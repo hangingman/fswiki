@@ -114,9 +114,14 @@ volumes:
     3.  `Dockerfile`のビルドステップで、`cpanm --force Devel::CheckLib && cpanm DBD::mysql`を実行し、`DBD::mysql`をPerl 5.38環境で直接コンパイル・インストールします。`Devel::CheckLib`のテストが失敗するため、`--force`が必要です。
     4.  その後に`carton install --deployment`を実行し、`cpanfile`に記載された残りの依存関係をインストールします。
 
-*   **`DBD::mysql`のCコンパイルエラー (MySQLクライアントライブラリの不一致):**
-    `DBD::mysql`が期待するMySQLクライアントライブラリのバージョンと、コンテナにインストールされていたMariaDBクライアントライブラリ（`libmariadb-dev`）のバージョンに互換性がなく、`MYSQL_OPT_COMPRESSION_ALGORITHMS`などの未定義シンボルエラーが発生しました。
-    **解決策:** `Dockerfile`でMySQL公式のAPTリポジトリを追加し、そこから`libmysqlclient-dev`（MySQL 8.0向け）をインストールするように変更しました。これには、`lsb-release`のインストールと、GPGキーの正しいインポート（`signed-by`オプションを使用）が必要でした。
+*   **`DBD::mysql` から `DBD::MariaDB` への移行:**
+    MySQL 8系のライブラリの厳格な仕様によるビルドエラーを回避するため、また現代的なPerl開発の推奨に従い、`DBD::mysql` の代わりに `DBD::MariaDB` を使用するように変更しました。これに伴い、OSパッケージも `libmysqlclient-dev` から `libmariadb-dev` に変更しています。
+
+*   **DSNの変更:**
+    `plugin/dbi/StandardDatabaseStorage.pm` を修正し、`dbi:MariaDB` 形式のDSNをサポートするようにしました。
+
+*   **文字コードの扱い:**
+    `DBD::MariaDB` はデフォルトで `utf8mb4` などの文字コードを賢く処理するため、`mysql_enable_utf8` などのオプションがなくても文字化けしにくくなっています。
 
 *   **`carton exec`の重要性:**
     Perlスクリプトを実行する際には、`carton exec`を介して実行することが重要です。これにより、`carton`が管理しているモジュールがPerlの検索パス（`@INC`）に自動的に追加され、モジュールが見つからない問題を回避できます。

@@ -20,7 +20,7 @@ RUN apt-get update -y && \
 # 開発ツールとライブラリのインストール
 RUN apt-get update -y && \
     apt-get install --no-install-recommends -y \
-    default-libmysqlclient-dev \
+    libmariadb-dev \
     libjpeg-dev libpng-dev libtiff-dev libgif-dev \
     libtool autoconf automake \
     locales \
@@ -42,8 +42,8 @@ COPY ./cpanfile /app
 COPY ./cpanfile.snapshot /app
 
 # 2. 依存関係をインストール
+RUN echo $(mariadb_config --version)
 RUN cpm --version
-
 RUN cpm install -L /app/local --without-develop --without-test
 
 # 3. アプリケーションのソースコードをコピー

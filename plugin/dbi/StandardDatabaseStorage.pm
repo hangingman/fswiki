@@ -97,8 +97,9 @@ sub get_connection {
 		my $pass = $ENV{'DB_PASS'} || $self->{db_pass};
 
 		my $dsn;
-		if ($dbdriver eq 'mysql') {
-		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost;port=$dbport;mysql_ssl=1";
+		if ($dbdriver eq 'mysql' || $dbdriver eq 'MariaDB') {
+		    $dsn = "dbi:$dbdriver:database=$dbname;host=$dbhost;port=$dbport";
+		    $dsn .= ";mysql_ssl=1" if $dbdriver eq 'mysql';
 		} else { # SQLite by default
 		    $dsn = "dbi:$dbdriver:database=$dbname";
 		}
