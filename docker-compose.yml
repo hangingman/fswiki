@@ -7,11 +7,15 @@ services:
     hostname: fswiki-wiki-server
     restart: always
     volumes:
-      - /opt/fswiki/config:/app/config
       - /opt/fswiki/data:/app/data
       - /opt/fswiki/log:/app/log
       - /opt/fswiki/attach:/app/attach
       - /opt/fswiki/backup:/app/backup
+      - ./config:/app/config
+      - ./tmpl:/app/tmpl
+      - ./theme:/app/theme
+      - ./pdf:/app/pdf
+      - ./setup.dat:/app/setup.dat
     environment:
       - TZ=Asia/Tokyo
     command: ./env-exec /app/local/bin/starman --listen :8080 app.psgi
