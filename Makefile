@@ -1,7 +1,11 @@
-.PHONY: all run build raku-test
+.PHONY: all run build raku-test raku-run
 
 raku-test:
 	raku -I raku/lib raku/t/core.t
+	raku -I raku/lib raku/t/http-health.t
+
+raku-run:
+	raku -I raku/lib -e 'use FSWiki::HTTP::App; start-server'
 
 run:
 	docker compose down
