@@ -1,236 +1,163 @@
-# アーキテクチャの文書化
+# アーキテクチャ
 
-FSWikiアプリケーションの主要なコンポーネントとその関係性を以下に示します。
+## 1. 境界
 
-## 概要
-
-FSWikiはPerlで書かれたWikiアプリケーションであり、`Starman` と `Plack` を利用して動作します。データストアとしてMySQL互換データベースを使用します。
-
-## コンポーネント図
-
-```mermaid
-graph TD
-    A[クライアント (Webブラウザ)] --> B(Webサーバー);
-    B --> C{Perlアプリケーション};
-    C --> D[データベース];
-
-    subgraph Webサーバー
-        B1(Server::Starter)
-        B2(Starman)
-        B3(Docker Compose)
-    end
-
-    subgraph Perlアプリケーション
-        C1(Plack)
-        C2(WikiApplication.pm)
-        C3(Wiki.pm)
-        C4(プラグイン/テーマ)
-    end
-
-    subgraph データベース
-        D1(MySQL互換DB)
-    end
-
-    B1 -- プロセス管理 --> B2;
-    B2 -- PSGIインターフェース --> C1;
-    B3 -- ローカル開発用 --> C1;
-    C1 -- リクエスト処理 --> C2;
-    C2 -- コア機能呼び出し --> C3;
-    C3 -- データアクセス --> D1;
-    C3 -- 機能拡張 --> C4;
+```text
+HTTP request
+  ↓
+HTTP adapter / generated route
+  ↓
+FSWiki::Core
+  ├─ action handler / plugin
+  ├─ hook execution
+  ├─ permission policy
+  └─ Storage delegation
+       ↓
+FSWiki::Storage
+  ├─ File
+  └─ Memory
 ```
 
-## 各コンポーネントの説明
+CoreはHTTPフレームワークとStorage実装を直接結合しない。HTTP層は入力をCoreのリクエスト形式へ変換し、Coreの結果をHTMLまたはJSONへ変換する。
 
-*   **クライアント (Webブラウザ):** ユーザーがFSWikiにアクセスし、コンテンツを閲覧・編集するためのインターフェースです。
-*   **Webサーバー:**
-    *   **Server::Starter:** アプリケーションプロセスの起動、停止、再起動を管理し、リクエストをワーカープロセスに分散します。
-    *   **Starman:** PSGI (Perl Web Server Gateway Interface) アプリケーションを実行するための高速なPerl HTTPサーバーです。本番環境でのデプロイに使用されます。
-    *   **Docker Compose:** ローカル開発環境において、`plackup` を使用してFSWikiアプリケーションを起動・管理するために使用されます。
-*   **Perlアプリケーション:**
-    *   **Plack:** PSGIアプリケーションを実行するためのフレームワークです。`app.psgi` がエントリポイントとなり、ミドルウェア（セッション管理、CSRF保護など）を提供し、リクエストをアプリケーション本体にルーティングします。
-    *   **WikiApplication.pm:** `app.psgi` から呼び出される主要なPSGIアプリケーションモジュールです。`Wiki.pm` のインスタンスを初期化し、リクエストの処理フロー（ユーザー認証、プラグインのロード、アクションハンドラの呼び出し、HTMLレンダリングなど）を統括します。
-    *   **Wiki.pm:** FSWikiのコア機能を提供するモジュールです。設定管理、ユーザー認証・認可、多様なプラグインの管理、Wikiコンテンツの処理（ページの取得、保存、存在チェックなど）、URL生成、そしてマルチWiki（ファーム）機能まで、広範な機能を提供します。データ永続化の責務は `Wiki::DefaultStorage` などのストレージモジュールに委譲しています。
-    *   **プラグイン/テーマ:** FSWikiの機能を拡張したり、見た目をカスタマイズしたりするためのモジュールです。`Wiki.pm` を通じてロードされ、アプリケーションの様々な処理にフックしたり、特定のアクションを処理したりします。
-*   **データベース:** Wikiのページコンテンツ、ユーザー情報、設定などの永続データを格納します。現在はMySQL互換データベース（将来的にはTiDB Cloud）を使用します。
+## 2. Perl版FSWikiから引き継ぐ契約
 
-## ディレクトリ構造
+Perl版`Wiki.pm`の以下の責務をリファレンスとする。
 
-FSWikiプロジェクトの主要なディレクトリ構造は以下の通りです。
+| Perl API | Rakuの責務 |
+|---|---|
+| `add_hook` / `do_hook` | 名前付きイベントへのコールバック登録と登録順実行 |
+| `add_handler` | 名前付きアクションのハンドラ登録 |
+| `add_user_handler` | ユーザー権限付きハンドラ登録 |
+| `add_admin_handler` | 管理者権限付きハンドラ登録 |
+| `add_inline_plugin` / `add_paragraph_plugin` / `add_block_plugin` | プラグイン種別・出力形式の登録 |
+| `call_handler` | 登録済みハンドラの実行と権限判断 |
+| `get_page` / `save_page` / `page_exists` | Storageへの委譲 |
 
+Rakuでは、Perlのクラスローダーやハッシュ構造をそのまま移植せず、Role、Callable、値オブジェクト、明示的な登録情報で表現する。
+
+## 3. HTMLとJSONの二重出力
+
+FSWikiの元実装はプレーンHTTPでHTMLを返す。Raku版はこの経路を廃止せず、同じCore処理にJSON出力を追加する。
+
+```text
+同じ操作定義
+  ├─ HTML route → HTML response
+  └─ JSON route → JSON response
 ```
-.
-├── アプリケーションコアファイル
-│   ├── app.psgi
-│   ├── cpanfile
-│   ├── Procfile
-│   ├── setup.dat
-│   ├── setup.sh
-│   └── wikidb.cgi
-├── 設定・データ関連
-│   ├── config/
-│   ├── data/
-│   │   ├── favicon.ico
-│   │   └── favicon.png
-│   └── log/
-├── ドキュメント・ガイドライン
-│   ├── AGENTS.md
-│   ├── GEMINI.md
-│   ├── README.md
-│   ├── docs/
-│   │   ├── changes.html
-│   │   ├── default.css
-│   │   ├── gpl.txt
-│   │   ├── makedoc.bat
-│   │   ├── makedoc.sh
-│   │   └── API/
-│   │       ├── makedoc.bat
-│   │       ├── makedoc.pl
-│   │       ├── makedoc.sh
-│   │       ├── Parser.pm.html
-│   │       ├── Util.pm.html
-│   │       └── Wiki.pm.html
-│   └── memory-bank/
-│       ├── 01_project_overview.md
-│       ├── 02_architecture.md
-│       ├── 03_development_guide.md
-│       ├── 04_testing_guide.md
-│       ├── 05_coding_guidelines.md
-│       ├── 06_git_workflow.md
-│       ├── 07_ai_workflow.md
-│       ├── 08_conversation_guidelines.md
-│       ├── basic_guidelines.md
-│       ├── core/
-│       │   ├── data_flow.md
-│       │   ├── project_brief.md
-│       │   ├── system_patterns.md
-│       │   └── tech_context.md
-│       └── details/
-│           ├── implementation_details.md
-│           └── technical_notes.md
-├── モジュール・プラグイン・テーマ
-│   ├── lib/
-│   │   ├── CGI2.pm
-│   │   ├── PDFJ.pm
-│   │   ├── Util.pm
-│   │   ├── Wiki.pm
-│   │   ├── WikiApplication.pm
-│   │   └── Wiki/
-│   │       ├── DefaultStorage.pm
-│   │       ├── HTMLParser.pm
-│   │       ├── InterWiki.pm
-│   │       ├── Keyword.pm
-│   │       └── Parser.pm
-│   ├── plugin/
-│   │   ├── access/
-│   │   ├── accesslog/
-│   │   ├── admin/
-│   │   │   ├── AccountHandler.pm
-│   │   │   ├── AdminConfigHandler.pm
-│   │   │   ├── AdminDeletedPageHandler.pm
-│   │   │   ├── AdminLogHandler.pm
-│   │   │   ├── AdminPageHandler.pm
-│   │   │   ├── AdminPluginHandler.pm
-│   │   │   ├── AdminSpamHandler.pm
-│   │   │   ├── AdminStyleHandler.pm
-│   │   │   ├── AdminUserHandler.pm
-│   │   │   ├── DeleteCache.pm
-│   │   │   ├── Install.pm
-│   │   │   ├── Login.pm
-│   │   │   ├── PermissionForm.pm
-│   │   │   └── UserRegisterHandler.pm
-│   │   ├── admin_export/
-│   │   ├── amazon/
-│   │   ├── attach/
-│   │   ├── bbs/
-│   │   ├── book/
-│   │   ├── bookmarks/
-│   │   ├── bugtrack/
-│   │   ├── calendar/
-│   │   ├── category/
-│   │   ├── comment/
-│   │   ├── core/
-│   │   ├── dbi/
-│   │   ├── editlog/
-│   │   ├── footnote/
-│   │   ├── format/
-│   │   ├── google/
-│   │   ├── gtex/
-│   │   ├── include_html/
-│   │   ├── info/
-│   │   ├── layout/
-│   │   ├── loginstate/
-│   │   ├── mathjax/
-│   │   ├── mimetex/
-│   │   ├── pdf/
-│   │   ├── recent/
-│   │   ├── rename/
-│   │   ├── rss/
-│   │   ├── search/
-│   │   ├── sitemap/
-│   │   ├── todo/
-│   │   └── vote/
-│   ├── theme/
-│   │   ├── blue_pipe/
-│   │   ├── default/
-│   │   ├── kati/
-│   │   ├── kugi01/
-│   │   └── resources/
-│   └── tmpl/
-│       ├── admin_config.tmpl
-│       ├── admin_layoutalias.tmpl
-│       ├── admin_layoutkey.tmpl
-│       ├── admin_spam.tmpl
-│       ├── admin_style.tmpl
-│       ├── bbs.tmpl
-│       ├── bugtrack.tmpl
-│       ├── comment.tmpl
-│       ├── editform.tmpl
-│       ├── footer.tmpl
-│       ├── header.tmpl
-│       ├── login.tmpl
-│       ├── redirect.tmpl
-│       ├── layout/
-│       └── site/
-├── ビルド・デプロイ・ユーティリティ
-│   ├── .editorconfig
-│   ├── .gitignore
-│   ├── .perl-version
-│   ├── Makefile
-│   ├── release.sh
-│   ├── ansible/
-│   │   ├── ansible-playbook.sh
-│   │   ├── ansible.cfg
-│   │   ├── fswiki-playbook.yml
-│   │   ├── local
-│   │   ├── production
-│   │   ├── requirements.yml
-│   │   ├── environments/
-│   │   │   └── prod/
-│   │   ├── group_vars/
-│   │   │   └── all.yml
-│   │   └── roles/
-│   │       ├── fswiki/
-│   │       ├── fswiki_common/
-│   │       └── fswiki_webserver/
-│   ├── docker/
-│   │   ├── centos/
-│   │   │   └── Dockerfile
-│   │   └── debian/
-│   │       └── Dockerfile
-│   ├── docker-compose.yml
-│   └── tools/
-│       ├── default.css
-│       ├── sample.bat
-│       ├── wiki2html.pl
-│       └── wiki2pdf.pl
-├── その他
-│   ├── .gemini/
-│   │   └── extensions/
-│   │       └── github/
-│   ├── .git/
-│   ├── .vscode/
-│   │   └── settings.json
-│   ├── get_accesslog.cgi
-│   └── LogSearch.js
+
+Pluginは可能な限りHTML文字列を直接返さず、操作結果をデータとして返す。Rendererがその結果をHTMLまたはJSONへ変換する。
+
+- HTML: 既存ブラウザ向け。テンプレート、`<pre>`、Wiki表示など。
+- JSON: React/Vueなどのクライアント向け。API契約に従うオブジェクトをシリアライズする。
+- 既存PluginがHTMLしか返せない場合は、JSON API用Proxy/Adapterで包む。ただし、CoreとStorageを迂回しない。
+
+## 4. 明示的API登録
+
+Core内部メソッドを自動公開しない。API公開する操作だけを登録情報に明示する。
+
+概念モデル：
+
+```text
+handler record
+  ├─ action name
+  ├─ handler
+  ├─ permission: public | user | admin
+  └─ api metadata (optional)
+       ├─ path
+       ├─ method
+       ├─ input schema
+       └─ output schema / serializer
 ```
+
+Raku APIの候補：
+
+```raku
+$core.add-handler(
+    'SOURCE',
+    handler    => &source-handler,
+    permission => 'public',
+    api        => {
+        path   => '/api/source',
+        method => 'GET',
+    },
+);
+```
+
+最初は既存`add-handler`を拡張する。基底クラスを先に作らない。Plugin数と契約が増え、共有Roleが実際に重複を減らす段階でRoleを導入する。
+
+## 5. 自動生成と半自動化の境界
+
+### 自動化する責務
+
+- APIメタデータからHTTP routeを生成する。
+- HTTP入力をCore handlerへ渡す。
+- Coreの権限を適用する。
+- 成功結果をJSONへシリアライズする。
+- 失敗結果を統一JSONエラーへ変換する。
+
+### Pluginが明示する責務
+
+- APIとして公開するか。
+- HTTP methodとpath。
+- 入力名、必須項目、型、制約。
+- 戻り値のデータ形状。
+- 権限と副作用。
+
+ルート生成は自動化するが、公開契約は明示する。これにより、内部APIの偶発的公開と将来の内部変更によるAPI破壊を避ける。
+
+## 6. Proxy/Adapter
+
+Proxyは、既存のHTML中心PluginをJSON APIへ接続する境界として使う。
+
+```text
+JSON request
+  ↓
+API proxy
+  ├─ 入力検証
+  ├─ Core権限確認
+  ├─ Core handler呼び出し
+  └─ ResultをJSON化
+       ↓
+JSON response
+```
+
+Proxyが直接Storageへアクセスしてはいけない。既存PluginがJSONに適したデータを返せない場合は、専用の結果変換を実装する。
+
+## 7. 現在のエンドポイント
+
+| HTTP | 処理 |
+|---|---|
+| `GET /health` | 生存確認 |
+| `GET /source/<page>` | Core hook経由でページソースを取得しHTMLで返す |
+| `POST /page/<page>` | form bodyの`source`をCore経由で保存 |
+
+保存処理は以下の順序を維持する。
+
+```text
+POST /page/<page>
+  → route input parsing
+  → Core save-page
+  → Storage save-page
+  → response
+```
+
+## 8. 次の実装段階
+
+1. Coreのhandler recordにAPI metadataを保持する。
+2. `api-handlers`などの読み取りAPIを追加する。
+3. JSON serializerを導入し、外部依存を最小限に抑える。
+4. `GET /api/source`を1つだけ登録情報から生成する。
+5. `POST /api/page/<page>`を既存保存処理へ接続する。
+6. 実機HTTPでHTML経路とJSON経路が同じCore/Storage処理を通ることを検証する。
+7. 複数Pluginで重複が確認できた時点でRoleまたはProxy基底実装を導入する。
+
+## 9. 保留
+
+- 認証・セッション・CSRF。
+- 履歴世代API。
+- Wiki本文の構文解析。
+- OpenAPIドキュメントの自動生成。
+- DB StorageとFly.io向けデプロイ構成。
+
+これらはJSON APIの最小契約と権限モデルを検証した後に決める。

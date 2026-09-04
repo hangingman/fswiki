@@ -1,14 +1,27 @@
-# テスト戦略の文書化
+# テストガイド
 
-## 概要
+## 実行
 
-現在のところ、FSWikiプロジェクトにおけるテスト戦略は明確に文書化されていません。また、一般的なPerlのテストファイル命名規則（`*.t`）に従うテストファイルは、プロジェクト内で見つかりませんでした。
+```sh
+make raku-test
+raku -c raku/dev-server.raku
+git diff --check
+```
 
-## テストの実行方法
+## 対象
 
-現在、自動化されたテストの実行方法は定義されていません。
+- Core: hook、handler、権限、Storage委譲。
+- Storage: Memory、File、ページ名の安全性。
+- HTTP: routeからCore、Storage、responseまで。
+- JSON API追加時: HTML経路とJSON経路が同じCore handlerを利用すること。
+- 実機確認: 開発サーバへHTTPリクエストを送り、status、content-type、bodyを確認する。
 
-## 今後の課題
+新機能はテストを先に追加し、REDを確認してから最小実装を行う。
 
-*   ユニットテスト、結合テスト、E2Eテストの導入を検討し、コードの品質と信頼性を向上させる。
-*   テストの実行方法、テストデータの管理、テストカバレッジの測定方法などを文書化する。
+## APIテストの最低条件
+
+1. 公開APIの登録情報をCoreから取得できる。
+2. 登録情報からJSON routeが生成される。
+3. JSON入力がCore handlerへ渡る。
+4. Storageの結果がJSONに変換される。
+5. 未登録API、入力不正、権限不足がJSONエラーになる。

@@ -1,29 +1,28 @@
 # プロジェクト概要
 
-このプロジェクトは、Wikiアプリケーション「FSWiki」です。Perlを使用して開発されています。
+## 目的
 
-## 概要
+FSWikiの機能をRakuで再構成し、既存のWikiデータとプラグイン拡張モデルを活用できる移行先を作る。Perl版は動作仕様とCore APIのリファレンスとして扱う。Perlコードの逐語変換は行わない。
 
-FreeStyle WikiはPerlによる拡張可能なWikiクローンです。FreeStyle Wikiは以下のような特徴を持っています。
+## 移行方針
 
-*   徹底的にモジュール化されており、拡張性が高い
-*   日本語でのドキュメント作成に適した文法と機能
-*   全ページ共通のヘッダ、フッタ、サイドバーを表示可能
-*   ファイルの添付が可能
-*   PDFの生成が可能
-*   tDiaryのテーマを使用可能
-*   サイトテンプレート機能によりデザインを大幅に変更することが可能
-*   ページの凍結機能に加え、簡単なユーザ認証機能を備えている
-*   mod_perlでも（一応）動作可能
+- FSWiki Coreのフック、ハンドラ、プラグイン登録、Storage委譲をRakuで再構成する。
+- 既存のプレーンHTTP/HTMLレスポンスを維持する。
+- 同じCore/Plugin処理から、HTMLレスポンスとJSON APIレスポンスを生成できるようにする。
+- React、VueなどのクライアントはJSON APIを利用する。HTML画面は段階的に置換する。
+- 既存の`data/*.wiki`を初期ストレージとして利用する。
+- デプロイ先は低コスト環境を優先し、実行要件確定後に選定する。Fly.ioは候補であり決定事項ではない。
 
-## 技術スタック
+## 現在のRaku実装
 
-*   **バックエンド:** Perl
-*   **Webサーバー/アプリケーションサーバー:** Starman, Plack
-*   **データベース:** MySQL (DBD::mysqlPP)
-*   **フロントエンド:** HTML::Template (特定のJSフレームワークはTBD)
-*   **ビルド/実行環境:** Docker, Docker Compose
+- `FSWiki::Core`: フック、プラグインメタデータ、アクションハンドラ、Storage委譲。
+- `FSWiki::Storage::Memory`: テスト用Storage。
+- `FSWiki::Storage::File`: 既存`.wiki`ファイルの読み書き。
+- `FSWiki::HTTP::App`: `/health`、`/source/<page>`、`POST /page/<page>`。
+- Croの`.cro.yml`による開発時ホットリロード。
 
-## ライセンス
+## 非目標
 
-FSWikiはGNU GPLライセンスの元で配布、改変が可能です。詳細については `docs/gpl.txt` を参照してください。
+- Perl実装のクラス構造・命名・動的ロード機構の再現。
+- JSON APIをCore内部メソッド全体から無制限に自動公開すること。
+- 初期段階での完全なWikiパーサー、認証、履歴、DB移行。

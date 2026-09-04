@@ -1,225 +1,34 @@
-## 開発環境のセットアップ
+# 開発ガイド
 
-### 前提条件
+## Raku開発
 
-*   Docker
-*   Docker Compose
-
-### セットアップ手順
-
-1.  **Docker環境での開発:**
-    *   FSWikiをDocker環境で動作させるための設定を行います。
-
-    *   **`docker/debian/Dockerfile` の設定:**
-        `docker/debian/Dockerfile` は、FSWikiアプリケーションをDockerコンテナ内で実行するための本番用イメージをビルドします。
-        このDockerfileは、`perl:5.38` をベースイメージとして使用し、必要なシステムパッケージとPerlモジュールをインストールします。
-        依存関係のインストールには `cpm` を使用し、`cpanfile.snapshot` に基づいてモジュールを厳密にインストールすることで、再現可能なビルドを保証します。
-        また、イメージサイズを最適化するために、`apt-get install` に `--no-install-recommends` オプションを使用し、ビルド後に不要なaptキャッシュをクリーンアップします。
-        最終的に、`env-exec` スクリプトを介して `Starman` を使用し、PSGIアプリケーション (`app.psgi`) をポート `8080` で起動します。
-
-    *   **`docker-compose.yml` の設定:**
-        `docker-compose.yml` は、ローカル開発環境でFSWikiアプリケーションを起動するための設定を提供します。
-        この設定では、`docker/debian/Dockerfile` を使用して `wiki` サービスをビルドし、ホストのポート `5001` をコンテナのポート `8080` にマッピングします。
-        これにより、ブラウザから `http://localhost:5001` でFSWikiにアクセスできるようになります。
-        `command` フィールドでは、`env-exec` スクリプトを介して `Starman` を使用してアプリケーションを起動します。`env-exec` は、Perlの実行パス（`PATH`）とライブラリパス（`PERL5LIB`）を適切に設定し、Dockerコンテナ内で複数のPerlバージョンが共存する問題（詳細は[技術ノート: Docker環境におけるPerlの複数バージョン問題と解決策](../details/technical_notes.md#docker環境におけるperlの複数バージョン問題と解決策)を参照）を解決します。これにより、`Starman` やその他のPerlスクリプトが常に意図したPerl環境で実行されることが保証されます。
-
-    *   **Dockerコンテナのビルドと起動:**
-        ```shell
-        docker compose down && docker compose up -d --build
-        ```
-
-    *   **初期設定の実行:**
-        `setup.sh` はCGI環境向けのため、PSGI環境では手動で必要なディレクトリを作成します。
-        ```shell
-        docker compose exec wiki bash -c "mkdir -p /app/backup /app/attach /app/pdf /app/log /app/data /app/config /app/theme /app/tmpl /app/tools"
-        docker compose exec wiki bash -c "touch /app/log/access.log /app/log/attach.log /app/log/freeze.log /app/log/download_count.log"
-        ```
-
-    *   **FSWikiへのアクセス:**
-        ブラウザから `http://localhost:5001` にアクセスします。
-
-    *   **Docker環境におけるPerlの複数バージョン問題と解決策:**
-        Docker環境でPerlアプリケーションを運用する際に発生しうる、Perlの複数バージョン共存問題とその解決策については、以下の技術ノートを参照してください。
-        [技術ノート: Docker環境におけるPerlの複数バージョン問題と解決策](../details/technical_notes.md#docker環境におけるperlの複数バージョン問題と解決策)
-
-    *   **`cpanfile.snapshot` の運用と開発環境:**
-        本プロジェクトでは、依存関係のバージョンを固定し、再現可能なビルドを実現するために `cpanfile.snapshot` を使用します。`cpanfile.snapshot` は、`cpanfile` に記述された依存関係に基づいて `carton install` を実行することで生成されます。
-
-        開発者が `cpanfile` を更新した場合、クリーンな環境で `cpanfile.snapshot` を生成・更新する必要があります。この目的のために、開発専用のDocker環境が用意されています。
-
-        *   **`docker/dev/Dockerfile` の設定:**
-            `docker/dev/Dockerfile` は、`cpanfile.snapshot` を生成するための開発専用コンテナイメージをビルドします。このイメージは、`perl:5.38` をベースに、`Carton` やその他の開発ツールをインストールします。
-
-        *   **`docker-compose.dev.yml` の設定:**
-            `docker-compose.dev.yml` は、`docker/dev/Dockerfile` を使用して `dev` サービスを定義します。このサービスは、`cpanfile.snapshot` の生成に必要な環境を提供し、`perl_modules` ボリュームを使用してインストールされたモジュールを永続化します。
-
-        *   **`cpanfile.snapshot` の生成手順:**
-            `cpanfile` を更新した後、以下のコマンドを実行して `cpanfile.snapshot` を生成・更新します。
-            ```bash
-            docker compose -f docker-compose.dev.yml exec dev carton install
-            ```
-            このコマンドは、`dev` サービスコンテナ内で `carton install` を実行し、`cpanfile.snapshot` を更新します。更新された `cpanfile.snapshot` はGitにコミットしてください。
-
-2.  **Perlbrewを使ったローカル実行:**
-    ```sh
-    # perlbrewの導入
-    $ curl -L http://install.perlbrew.pl | bash
-    $ echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc
-    $ source ~/.bashrc
-    $ perlbrew init
-
-    # perl v5.30.2の導入
-    $ perlbrew install 5.30.2
-    $ perlbrew switch perl-5.30.2
-    $ perl -v
-    # v5.30.2
-
-    # carton
-    $ cpanm Carton
-    $ cpanm --local-lib=~/perl5 local::lib
-    $ carton install
-
-    # 初回起動の場合(作業ディレクトリを引数で渡す)
-    $ ./setup.sh `pwd`
-
-    # Perlのアプリケーションサーバを起動
-    $ carton exec plackup -r
-    ```
-
-### setup.datの設定
-
-データ保管場所などFreeStyle Wikiの基本的な設定はsetup.datを編集することで行います。
-
-FreeStyle Wikiでは、ページが変更された場合に管理者にメールで通知する機能があります。この機能を有効にするにはsetup.datの設定内容にsendmailのパスかSMTPサーバのホスト名を設定します。
-
-また、デフォルトではバックアップは一世代のみですが、backupというパラメータにバックアップする世代数を指定することができます。0を指定すると無制限にバックアップを行います。世代バックアップを行う場合、画面上部の「差分」メニューを選択すると過去の編集履歴が表示され、それぞれについて現在のソースとの差分を閲覧することができます。
-
-また、rssやamazonなど、一部のプラグインはプログラム中からHTTPで外部のサーバに接続します。プロキシを使用している場合はproxy_host、proxy_port、proxy_user、proxy_passを設定しておく必要があります（proxy_userとproxy_passは認証が必要な場合のみ）。
-
-### データベース設定
-
-FSWikiはデータベースとしてMySQL互換データベースを使用します。データベース接続情報は環境変数を通じてアプリケーションに提供されます。
-
-#### Fly.ioでの設定
-
-Fly.ioにデプロイする場合、機密性の高いデータベース接続情報（ホスト、ポート、データベース名、ユーザー名、パスワード）は、`flyctl secrets set` コマンドを使用してFly.ioのシークレットとして設定します。これにより、これらの情報がGitリポジトリにコミットされることを防ぎ、安全に管理できます。
-
-```bash
-flyctl secrets set DB_HOST="YOUR_TIDB_HOST" DB_PORT="YOUR_TIDB_PORT" DB_NAME="YOUR_TIDB_DATABASE" DB_USER="YOUR_TIDB_USER" DB_PASS="YOUR_TIDB_PASSWORD" --app fswiki
+```sh
+make raku-test
+make raku-dev
 ```
 
-`YOUR_TIDB_...` の部分は、実際のTiDBの接続情報に置き換えてください。`--app fswiki` は、対象のFly.ioアプリケーション名を指定します。
+- `make raku-dev`はCroの`cro run`で開発サーバを起動する。
+- Croは`raku/`配下の変更を検知して再起動する。
+- Cro管理時のポートは自動割り当て。実際のポートを起動ログまたは`ss`で確認する。
+- 直接起動時の既定ポートは8081。
 
-#### ローカル開発環境での設定
+## 実装順序
 
-ローカル開発環境では、`docker-compose.yml` を通じてデータベース接続情報がDockerコンテナに環境変数として渡されます。`docker-compose.yml` の `wiki` サービス内の `environment` セクションを確認してください。
+1. Perl版FSWikiのCore APIと該当Pluginを読む。
+2. Raku側の責務とデータ契約を決める。
+3. 失敗するテストを追加する。
+4. 最小実装で通す。
+5. 全テスト、構文、差分、実機HTTPを確認する。
+6. 必要ならmemory-bankを更新する。
 
-```yaml
-    environment:
-      - DB_DRIVER=mysql
-      - DB_HOST=mysql
-      - DB_NAME=fswiki
-      - DB_USER=${DB_USER:-root}
-      - DB_PASS=${DB_PASS:-password}
-```
+## 原則
 
-`DB_USER` と `DB_PASS` は、ホスト環境変数があればそれを使用し、なければデフォルト値（`root` と `password`）を使用するよう設定されています。これにより、ローカル環境では追加の `.env` ファイルやPerlアプリケーションでの環境変数読み込み設定は不要です。
+- CoreはStorageとHTTPから分離する。
+- HTTP routeは入力変換と出力変換に限定する。
+- Pluginは公開契約を明示する。内部メソッドを自動公開しない。
+- 外部依存は、既存依存または標準機能で足りない場合だけ追加する。
+- `.env`や認証情報を読まない。リポジトリに保存しない。
 
-#### リモートデータベースのテーブル作成
+## デプロイ
 
-開発環境からリモートのデータベース（Fly.io上のTiDBなど）に対して、テーブルスキーマのみを作成することができます。
-
-`docker-compose.dev.yml` で定義された開発用コンテナ (`dev` サービス) を利用し、環境変数を直接渡して `tools/import_to_db.pl` スクリプトを実行します。
-
-```bash
-docker compose -f docker-compose.dev.yml exec dev bash -c " \
-  DB_DRIVER=mysql \
-  DB_HOST='<YOUR_TIDB_HOST>:<YOUR_TIDB_PORT>' \
-  DB_NAME='<YOUR_TIDB_DATABASE>' \
-  DB_USER='<YOUR_TIDB_USER>' \
-  DB_PASS='<YOUR_TIDB_PASSWORD>' \
-  perl tools/import_to_db.pl --schema-only"
-```
-
-`<YOUR_TIDB_...>` の部分は、実際の接続情報に置き換えてください。
-
-
-### セキュリティ
-
-上記で解説したインストール方法ではsetup.datや各種データを保存しているディレクトリをHTTPで参照できてしまいます。セキュリティ上問題になるようであれば.htaccessを使用してアクセス制限を行ってください。
-
-```
-<FilesMatch "\.(pm|dat|wiki|log)$">
-  deny from all
-</FilesMatch>
-```
-
-なお、データディレクトリに関してはHTTPでは見えない場所に配置することも可能です。その場合はsetup.datのディレクトリ指定部分を変更してください。
-
-### バージョンアップ時の設置方法
-
-設置ディレクトリ直下にあるsetup.dat、dataディレクトリ、backupディレクトリ、pdfディレクトリ、logディレクトリ、configディレクトリ以外のファイルおよびディレクトリをいったん削除し、配布ファイルで置き換えてください。また、dataディレクトリ内のhelp.wikiはヘルプで表示されるページですのでこれも最新版のファイルで上書きしてください。
-
-setup.datはできるだけバージョン間で相違のないよう配慮していますが、止むを得ずバージョンアップ時に内容を変更する必要がある場合があります。できれば最新のファイルで上書きしたあと、設定内容を修正するようにしてください。
-
-また、3.4.0以降ではバージョンアップによって管理画面での設定項目が追加されている場合があります。一度管理ユーザにてログインし、設定の更新を行ってください。
-
-### データのバックアップ方法
-
-dataディレクトリ、attachディレクトリ、configディレクトリをコピーしてください。差分表示が必要であればbackupディレクトリ、PDFも必要であればpdfディレクトリもコピーしてください（PDFファイルはPDFアンカ押下時に生成することができるのでバックアップしなくても構いません）。
-
-ログは、デフォルトではlogディレクトリにaccess.log（アクセスログ）、freeze.log（凍結用のログ）、attach.log（添付ファイルのログ）が出力されていますので、必要に応じてこれらもコピーしておいてください。
-
-### mod_perlで使用する場合
-
-Ver3.4.1よりmod_perlにも対応しています。wiki.cgiの先頭部分を編集し、chdirの引数にFSWikiのインストールディレクトリを指定してください。例えばFSWikiをC:/Apache/htdocs/fswikiに配置した場合は以下のようになります。
-
-```
-BEGIN {
-  if(exists $ENV{MOD_PERL}){
-    # カレントディレクトリの変更
-    use Cwd;
-    chdir("C:/Apache/htdocs/fswiki");
-```
-
-3.5.1以降はApache::Registry環境下でも完全に動作することを確認していますが、それ以前のバージョンでは差分表示やPDF生成など一部の機能の動作に支障があります。Apache::PerlRun環境下であれば問題ありません。
-
-## ビルドとテスト
-
-*   **ビルド:**
-    ```bash
-    make build
-    ```
-*   **テスト:**
-    *   テストの実行方法は現在ドキュメント化されていません (TBD)。
-
-### 補助ツールのセットアップ
-
-#### flymcp (fly.io操作用)
-
-fly.ioを操作するためのMCPサーバー `flymcp` をインストールします。
-
-**前提条件:**
-
-*   Go 1.21以上
-*   `flyctl` CLIがインストールされ、PATHが通っていること
-
-**インストール手順:**
-
-1.  **ソースコードのクローン:**
-    ```bash
-    git clone https://github.com/superfly/flymcp.git /tmp/flymcp
-    ```
-
-2.  **ビルド:**
-    ```bash
-    cd /tmp/flymcp
-    go mod download
-    go build -o flymcp
-    ```
-
-3.  **インストール:**
-    ```bash
-    sudo mv /tmp/flymcp/flymcp /usr/local/bin/
-    rm -rf /tmp/flymcp
-    ```
+低コスト環境を優先する。Fly.ioは候補だが、認証、永続Storage、バックアップ、監視の要件が確定してから決定する。
