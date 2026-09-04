@@ -5,6 +5,7 @@ raku-test:
 	raku -I raku/lib raku/t/http-health.t
 	raku -I raku/lib raku/t/http-source.t
 	raku -I raku/lib raku/t/storage-memory.t
+	raku -I raku/lib raku/t/storage-file.t
 
 raku-run:
 	raku -I raku/lib -e 'use FSWiki::HTTP::App; start-server(:port(8081))'

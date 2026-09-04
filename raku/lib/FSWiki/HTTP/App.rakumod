@@ -2,6 +2,7 @@ unit module FSWiki::HTTP::App;
 
 use Cro::HTTP::Router;
 use FSWiki::Core;
+use FSWiki::Storage::File;
 
 sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new) is export {
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
@@ -14,21 +15,24 @@ sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.n
     '<pre>' ~ (%state<source> // '') ~ '</pre>'
 }
 
-sub build-application() is export {
+sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
+    my $core = FSWiki::Core.new(storage => FSWiki::Storage::File.new(dir => $data-dir));
+    $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
+
     route {
         get -> 'health' {
             content 'text/plain', 'ok\n';
         }
         get -> 'source', $page = 'Home' {
-            content 'text/html; charset=UTF-8', source-response($page);
+            content 'text/html; charset=UTF-8', source-response($page, :$core);
         }
     }
 }
 
-sub start-server(Int:D :$port = 8081, Str:D :$host = '0.0.0.0') is export {
+sub start-server(Int:D :$port = 8081, Str:D :$host = '0.0.0.0', IO::Path:D :$data-dir = IO::Path.new('data')) is export {
     use Cro::HTTP::Server;
 
-    my $application = build-application;
+    my $application = build-application(:$data-dir);
     my Cro::Service $server = Cro::HTTP::Server.new(:$host, :$port, :$application);
     $server.start;
     react whenever signal(SIGINT) {
@@ -37,6 +41,6 @@ sub start-server(Int:D :$port = 8081, Str:D :$host = '0.0.0.0') is export {
     }
 }
 
-sub MAIN(Int:D :$port = 8081, Str:D :$host = '0.0.0.0') {
-    start-server(:$port, :$host);
+sub MAIN(Int:D :$port = 8081, Str:D :$host = '0.0.0.0', Str :$data-dir = 'data') {
+    start-server(:$port, :$host, data-dir => IO::Path.new($data-dir));
 }
