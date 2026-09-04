@@ -1,8 +1,23 @@
 unit class FSWiki::Core;
 
+use FSWiki::Storage::Memory;
+
 has %!hooks;
 has %!plugins;
 has %!handlers;
+has $.storage = FSWiki::Storage::Memory.new;
+
+method get-page(Str:D $page --> Str:D) {
+    $!storage.get-page($page)
+}
+
+method save-page(Str:D $page, Str:D $source --> Nil) {
+    $!storage.save-page($page, $source)
+}
+
+method page-exists(Str:D $page --> Bool:D) {
+    $!storage.page-exists($page)
+}
 
 method add-hook(Str:D $name, &callback where Callable:D) {
     %!hooks{$name} //= [];

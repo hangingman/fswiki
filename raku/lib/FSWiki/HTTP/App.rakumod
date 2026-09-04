@@ -3,11 +3,10 @@ unit module FSWiki::HTTP::App;
 use Cro::HTTP::Router;
 use FSWiki::Core;
 
-sub source-response(Str:D $page = 'Home') is export {
-    my %pages = Home => 'Welcome to FSWiki.';
-    my $core = FSWiki::Core.new;
+sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new) is export {
+    $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
     $core.add-hook('source', -> $wiki, $name, %state {
-        %state<source> = %pages{$page} // '';
+        %state<source> = $wiki.get-page($page);
     });
 
     my %state;
