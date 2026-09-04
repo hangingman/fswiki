@@ -4,6 +4,13 @@ use Cro::HTTP::Router;
 use FSWiki::Core;
 use FSWiki::Storage::File;
 
+sub escape-html(Str:D $source --> Str:D) {
+    $source.subst('&', '&amp;', :g)
+        .subst('<', '&lt;', :g)
+        .subst('>', '&gt;', :g)
+        .subst('"', '&quot;', :g)
+}
+
 sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new) is export {
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
     $core.add-hook('source', -> $wiki, $name, %state {
@@ -12,7 +19,7 @@ sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.n
 
     my %state;
     $core.do-hook('source', %state);
-    '<pre>' ~ (%state<source> // '') ~ '</pre>'
+    '<pre>' ~ escape-html(%state<source> // '') ~ '</pre>'
 }
 
 sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
