@@ -1,20 +1,27 @@
 unit module FSWiki::HTTP::App;
 
 use Cro::HTTP::Router;
-use Cro::HTTP::Response;
 use FSWiki::Core;
 
-sub build-application() is export {
+sub source-response(Str:D $page = 'Home') is export {
+    my %pages = Home => 'Welcome to FSWiki.';
     my $core = FSWiki::Core.new;
-    $core.add-hook('health', -> $wiki, $name, %state {
-        %state<status> = 'ok';
+    $core.add-hook('source', -> $wiki, $name, %state {
+        %state<source> = %pages{$page} // '';
     });
 
+    my %state;
+    $core.do-hook('source', %state);
+    '<pre>' ~ (%state<source> // '') ~ '</pre>'
+}
+
+sub build-application() is export {
     route {
         get -> 'health' {
-            my %state;
-            $core.do-hook('health', %state);
-            content 'text/plain', %state<status> ~ "\n";
+            content 'text/plain', 'ok\n';
+        }
+        get -> 'source', $page = 'Home' {
+            content 'text/html; charset=UTF-8', source-response($page);
         }
     }
 }
