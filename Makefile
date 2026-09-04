@@ -1,4 +1,7 @@
-.PHONY: all run build
+.PHONY: all run build raku-test
+
+raku-test:
+	raku -I raku/lib raku/t/core.t
 
 run:
 	docker compose down

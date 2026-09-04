@@ -18,5 +18,9 @@ sitemap.xml
 tmp_import/
 *.zip
 
+# Generated artifacts
+.hermes/
+raku/lib/.precomp/
+
 # Environment variables
 .env
