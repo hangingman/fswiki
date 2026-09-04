@@ -21,6 +21,7 @@ tmp_import/
 # Generated artifacts
 .hermes/
 raku/lib/.precomp/
+.cro-dev/
 
 # Environment variables
 .env

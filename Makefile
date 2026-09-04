@@ -1,4 +1,7 @@
-.PHONY: all run build raku-test raku-run
+.PHONY: all run build raku-test raku-run raku-dev
+
+raku-dev:
+	FSWIKI_DEV_HOST=127.0.0.1 FSWIKI_DEV_PORT=8081 $(HOME)/.raku/bin/cro run
 
 raku-test:
 	raku -I raku/lib raku/t/core.t

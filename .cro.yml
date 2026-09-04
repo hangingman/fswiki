@@ -1,0 +1,16 @@
+cro: 1
+id: fswiki-dev
+name: FSWiki Raku development server
+entrypoint: raku/dev-server.raku
+endpoints:
+  - id: http
+    name: HTTP
+    protocol: http
+    host-env: FSWIKI_DEV_HOST
+    port-env: FSWIKI_DEV_PORT
+ignore:
+  - data/
+  - raku/lib/.precomp/
+  - local/
+  - log/
+  - tmp_import/
