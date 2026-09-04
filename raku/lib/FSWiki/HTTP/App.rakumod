@@ -22,6 +22,12 @@ sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.n
     '<pre>' ~ escape-html(%state<source> // '') ~ '</pre>'
 }
 
+sub save-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    die 'page name is required' if $page eq '';
+    $core.save-page($page, $source);
+    "saved\n"
+}
+
 sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
     my $core = FSWiki::Core.new(storage => FSWiki::Storage::File.new(dir => $data-dir));
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
@@ -32,6 +38,11 @@ sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
         }
         get -> 'source', $page = 'Home' {
             content 'text/html; charset=UTF-8', source-response($page, :$core);
+        }
+        post -> 'page', $page {
+            request-body -> %form {
+                content 'text/plain', save-page-response($page, %form<source> // '', :$core);
+            }
         }
     }
 }
