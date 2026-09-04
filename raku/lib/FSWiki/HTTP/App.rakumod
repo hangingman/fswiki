@@ -19,7 +19,7 @@ sub build-application() is export {
     }
 }
 
-sub start-server(Int:D :$port = 8080, Str:D :$host = '0.0.0.0') is export {
+sub start-server(Int:D :$port = 8081, Str:D :$host = '0.0.0.0') is export {
     use Cro::HTTP::Server;
 
     my $application = build-application;
@@ -31,6 +31,6 @@ sub start-server(Int:D :$port = 8080, Str:D :$host = '0.0.0.0') is export {
     }
 }
 
-sub MAIN(Int:D :$port = 8080, Str:D :$host = '0.0.0.0') {
+sub MAIN(Int:D :$port = 8081, Str:D :$host = '0.0.0.0') {
     start-server(:$port, :$host);
 }

@@ -5,7 +5,7 @@ raku-test:
 	raku -I raku/lib raku/t/http-health.t
 
 raku-run:
-	raku -I raku/lib -e 'use FSWiki::HTTP::App; start-server'
+	raku -I raku/lib -e 'use FSWiki::HTTP::App; start-server(:port(8081))'
 
 run:
 	docker compose down
