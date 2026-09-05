@@ -8,8 +8,8 @@ FSWiki Coreの移植は未完了。現在のRaku Coreは、フック、基本Han
 
 - [x] Core/Storage契約を拡張する: ページ一覧、更新日時、バックアップ/履歴の必要性をPerl Wiki.pmとStorageから調査してRaku APIを決める（`get-page-list`、`get-last-modified`、`get-last-modified2`、backup API）
 - [x] 認証・認可を移植する: `add_user`、`user_exists`、`login_check`、`get_login_info`、public/user/admin handler権限（Raku Core内のruntime-only実装。HTTP session、hashing、永続化は後続）
-- [ ] ページ権限・凍結を移植する: `freeze_page`、`un_freeze_page`、`is_freeze`、`can_modify_page`、`set_page_level`、`can_show`
-- [ ] Pluginライフサイクルを移植する: `install_plugin`、`is_installed`、`get_plugin_instance`、editform/menu/admin-menu登録
+- [x] ページ権限・凍結を移植する: `freeze_page`、`un_freeze_page`、`is_freeze`、`can_modify_page`、`set_page_level`、`can_show`（runtime metadata。Fileは`.fswiki-metadata`、Memoryはプロセス内）
+- [x] Pluginライフサイクルを移植する: `install_plugin`、`is_installed`、`get_plugin_instance`、editform/menu/admin-menu登録（明示Callableのみ。動的module loadingは後続）
 - [ ] Wiki処理境界を移植する: `process_wiki`、`process_plugin`、`parse_inline_plugin`、Parser/Format Plugin契約
 - [ ] Format Plugin APIを移植する: `add_format_plugin`、`get_format_names`、`convert_to_fswiki`、`convert_from_fswiki`、`get_edit_format`
 - [ ] Core補助APIを移植する: `config`、`set_title/get_title`、`create_page_url/create_url`、`redirect`、head-info

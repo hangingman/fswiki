@@ -15,11 +15,13 @@
 - 実機HTTPでJSON取得とJSON保存を確認。
 - Core全体の未移植範囲を`memory-bank/core-port-todo.md`へ整理。
 - Runtime-onlyユーザー、ログイン状態、public/user/admin handler権限と拒否テストを追加。
+- ページ公開レベル、凍結、編集可否判定をCoreとFile/Memory Storageに追加。
+- 明示CallableによるPlugin install/instance cache、editform/menu/admin-menu登録を追加。
 
 ## Next
 
-1. ページ権限・凍結を設計・テストする。
-2. Plugin lifecycle、Parser/Format Plugin、URL/config、WikiFarmを順に移植する。
+1. Wiki処理境界とParser/Format Plugin契約を設計・テストする。
+2. URL/config補助API、WikiFarmを順に移植する。
 3. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
 
 ## Deferred

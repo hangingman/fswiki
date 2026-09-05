@@ -107,4 +107,65 @@ subtest 'handler permissions deny before invocation and allow the right users' =
     is $admin-calls, 1, 'admin handler is invoked once';
 };
 
+subtest 'page visibility and freezing use the current login level' => {
+    my $core = FSWiki::Core.new;
+
+    ok $core.can-show('Home'), 'public pages are visible anonymously';
+    $core.set-page-level('Home', 1);
+    nok $core.can-show('Home'), 'logged-in pages are hidden anonymously';
+    nok $core.can-modify-page('Home'), 'hidden pages cannot be modified';
+
+    $core.set-login-info({ id => 'alice', type => 1 });
+    ok $core.can-show('Home'), 'ordinary users can see level-one pages';
+    ok $core.can-modify-page('Home'), 'ordinary users can modify visible pages';
+    $core.freeze-page('Home');
+    nok $core.can-modify-page('Home'), 'ordinary users cannot modify frozen pages';
+    ok $core.is-freeze('Home'), 'page is frozen';
+    is-deeply $core.get-freeze-list, ('Home',).List, 'freeze list contains the page';
+
+    $core.set-login-info({ id => 'admin', type => 0 });
+    ok $core.can-show('Home'), 'admins can see level-one pages';
+    ok $core.can-modify-page('Home'), 'admins can modify frozen pages';
+    $core.un-freeze-page('Home');
+    nok $core.is-freeze('Home'), 'page can be unfrozen';
+};
+
+subtest 'plugin lifecycle caches instances and records only successful installs' => {
+    my $core = FSWiki::Core.new;
+    my $installs = 0;
+    my $instances = 0;
+
+    ok $core.install-plugin('sample', -> $wiki { $installs++; Nil }), 'successful install returns true';
+    ok $core.is-installed('sample'), 'successful install is recorded';
+    is $installs, 1, 'installer runs once';
+    throws-like { $core.install-plugin('broken', -> $wiki { die 'failed' }) }, Exception,
+        'installer failure is propagated';
+    nok $core.is-installed('broken'), 'failed install is not recorded';
+    throws-like { $core.install-plugin('', -> { Nil }) }, Exception,
+        'empty plugin name is rejected';
+
+    my $first = $core.get-plugin-instance('sample', -> { $instances++; { id => $instances } });
+    my $second = $core.get-plugin-instance('sample', -> { $instances++; { id => $instances } });
+    is-deeply $first, $second, 'plugin instance is cached';
+    is $instances, 1, 'instance factory runs once';
+};
+
+subtest 'plugin menus and editform plugins are ordered and menus update' => {
+    my $core = FSWiki::Core.new;
+    $core.add-editform-plugin('low', 1);
+    $core.add-editform-plugin('high', 10);
+    is-deeply $core.get-editform-plugins».<plugin>, ('high', 'low').List,
+        'editform plugins sort by descending weight';
+    $core.add-admin-menu('Admin low', '/low', 1, 'low');
+    $core.add-user-menu('User high', '/high', 5, 'high');
+    is-deeply $core.get-admin-menu».<label>, ('User high', 'Admin low').List,
+        'admin menu entries sort by descending weight';
+    $core.add-menu('Home', '/old', 1, False);
+    $core.add-menu('Help', '/help', 5, True);
+    $core.add-menu('Home', '/new', 9, True);
+    is-deeply $core.get-menu».<name>, ('Home', 'Help').List, 'same-name menu entries are updated';
+    is-deeply $core.get-menu[0], { name => 'Home', href => '/new', weight => 9, nofollow => True },
+        'updated menu entry replaces its values';
+};
+
 done-testing;

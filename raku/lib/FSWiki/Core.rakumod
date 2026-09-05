@@ -4,6 +4,11 @@ use FSWiki::Storage::Memory;
 
 has %!hooks;
 has %!plugins;
+has %!installed-plugins;
+has %!plugin-instances;
+has @!editform-plugins;
+has @!admin-menu;
+has @!menu;
 has %!handlers;
 has %!users;
 has $!login-info;
@@ -19,6 +24,45 @@ method save-page(Str:D $page, Str:D $source --> Nil) {
 
 method page-exists(Str:D $page --> Bool:D) {
     $!storage.page-exists($page)
+}
+
+method freeze-page(Str:D $page --> Nil) {
+    $!storage.freeze-page($page)
+}
+
+method un-freeze-page(Str:D $page --> Nil) {
+    $!storage.un-freeze-page($page)
+}
+
+method is-freeze(Str:D $page --> Bool:D) {
+    $!storage.is-freeze($page)
+}
+
+method get-freeze-list(--> List:D) {
+    $!storage.get-freeze-list
+}
+
+method set-page-level(Str:D $page, Int:D $level --> Nil) {
+    $!storage.set-page-level($page, $level)
+}
+
+method get-page-level(Str:D $page --> Int:D) {
+    $!storage.get-page-level($page)
+}
+
+method !current-user-level(--> Int:D) {
+    my $login = self.get-login-info;
+    !$login.defined ?? 0 !! ($login<type> == 0 ?? 2 !! 1)
+}
+
+method can-show(Str:D $page --> Bool:D) {
+    self.get-page-level($page) <= self!current-user-level
+}
+
+method can-modify-page(Str:D $page --> Bool:D) {
+    return False unless self.can-show($page);
+    return False if self.is-freeze($page) && self!current-user-level < 2;
+    True
 }
 
 method add-user(Str:D $id, Str:D $password, Int:D $type --> Nil) {
@@ -86,6 +130,59 @@ method add-block-plugin(Str:D $name, &plugin where Callable:D, Str:D $format = '
 
 method plugin-info(Str:D $name) {
     %!plugins{$name}
+}
+
+method install-plugin(Str:D $name, &installer where Callable:D --> Bool:D) {
+    die 'Invalid plugin name' if $name eq '' || $name !~~ /^<[A..Za..z0..9_\-]>+$/;
+    &installer.arity == 0 ?? &installer() !! &installer(self);
+    %!installed-plugins{$name} = True;
+    True
+}
+
+method is-installed(Str:D $name --> Bool:D) {
+    %!installed-plugins{$name}:exists
+}
+
+method get-plugin-instance(Str:D $name, &factory? where Callable --> Mu) {
+    return Nil if $name eq '';
+    return %!plugin-instances{$name} if %!plugin-instances{$name}:exists;
+    return Nil unless &factory.defined;
+    %!plugin-instances{$name} = &factory.arity == 0 ?? &factory() !! &factory(self);
+}
+
+method add-editform-plugin(Mu $plugin, Numeric:D $weight --> Nil) {
+    @!editform-plugins.push({ plugin => $plugin, weight => $weight });
+    Nil
+}
+
+method get-editform-plugins(--> List:D) {
+    @!editform-plugins.sort({ $^b<weight> <=> $^a<weight> }).List
+}
+
+method add-admin-menu(Str:D $label, Str:D $url, Numeric:D $weight, Str:D $desc --> Nil) {
+    @!admin-menu.push({ label => $label, url => $url, weight => $weight, desc => $desc, type => 0 });
+    Nil
+}
+
+method add-user-menu(Str:D $label, Str:D $url, Numeric:D $weight, Str:D $desc --> Nil) {
+    @!admin-menu.push({ label => $label, url => $url, weight => $weight, desc => $desc, type => 1 });
+    Nil
+}
+
+method get-admin-menu(--> List:D) {
+    @!admin-menu.sort({ $^b<weight> <=> $^a<weight> }).List
+}
+
+method add-menu(Str:D $name, Str:D $href, Numeric:D $weight, Bool:D $nofollow = False --> Nil) {
+    my %entry = name => $name, href => $href, weight => $weight, nofollow => $nofollow;
+    my $existing = @!menu.first({ .<name> eq $name });
+    $existing ?? ($existing<href> = $href; $existing<weight> = $weight; $existing<nofollow> = $nofollow)
+             !! @!menu.push(%entry);
+    Nil
+}
+
+method get-menu(--> List:D) {
+    @!menu.sort({ $^b<weight> <=> $^a<weight> }).List
 }
 
 method !add-handler(Str:D $action, &handler where Callable:D, Str:D $permission, %api) {

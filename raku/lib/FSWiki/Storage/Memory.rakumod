@@ -4,6 +4,8 @@ has %!pages;
 has %!physical-modified;
 has %!logical-modified;
 has %!backups;
+has %!page-level;
+has %!frozen;
 
 method !timestamp(--> Numeric:D) {
     my $modified = DateTime.now.posix;
@@ -27,6 +29,34 @@ method page-exists(Str:D $page --> Bool:D) {
 
 method get-page(Str:D $page --> Str:D) {
     %!pages{$page} // ''
+}
+
+method freeze-page(Str:D $page --> Nil) {
+    %!frozen{$page} = True;
+    Nil
+}
+
+method un-freeze-page(Str:D $page --> Nil) {
+    %!frozen{$page}:delete;
+    Nil
+}
+
+method is-freeze(Str:D $page --> Bool:D) {
+    %!frozen{$page}:exists
+}
+
+method get-freeze-list(--> List:D) {
+    %!frozen.keys.sort.List
+}
+
+method set-page-level(Str:D $page, Int:D $level --> Nil) {
+    die 'Invalid page level' unless $level ~~ 0..2;
+    %!page-level{$page} = $level;
+    Nil
+}
+
+method get-page-level(Str:D $page --> Int:D) {
+    %!page-level{$page} // 0
 }
 
 method save-page(Str:D $page, Str:D $source --> Nil) {

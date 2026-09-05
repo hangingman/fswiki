@@ -9,12 +9,63 @@ method !path(Str:D $page --> IO::Path:D) {
     $!dir.add($page.subst('/', '%2F', :g) ~ '.wiki')
 }
 
+method !metadata-dir(--> IO::Path:D) {
+    $!dir.add('.fswiki-metadata')
+}
+
+method !metadata-path(Str:D $page, Str:D $suffix --> IO::Path:D) {
+    self!metadata-dir.add($page.subst('/', '%2F', :g) ~ $suffix)
+}
+
 method page-exists(Str:D $page --> Bool:D) {
     self!path($page).f
 }
 
 method get-page(Str:D $page --> Str:D) {
     self!path($page).slurp(:bin).decode('UTF-8') if self.page-exists($page)
+}
+
+method freeze-page(Str:D $page --> Nil) {
+    my $dir = self!metadata-dir;
+    $dir.mkdir unless $dir.d;
+    self!metadata-path($page, '.freeze').spurt('1\n');
+    Nil
+}
+
+method un-freeze-page(Str:D $page --> Nil) {
+    my $path = self!metadata-path($page, '.freeze');
+    $path.unlink if $path.f;
+    Nil
+}
+
+method is-freeze(Str:D $page --> Bool:D) {
+    self!metadata-path($page, '.freeze').f
+}
+
+method get-freeze-list(--> List:D) {
+    return ().List unless self!metadata-dir.d;
+    self!metadata-dir.dir.grep(*.f)
+        .grep(*.basename.ends-with('.freeze'))
+        .map({ .basename.substr(0, .basename.chars - 7).subst('%2F', '/', :g) })
+        .sort.List
+}
+
+method set-page-level(Str:D $page, Int:D $level --> Nil) {
+    die 'Invalid page level' unless $level ~~ 0..2;
+    my $dir = self!metadata-dir;
+    if $level == 0 {
+        my $path = self!metadata-path($page, '.level');
+        $path.unlink if $path.f;
+    } else {
+        $dir.mkdir unless $dir.d;
+        self!metadata-path($page, '.level').spurt($level.Str ~ "\n");
+    }
+    Nil
+}
+
+method get-page-level(Str:D $page --> Int:D) {
+    my $path = self!metadata-path($page, '.level');
+    $path.f ?? $path.slurp.trim.Int !! 0
 }
 
 method save-page(Str:D $page, Str:D $source --> Nil) {

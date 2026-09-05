@@ -15,6 +15,14 @@ is $storage.get-page('Missing'), '', 'missing page reads as empty';
 $storage.save-page('Draft', 'draft body');
 is $storage.get-page('Draft'), 'draft body', 'saved page can be read';
 ok $storage.page-exists('Draft'), 'saved page exists';
+$storage.set-page-level('Draft', 2);
+is $storage.get-page-level('Draft'), 2, 'page level is stored';
+is $storage.get-page-level('Home'), 0, 'page level defaults to public';
+$storage.freeze-page('Draft');
+ok $storage.is-freeze('Draft'), 'page can be frozen';
+is-deeply $storage.get-freeze-list, ('Draft',).List, 'freeze list is available';
+$storage.un-freeze-page('Draft');
+nok $storage.is-freeze('Draft'), 'page can be unfrozen';
 
 is $storage.get-page-list.join('|'), 'Draft|Home', 'pages are sorted by name';
 is $storage.get-page-list(:sort<name>, :max(1)).join('|'), 'Draft', 'page list honors max';

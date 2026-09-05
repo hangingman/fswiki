@@ -14,6 +14,13 @@ is $storage.get-page('Home'), "!!!FreeStyle Wiki\n", 'saved page is readable';
 $storage.save-page('Help/FSWiki', 'help');
 ok $dir.add('Help%2FFSWiki.wiki').f, 'page names with slash are encoded';
 is $storage.get-page('Help/FSWiki'), 'help', 'encoded page is readable';
+$storage.set-page-level('Help/FSWiki', 1);
+is $storage.get-page-level('Help/FSWiki'), 1, 'file storage persists page level';
+$storage.freeze-page('Help/FSWiki');
+ok $storage.is-freeze('Help/FSWiki'), 'file storage persists freeze state';
+is-deeply $storage.get-freeze-list, ('Help/FSWiki',).List, 'file storage lists frozen pages';
+$storage.un-freeze-page('Help/FSWiki');
+nok $storage.is-freeze('Help/FSWiki'), 'file storage removes freeze state';
 
 $storage.save-page('../outside', 'safe');
 ok !$dir.parent.add('outside.wiki').f, 'page names cannot escape storage directory';
@@ -37,6 +44,8 @@ $dir.add('Home.wiki').unlink;
 $dir.add('Help%2FFSWiki.wiki').unlink;
 $dir.add('..%2Foutside.wiki').unlink;
 $dir.add('backup').rmdir;
+$dir.add('.fswiki-metadata').dir.grep(*.f)».unlink;
+$dir.add('.fswiki-metadata').rmdir;
 $dir.rmdir;
 
 done-testing;

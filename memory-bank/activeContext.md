@@ -8,13 +8,15 @@
 - Core migration is incomplete. The remaining Perl Wiki.pm responsibilities are tracked in `memory-bank/core-port-todo.md`.
 - Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
 - Core now provides runtime-only users, login state, and public/user/admin handler authorization.
-- Next slice: investigate page visibility levels and page freezing.
+- Core now provides page visibility levels, freeze state, runtime plugin lifecycle, and menu registration.
+- Next slice: investigate Wiki processing and Parser/Format Plugin boundaries.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
 ## Verification
 
 - `make raku-test` passes after the authentication/authorization extension.
+- `make raku-test` passes after the page permission/freeze and plugin lifecycle extensions.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
 
