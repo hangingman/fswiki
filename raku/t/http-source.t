@@ -29,4 +29,20 @@ is source-response('Unsafe', :$core),
     '<p>&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; text</p>',
     'source response escapes HTML characters';
 
+is list-pages-response(:$core),
+    '<ul><li><a href="/source/Home">Home</a></li><li><a href="/source/Markup">Markup</a></li><li><a href="/source/Unsafe">Unsafe</a></li></ul>',
+    'page list renders visible pages';
+
+is raw-page-response('Markup', :$core),
+    "!!! Title\n\nHello [[world|Home]].",
+    'raw page returns source without rendering';
+
+is pre-page-response('Unsafe', :$core),
+    '<pre>&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; text</pre>',
+    'pre page renders escaped source';
+
+is blockquote-response('Markup', :$core),
+    '<blockquote><p>!!! Title</p><p></p><p>Hello [[world|Home]].</p></blockquote>',
+    'blockquote page renders source lines as a quote';
+
 done-testing;

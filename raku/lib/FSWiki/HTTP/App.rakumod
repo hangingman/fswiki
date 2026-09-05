@@ -21,6 +21,67 @@ sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.n
     $core.process-wiki($core.get-page($page), |%context);
 }
 
+sub list-pages-response(FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    my @pages = $core.storage.get-page-list.grep({ $core.can-show($_) });
+    '<ul>' ~ @pages.map({ '<li><a href="/source/' ~ escape-html($_) ~ '">' ~ escape-html($_) ~ '</a></li>' }).join ~ '</ul>'
+}
+
+sub raw-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    return '' unless $core.can-show($page);
+    $core.get-page($page)
+}
+
+sub pre-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    '<pre>' ~ escape-html(raw-page-response($page, :$core)) ~ '</pre>'
+}
+
+sub blockquote-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    my $source = raw-page-response($page, :$core);
+    return '' unless $source ne '';
+    '<blockquote>' ~ $source.split("\n", :skip-empty(False)).map({ '<p>' ~ escape-html($_) ~ '</p>' }).join ~ '</blockquote>'
+}
+
+sub create-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    die 'page name is required' if $page eq '';
+    die 'page already exists' if $core.page-exists($page);
+    $core.save-page($page, $source);
+    source-response($page, :$core)
+}
+
+sub diff-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    return '' unless $core.page-exists($page);
+    my $old = $core.storage.get-backup($page).chomp;
+    my $current = $core.get-page($page).chomp;
+    '<del>' ~ escape-html($old) ~ '</del><ins>' ~ escape-html($current) ~ '</ins>'
+}
+
+sub remove-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    die 'page name is required' if $page eq '';
+    die 'page cannot be removed' unless $core.can-modify-page($page);
+    die 'page does not exist' unless $core.page-exists($page);
+    $core.delete-page($page);
+    "removed\n"
+}
+
+sub wiki-list-response(FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    my @pages = $core.storage.get-page-list.grep({ $core.can-show($_) });
+    '<ul>' ~ @pages.map({ '<li>' ~ escape-html($_) ~ '</li>' }).join ~ '</ul>'
+}
+
+sub edit-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    die 'page name is required' if $page eq '';
+    die 'page cannot be edited' unless $core.can-modify-page($page);
+    my $source = escape-html($core.get-page($page));
+    '<form method="post" action="/page/' ~ escape-html($page) ~ '"><textarea name="source">' ~ $source ~ '</textarea><button type="submit">Save</button></form>'
+}
+
+sub edit-save-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    die 'page name is required' if $page eq '';
+    die 'page cannot be edited' unless $core.can-modify-page($page);
+    $core.save-page($page, $source);
+    source-response($page, :$core)
+}
+
 sub save-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
     die 'page name is required' if $page eq '';
     $core.save-page($page, $source);
@@ -107,9 +168,35 @@ sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
         get -> 'source', $page = 'Home' {
             content 'text/html; charset=UTF-8', source-response($page, :$core);
         }
+        get -> 'edit', $page {
+            content 'text/html; charset=UTF-8', edit-page-response($page, :$core);
+        }
+        get -> 'list' {
+            content 'text/html; charset=UTF-8', list-pages-response(:$core);
+        }
+        get -> 'raw', $page {
+            content 'text/plain; charset=UTF-8', raw-page-response($page, :$core);
+        }
+        get -> 'pre', $page {
+            content 'text/html; charset=UTF-8', pre-page-response($page, :$core);
+        }
+        get -> 'blockquote', $page {
+            content 'text/html; charset=UTF-8', blockquote-response($page, :$core);
+        }
+        get -> 'diff', $page {
+            content 'text/html; charset=UTF-8', diff-page-response($page, :$core);
+        }
+        post -> 'create', $page {
+            request-body -> %form {
+                content 'text/html; charset=UTF-8', create-page-response($page, %form<source> // '', :$core);
+            }
+        }
+        post -> 'remove', $page {
+            content 'text/plain; charset=UTF-8', remove-page-response($page, :$core);
+        }
         post -> 'page', $page {
             request-body -> %form {
-                content 'text/plain', save-page-response($page, %form<source> // '', :$core);
+                content 'text/html; charset=UTF-8', edit-save-response($page, %form<source> // '', :$core);
             }
         }
         include api-routes($core);

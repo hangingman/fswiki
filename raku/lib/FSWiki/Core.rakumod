@@ -159,6 +159,10 @@ method save-page(Str:D $page, Str:D $source --> Nil) {
     $!storage.save-page($page, $source)
 }
 
+method delete-page(Str:D $page --> Nil) {
+    $!storage.delete-page($page)
+}
+
 method page-exists(Str:D $page --> Bool:D) {
     $!storage.page-exists($page)
 }

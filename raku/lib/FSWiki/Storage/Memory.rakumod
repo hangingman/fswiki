@@ -67,6 +67,16 @@ method save-page(Str:D $page, Str:D $source --> Nil) {
     %!logical-modified{$page} = $modified;
 }
 
+method delete-page(Str:D $page --> Nil) {
+    %!pages{$page}:delete;
+    %!page-level{$page}:delete;
+    %!frozen{$page}:delete;
+    %!physical-modified{$page}:delete;
+    %!logical-modified{$page}:delete;
+    %!backups{$page}:delete;
+    Nil
+}
+
 method get-page-list(|capture --> List) {
     my %options = capture.list.elems
         ?? capture.list[0].Hash

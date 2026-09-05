@@ -80,6 +80,16 @@ method save-page(Str:D $page, Str:D $source --> Nil) {
     %!logical-modified{$page} = now.DateTime.posix.Int;
 }
 
+method delete-page(Str:D $page --> Nil) {
+    my $path = self!path($page);
+    $path.unlink if $path.f;
+    self.un-freeze-page($page);
+    self.set-page-level($page, 0);
+    self.delete-backup-files($page);
+    %!logical-modified{$page}:delete;
+    Nil
+}
+
 method get-page-list(Str:D :$sort = 'name', Int:D :$max = 0 --> List:D) {
     my @pages = $!dir.d
         ?? $!dir.dir.grep(*.f).grep(*.extension eq 'wiki').map({ my $name = .basename; $name.substr(0, $name.chars - 5).subst('%2F', '/', :g) }).List
