@@ -157,6 +157,29 @@ sub api-call-response(Str:D $action, %input, FSWiki::Core:D :$core --> Str:D) {
     $response
 }
 
+sub ajax-page-response(--> Str:D) is export {
+    q:to/JS/;
+<script>
+const pages = document.querySelector('#pages');
+const editor = document.querySelector('#editor');
+fetch("/api/pages").then(response => response.json()).then(data => {
+    data.pages.forEach(page => {
+        const option = document.createElement('option');
+        option.value = page;
+        option.textContent = page;
+        pages.appendChild(option);
+    });
+});
+function loadPage(page) {
+    fetch(`/api/page/${page}`).then(response => response.json()).then(data => editor.value = data.source);
+}
+function savePage(page) {
+    return fetch(`/api/page/${page}`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({source: editor.value})});
+}
+</script>
+JS
+}
+
 sub api-pages-response(FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
     to-json({ pages => $core.storage.get-page-list.grep({ $core.can-show($_) }).Array })
 }
@@ -211,6 +234,9 @@ sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
         }
         get -> 'edit', $page {
             content 'text/html; charset=UTF-8', edit-page-response($page, :$core);
+        }
+        get -> 'ajax' {
+            content 'text/html; charset=UTF-8', ajax-page-response();
         }
         get -> 'list' {
             content 'text/html; charset=UTF-8', list-pages-response(:$core);

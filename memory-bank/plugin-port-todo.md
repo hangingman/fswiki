@@ -144,8 +144,8 @@ GET API source
 - [x] `GET /api/pages` を追加する。sort、limit、visibilityをschemaで検証する。
 - [x] `GET /api/page/{page}` を追加する。HTMLではなくsourceとmetadataを返す。
 - [x] `POST /api/page/{page}` の成功・validation・permission errorを確定する。
-- [ ] ブラウザ側に依存のない最小JavaScriptを追加し、一覧選択→取得→編集→保存を実行する。
-- [ ] AJAXとHTTP formが同じCore handlerを呼ぶことをテストする。
+- [x] ブラウザ側に依存のない最小JavaScriptを追加し、一覧選択→取得→編集→保存を実行する。
+- [x] AJAXとHTTP formが同じCore handlerを呼ぶことをテストする。
 - [ ] HTTP redirectとAJAX JSON responseを混在させない。
 - [ ] CSRF token、Content-Type、Origin/同一サイト制約の適用点を決める。実装前に契約化する。
 

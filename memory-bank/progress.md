@@ -25,10 +25,11 @@
 - Wiki ProcessorをHTML表示経路へ接続し、公開Wiki記法、ページリンク、可視性、HTMLエスケープをブラウザ表示経路で確認。
 - HTTP編集画面、保存、権限/凍結拒否、保存失敗時の本文保持、ページ作成・削除・差分・一覧・Raw/Pre/Blockquote表示を追加。
 - JSON APIにページ一覧`GET /api/pages`、ページ取得`GET /api/page/{page}`、保存の権限検証を追加し、実HTTPで確認。
+- 最小AJAXページ操作UIを`GET /ajax`へ追加し、一覧→取得→保存のJSON API呼び出しを検証。
 
 ## Next
 
-1. M3: AJAX編集へ進む。
+1. M4: Plugin SDK最小形を固定する。
 
 ## Deferred
 

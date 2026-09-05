@@ -58,4 +58,11 @@ is wiki-list-response(:$core),
     '<ul><li>Draft</li><li>Home</li></ul>',
     'wiki list reports remaining pages';
 
+ok ajax-page-response.contains('fetch("/api/pages")'),
+    'AJAX page loads the page list';
+ok ajax-page-response.contains('fetch(`/api/page/${page}`)'),
+    'AJAX page loads the selected page';
+ok ajax-page-response.contains('method: \'POST\''),
+    'AJAX page saves through the JSON API';
+
 done-testing;
