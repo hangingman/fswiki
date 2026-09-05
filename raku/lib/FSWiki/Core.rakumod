@@ -7,6 +7,7 @@ has %!hooks;
 has %!plugins;
 has %!installed-plugins;
 has %!plugin-instances;
+has %!format-plugins;
 has @!editform-plugins;
 has @!admin-menu;
 has @!menu;
@@ -16,6 +17,7 @@ has $!login-info;
 has $.storage = FSWiki::Storage::Memory.new;
 has %!processors;
 has $!default-processor = 'wiki';
+has $!current-edit-format = 'FSWiki';
 
 submethod BUILD() {
     %!processors<wiki> = FSWiki::Parser::Wiki.new;
@@ -179,6 +181,58 @@ method get-plugin-instance(Str:D $name, &factory? where Callable --> Mu) {
     return %!plugin-instances{$name} if %!plugin-instances{$name}:exists;
     return Nil unless &factory.defined;
     %!plugin-instances{$name} = &factory.arity == 0 ?? &factory() !! &factory(self);
+}
+
+method add-format-plugin(Str:D $name, Mu:D $plugin --> FSWiki::Core:D) {
+    die 'Format name is required' if $name eq '';
+    die 'Format plugin must be callable or an object' unless $plugin.defined;
+    %!format-plugins{$name} = $plugin;
+    %!plugin-instances{$name}:delete;
+    self
+}
+
+method get-format-names(--> List:D) {
+    (%!format-plugins.keys.List, 'FSWiki').flat.unique.sort.List
+}
+
+method !get-format-plugin(Str:D $name --> Mu) {
+    return Nil unless %!format-plugins{$name}:exists;
+    my $registered := %!format-plugins{$name};
+    $registered ~~ Callable
+        ?? self.get-plugin-instance($name, $registered)
+        !! self.get-plugin-instance($name, -> { $registered })
+}
+
+method !convert-format(Str:D $source, Str:D $format, Bool:D $inline, Bool:D $from --> Str:D) {
+    return $source if $format eq 'FSWiki';
+    my $plugin = self!get-format-plugin($format);
+    return $source unless $plugin.defined;
+
+    my @methods = $from
+        ?? ($inline ?? <convert-from-fswiki-line convert_from_fswiki_line> !! <convert-from-fswiki convert_from_fswiki>)
+        !! ($inline ?? <convert-to-fswiki-line convert_to_fswiki_line> !! <convert-to-fswiki convert_to_fswiki>);
+    my $method = @methods.first({ $plugin.^can($_) });
+    return $source unless $method.defined;
+
+    my $normalized = $source.subst("\r\n", "\n", :g).subst("\r", "\n", :g);
+    $plugin."$method"($normalized)
+}
+
+method convert-to-fswiki(Str:D $source, Str:D $format, Bool:D :$inline = False --> Str:D) {
+    self!convert-format($source, $format, $inline, False)
+}
+
+method convert-from-fswiki(Str:D $source, Str:D $format, Bool:D :$inline = False --> Str:D) {
+    self!convert-format($source, $format, $inline, True)
+}
+
+method set-edit-format(Str:D $format --> FSWiki::Core:D) {
+    $!current-edit-format = $format;
+    self
+}
+
+method get-edit-format(:$from = False --> Str:D) {
+    $!current-edit-format
 }
 
 method add-editform-plugin(Mu $plugin, Numeric:D $weight --> Nil) {

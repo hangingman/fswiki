@@ -150,6 +150,49 @@ subtest 'plugin lifecycle caches instances and records only successful installs'
     is $instances, 1, 'instance factory runs once';
 };
 
+subtest 'format plugins register, sort, cache, convert, and fall back' => {
+    class FormatPlugin {
+        has $.instances is rw;
+
+        method convert-to-fswiki($source) { "to:$source" }
+        method convert-to-fswiki-line($source) { "line-to:$source" }
+        method convert-from-fswiki($source) { "from:$source" }
+        method convert-from-fswiki-line($source) { "line-from:$source" }
+    }
+    class EmptyFormatPlugin { }
+
+    my $core = FSWiki::Core.new;
+    my $created = 0;
+    $core.add-format-plugin('Zeta', -> { $created++; FormatPlugin.new });
+    $core.add-format-plugin('Alpha', EmptyFormatPlugin.new);
+
+    is-deeply $core.get-format-names, ('Alpha', 'FSWiki', 'Zeta').List,
+        'format names include FSWiki and are sorted';
+    is $core.convert-to-fswiki("a\r\nb", 'Zeta'), "to:a\nb",
+        'full conversion normalizes line endings';
+    is $core.convert-to-fswiki("a\r\nb", 'Zeta', inline => True), "line-to:a\nb",
+        'inline conversion uses the line method';
+    is $core.convert-from-fswiki("a\r\nb", 'Zeta'), "from:a\nb",
+        'reverse full conversion uses the reverse method';
+    is $core.convert-from-fswiki("a\r\nb", 'Zeta', inline => True), "line-from:a\nb",
+        'reverse inline conversion uses the reverse line method';
+    is $created, 1, 'factory result is cached';
+    is $core.convert-to-fswiki('unchanged', 'Unknown'), 'unchanged',
+        'unknown format falls back to source';
+    is $core.convert-to-fswiki('unchanged', 'Alpha', inline => True), 'unchanged',
+        'missing conversion method falls back to source';
+    is $core.convert-to-fswiki("a\r\nb", 'FSWiki'), "a\r\nb",
+        'built-in format returns source unchanged';
+};
+
+subtest 'edit format defaults to FSWiki and can be selected' => {
+    my $core = FSWiki::Core.new;
+    is $core.get-edit-format, 'FSWiki', 'default edit format is FSWiki';
+    $core.set-edit-format('Markdown');
+    is $core.get-edit-format, 'Markdown', 'selected edit format is returned';
+    is $core.get-edit-format(from => True), 'Markdown', 'optional from flag is accepted';
+};
+
 subtest 'plugin menus and editform plugins are ordered and menus update' => {
     my $core = FSWiki::Core.new;
     $core.add-editform-plugin('low', 1);
