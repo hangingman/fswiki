@@ -14,13 +14,11 @@ sub escape-html(Str:D $source --> Str:D) {
 
 sub source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new) is export {
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
-    $core.add-hook('source', -> $wiki, $name, %state {
-        %state<source> = $wiki.get-page($page);
-    });
-
-    my %state;
-    $core.do-hook('source', %state);
-    '<pre>' ~ escape-html(%state<source> // '') ~ '</pre>'
+    return '' unless $core.can-show($page);
+    my %context =
+        'page-link' => -> $target, $label { '<a href="/source/' ~ escape-html($target) ~ '" class="wikipage">' ~ escape-html($label) ~ '</a>' },
+        'url-link' => -> $url, $label { '<a href="' ~ escape-html($url) ~ '">' ~ escape-html($label) ~ '</a>' };
+    $core.process-wiki($core.get-page($page), |%context);
 }
 
 sub save-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
