@@ -60,6 +60,12 @@ $core.call-handler('SAVE_PAGE', { page => 'Draft', source => 'json source' });
 is $core.get-page('Draft'), 'json source',
     'JSON save handler persists through Core storage';
 
+$core.freeze-page('Draft');
+is-deeply from-json(api-save-page-response('Draft', 'blocked', :$core)),
+    { error => { code => 'permission-denied', message => 'Permission denied' } },
+    'JSON save rejects frozen pages';
+$core.un-freeze-page('Draft');
+
 throws-like { $core.call-handler('SAVE_PAGE', { page => '', source => 'bad' }) },
     Exception,
     'JSON save handler rejects an empty page name';

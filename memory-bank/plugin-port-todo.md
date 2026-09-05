@@ -141,9 +141,9 @@ GET API source
 
 **目的**: HTTP画面を維持したまま、ページ一覧・取得・保存をAJAXで実行する。
 
-- [ ] `GET /api/pages` を追加する。sort、limit、visibilityをschemaで検証する。
-- [ ] `GET /api/page/{page}` を追加する。HTMLではなくsourceとmetadataを返す。
-- [ ] `POST /api/page/{page}` の成功・validation・permission errorを確定する。
+- [x] `GET /api/pages` を追加する。sort、limit、visibilityをschemaで検証する。
+- [x] `GET /api/page/{page}` を追加する。HTMLではなくsourceとmetadataを返す。
+- [x] `POST /api/page/{page}` の成功・validation・permission errorを確定する。
 - [ ] ブラウザ側に依存のない最小JavaScriptを追加し、一覧選択→取得→編集→保存を実行する。
 - [ ] AJAXとHTTP formが同じCore handlerを呼ぶことをテストする。
 - [ ] HTTP redirectとAJAX JSON responseを混在させない。

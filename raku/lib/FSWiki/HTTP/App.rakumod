@@ -120,6 +120,7 @@ sub register-api-handlers(FSWiki::Core:D $core --> FSWiki::Core:D) is export {
     });
     $core.add-handler('SAVE_PAGE', -> $wiki, %input {
         die 'page name is required' if (%input<page> // '') eq '';
+        die 'page cannot be edited' unless $wiki.can-modify-page(%input<page>);
         $wiki.save-page(%input<page>, %input<source> // '');
         { page => %input<page>, saved => True }
     }, api => {
@@ -138,6 +139,7 @@ sub api-error($exception --> Str:D) {
         when /'Unknown action'/       { 'unknown-action', 'Unknown API action' }
         when /'Invalid API input'/    { 'validation-error', $message }
         when /'Page not found'/       { 'not-found', 'Page not found' }
+        when /'page cannot be edited'/ { 'permission-denied', 'Permission denied' }
         when /'Login required'|'Admin permission required'/ {
             'permission-denied', 'Permission denied'
         }
