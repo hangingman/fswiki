@@ -13,7 +13,8 @@
 - Core now provides an explicit Format Plugin registry and bidirectional conversion API.
 - Core now provides runtime config/title/URL/redirect/head-info helpers.
 - Core now provides a minimal runtime WikiFarm child registry with safe names and prefix search.
-- Next slice: harden JSON API schemas, errors, permissions, and shared HTML/JSON handler flow.
+- JSON API now has explicit input schemas, Core validation, unified errors, and centralized permission enforcement.
+- Core migration TODO is complete for the defined runtime MVP; filesystem Farm, HTTP session, dynamic plugin loading, and full legacy parser/plugin behavior remain deferred.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
@@ -25,6 +26,7 @@
 - `make raku-test` passes after the Format Plugin API extension.
 - `make raku-test` passes after the Core helper API extension.
 - `make raku-test` passes after the WikiFarm API extension.
+- `raku -I raku/lib raku/t/api.t` and `make raku-test` pass after JSON API hardening.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
 

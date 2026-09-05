@@ -21,10 +21,11 @@
 - Format Plugin registry、双方向変換、inline変換、FSWiki fallback、edit format選択を追加。
 - Core config/title/URL/redirect/head-info helper APIを追加。
 - Runtime WikiFarm child registry、safe name validation、create/remove/list/prefix searchを追加。
+- JSON API schema validation、統一エラー、permission enforcement、HTML/JSON共通Core handler経路を追加。
 
 ## Next
 
-1. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
+1. Core移植TODOのruntime MVP完了。残りは明示したDeferred範囲。
 
 ## Deferred
 

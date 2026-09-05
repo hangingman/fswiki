@@ -33,24 +33,55 @@ sub register-api-handlers(FSWiki::Core:D $core --> FSWiki::Core:D) is export {
     my &handler = -> $wiki, %input {
         { page => %input<page>, source => $wiki.get-page(%input<page>) }
     };
-    $core.add-handler('SOURCE', &handler, api => { method => 'GET', path => '/api/source' });
+    $core.add-handler('SOURCE', &handler, api => {
+        method => 'GET', path => '/api/source',
+        schema => { page => { required => True, type => 'Str' } }
+    });
     $core.add-handler('SAVE_PAGE', -> $wiki, %input {
         die 'page name is required' if (%input<page> // '') eq '';
         $wiki.save-page(%input<page>, %input<source> // '');
         { page => %input<page>, saved => True }
-    }, api => { method => 'POST', path => '/api/page/{page}' });
+    }, api => {
+        method => 'POST', path => '/api/page/{page}',
+        schema => {
+            page => { required => True, type => 'Str' },
+            source => { required => True, type => 'Str' }
+        }
+    });
     $core
 }
 
-sub api-source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
-    $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
-    register-api-handlers($core) unless $core.api-info('SOURCE');
-    to-json($core.call-handler('SOURCE', { page => $page }))
+sub api-error($exception --> Str:D) {
+    my $message = $exception.message;
+    my ($code, $safe-message) = do given $message {
+        when /'Unknown action'/       { 'unknown-action', 'Unknown API action' }
+        when /'Invalid API input'/    { 'validation-error', $message }
+        when /'Login required'|'Admin permission required'/ {
+            'permission-denied', 'Permission denied'
+        }
+        default                       { 'api-error', 'API request failed' }
+    };
+    to-json({ error => { code => $code, message => $safe-message } })
 }
 
-sub api-save-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+sub api-call-response(Str:D $action, %input, FSWiki::Core:D :$core --> Str:D) {
+    my $response;
+    try {
+        $response = to-json($core.call-handler($action, %input));
+        CATCH { default { $response = api-error($_) } }
+    }
+    $response
+}
+
+sub api-source-response(Mu $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
+    register-api-handlers($core) unless $core.api-info('SOURCE');
+    api-call-response('SOURCE', { page => $page }, :$core)
+}
+
+sub api-save-page-response(Mu $page = Nil, Mu $source = Nil, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
     register-api-handlers($core) unless $core.api-info('SAVE_PAGE');
-    to-json($core.call-handler('SAVE_PAGE', { :$page, :$source }))
+    api-call-response('SAVE_PAGE', { :$page, :$source }, :$core)
 }
 
 sub api-routes(FSWiki::Core:D $core) {
@@ -60,7 +91,7 @@ sub api-routes(FSWiki::Core:D $core) {
         }
         post -> 'api', 'page', $page {
             request-body -> %json {
-                content 'application/json', api-save-page-response($page, %json<source> // '', :$core);
+                content 'application/json', api-save-page-response($page, %json<source>, :$core);
             }
         }
     }

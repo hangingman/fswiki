@@ -387,12 +387,36 @@ method add-handler(Str:D $action, &handler where Callable:D, :%api = {}) {
     self!add-handler($action, &handler, 'public', %api)
 }
 
-method add-user-handler(Str:D $action, &handler where Callable:D) {
-    self!add-handler($action, &handler, 'user', {})
+method add-user-handler(Str:D $action, &handler where Callable:D, :%api = {}) {
+    self!add-handler($action, &handler, 'user', %api)
 }
 
-method add-admin-handler(Str:D $action, &handler where Callable:D) {
-    self!add-handler($action, &handler, 'admin', {})
+method add-admin-handler(Str:D $action, &handler where Callable:D, :%api = {}) {
+    self!add-handler($action, &handler, 'admin', %api)
+}
+
+method validate-api-input(Str:D $action, %input --> Hash:D) {
+    my %record := %!handlers{$action} // die "Unknown action: $action";
+    my %schema := %record<API><schema> // {};
+    return %input.Hash unless %schema;
+
+    my %normalized;
+    for %schema.kv -> $name, %rules {
+        my $value = %input{$name};
+        die "Invalid API input: $name is required"
+            if %rules<required> && !$value.defined;
+        next unless $value.defined;
+
+        given %rules<type> {
+            when 'Str'  { die "Invalid API input: $name must be a string" unless $value ~~ Str }
+            when 'Bool' { die "Invalid API input: $name must be a boolean" unless $value ~~ Bool }
+            when 'Int'  { die "Invalid API input: $name must be an integer" unless $value ~~ Int }
+            default     { die "Invalid API schema for $action: $name has an unsupported type" }
+        }
+        die "Invalid API input: page is required" if $name eq 'page' && $value eq '';
+        %normalized{$name} = $value;
+    }
+    %normalized
 }
 
 method call-handler(Str:D $action, %input = {}) {
@@ -407,7 +431,8 @@ method call-handler(Str:D $action, %input = {}) {
                 unless $login.defined && $login<type> == 0;
         }
     }
-    %input ?? %record<HANDLER>(self, %input) !! %record<HANDLER>(self)
+    my %validated = self.validate-api-input($action, %input);
+    %validated ?? %record<HANDLER>(self, %validated) !! %record<HANDLER>(self)
 }
 
 method handler-permission(Str:D $action) {
