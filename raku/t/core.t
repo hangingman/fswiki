@@ -222,4 +222,53 @@ subtest 'processor registry makes Wiki replaceable without Core changes' => {
     is $core.process-wiki('hello', processor => 'wiki'), '<p>hello</p>', 'a named processor can be selected per call';
 };
 
+subtest 'configuration values can be read and updated' => {
+    my $core = FSWiki::Core.new;
+
+    nok $core.config('missing').defined, 'missing configuration returns Nil';
+    $core.config('site-name', 'FSWiki');
+    is $core.config('site-name'), 'FSWiki', 'configuration round-trips';
+};
+
+subtest 'title state stores the title without generating metadata' => {
+    my $core = FSWiki::Core.new;
+
+    nok $core.get-title.defined, 'title starts empty';
+    $core.set-title('Edit page', True);
+    is $core.get-title, 'Edit page', 'title is returned after setting it';
+};
+
+subtest 'URLs use the script name, sorted keys, and URI encoding' => {
+    my $core = FSWiki::Core.new(config => { 'script-name' => 'wiki.cgi' });
+
+    is $core.create-page-url('A page/日本'), 'wiki.cgi?page=A%20page%2F%E6%97%A5%E6%9C%AC',
+        'page URL encodes the page name';
+    is $core.create-url({ z => 'two words', a => 'x&y' }),
+        'wiki.cgi?a=x%26y&z=two%20words',
+        'URL query keys are sorted and values are encoded';
+    is FSWiki::Core.new.create-page-url('Home'), '?page=Home',
+        'default script name produces a query URL';
+};
+
+subtest 'redirect helpers return plain redirect data' => {
+    my $core = FSWiki::Core.new;
+
+    is-deeply $core.redirect('Home'),
+        { status => 302, location => '?page=Home' },
+        'page redirect points to the page URL';
+    is-deeply $core.redirect-url('/login?next=Home'),
+        { status => 302, location => '/login?next=Home' },
+        'URL redirect preserves the supplied location';
+};
+
+subtest 'head information preserves registration order' => {
+    my $core = FSWiki::Core.new;
+
+    $core.add-head-info('<meta name="one">');
+    $core.add-head-info('<link rel="two">');
+    is-deeply $core.get-head-info,
+        ('<meta name="one">', '<link rel="two">').List,
+        'head information is returned in registration order';
+};
+
 done-testing;

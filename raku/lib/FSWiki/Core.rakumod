@@ -13,14 +13,77 @@ has @!admin-menu;
 has @!menu;
 has %!handlers;
 has %!users;
+has %!config;
+has $!title;
+has @!head-info;
 has $!login-info;
 has $.storage = FSWiki::Storage::Memory.new;
 has %!processors;
 has $!default-processor = 'wiki';
 has $!current-edit-format = 'FSWiki';
 
-submethod BUILD() {
+submethod BUILD(:%config = {}) {
+    %!config = %config.Hash;
     %!processors<wiki> = FSWiki::Parser::Wiki.new;
+}
+
+method config(Str:D $name, Mu $value?) {
+    return %!config{$name} // Nil unless $value.defined;
+    %!config{$name} = $value;
+}
+
+method set-title(Str:D $title, Bool:D $edit = False --> Nil) {
+    $!title = $title;
+    Nil
+}
+
+method get-title() {
+    $!title
+}
+
+method !uri-escape(Mu:D $value --> Str:D) {
+    my $text = $value.Str;
+    my $escaped = '';
+    for $text.encode('utf8').list -> $byte {
+        my $char = $byte.chr;
+        $escaped ~= ($byte == 45 || $byte == 46 || $byte == 95 || $byte == 126
+            || $byte >= 48 && $byte <= 57
+            || $byte >= 65 && $byte <= 90
+            || $byte >= 97 && $byte <= 122)
+            ?? $char
+            !! '%' ~ $byte.base(16).fmt('%02s').uc;
+    }
+    $escaped
+}
+
+method create-page-url(Str:D $page --> Str:D) {
+    self.create-url({ page => $page })
+}
+
+method create-url(%params --> Str:D) {
+    my $query = %params.keys.sort.map({
+        self!uri-escape($_) ~ '=' ~ self!uri-escape(%params{$_})
+    }).join('&');
+    my $script = self.config('script-name') // '?';
+    return $script ~ '?' ~ $query unless $script.ends-with('?') || $script.ends-with('&');
+    $script ~ $query
+}
+
+method redirect(Str:D $page) {
+    self.redirect-url(self.create-page-url($page))
+}
+
+method redirect-url(Str:D $url) {
+    { status => 302, location => $url }
+}
+
+method add-head-info(Str:D $info --> Nil) {
+    @!head-info.push($info);
+    Nil
+}
+
+method get-head-info(--> List:D) {
+    @!head-info.List
 }
 
 method register-processor(Str:D $name, Mu:D $processor --> FSWiki::Core:D) {

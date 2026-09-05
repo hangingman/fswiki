@@ -19,10 +19,11 @@
 - 明示CallableによるPlugin install/instance cache、editform/menu/admin-menu登録を追加。
 - Wiki Processor契約、Wiki記法のstate-machine/cursor parser、Core Processor registryを追加。Markdownは同じ契約へ差し替え可能なCallableとして検証。
 - Format Plugin registry、双方向変換、inline変換、FSWiki fallback、edit format選択を追加。
+- Core config/title/URL/redirect/head-info helper APIを追加。
 
 ## Next
 
-1. URL/config補助API、WikiFarmを順に移植する。
+1. WikiFarm APIを移植する。
 2. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
 
 ## Deferred
