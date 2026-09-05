@@ -5,7 +5,7 @@
 - Current routes: `GET /health`, `GET /source/<page>`, `POST /page/<page>`, `GET /api/source?page=<page>`, `POST /api/page/<page>`.
 - Cro development runner is configured by `.cro.yml` and `make raku-dev`.
 - Latest implementation commit: `0b7e90d feat: generate JSON page operations from API handlers`.
-- Core migration is incomplete. The remaining Perl Wiki.pm responsibilities are tracked in `memory-bank/core-port-todo.md`.
+- Core runtime MVP is complete. Plugin移植と画面/AJAX milestones are tracked in `memory-bank/plugin-port-todo.md`.
 - Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
 - Core now provides runtime-only users, login state, and public/user/admin handler authorization.
 - Core now provides page visibility levels, freeze state, runtime plugin lifecycle, and menu registration.
@@ -14,7 +14,7 @@
 - Core now provides runtime config/title/URL/redirect/head-info helpers.
 - Core now provides a minimal runtime WikiFarm child registry with safe names and prefix search.
 - JSON API now has explicit input schemas, Core validation, unified errors, and centralized permission enforcement.
-- Core migration TODO is complete for the defined runtime MVP; filesystem Farm, HTTP session, dynamic plugin loading, and full legacy parser/plugin behavior remain deferred.
+- Filesystem Farm, HTTP session, dynamic plugin loading, and full legacy parser/plugin behavior remain deferred.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
@@ -29,6 +29,11 @@
 - `raku -I raku/lib raku/t/api.t` and `make raku-test` pass after JSON API hardening.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
+
+## Next milestone
+
+- M0: browser verification of `/source/Home` and `/api/source?page=Home`.
+- M1: connect the Wiki Processor to the HTML display path.
 
 ## Known legacy documents
 

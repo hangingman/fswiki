@@ -13,7 +13,7 @@
 - API metadata登録時に`SOURCE`と`SAVE_PAGE`のJSON routeを生成。
 - `GET /api/source?page=<page>`と`POST /api/page/<page>`を同じCore/Storage処理へ接続。
 - 実機HTTPでJSON取得とJSON保存を確認。
-- Core全体の未移植範囲を`memory-bank/core-port-todo.md`へ整理。
+- Core全体のruntime MVP範囲を実装し、Plugin/UI/AJAX計画を`memory-bank/plugin-port-todo.md`へ移行。
 - Runtime-onlyユーザー、ログイン状態、public/user/admin handler権限と拒否テストを追加。
 - ページ公開レベル、凍結、編集可否判定をCoreとFile/Memory Storageに追加。
 - 明示CallableによるPlugin install/instance cache、editform/menu/admin-menu登録を追加。
@@ -25,7 +25,9 @@
 
 ## Next
 
-1. Core移植TODOのruntime MVP完了。残りは明示したDeferred範囲。
+1. M0: 開発サーバーとブラウザ表示を確認する。
+2. M1: Wiki ProcessorをHTML表示経路へ接続する。
+3. M2: HTTP編集、M3: AJAX編集へ進む。
 
 ## Deferred
 
