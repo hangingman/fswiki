@@ -4,22 +4,18 @@
 - Raku implementation provides Core hooks, handlers, Memory/File Storage, and Cro HTTP routes.
 - Current routes: `GET /health`, `GET /source/<page>`, `POST /page/<page>`, `GET /api/source?page=<page>`, `POST /api/page/<page>`.
 - Cro development runner is configured by `.cro.yml` and `make raku-dev`.
-- Latest implementation commit: `93a0f80 feat: register and serve JSON API metadata` before the current uncommitted continuation.
-- Core handler records now carry explicit API metadata. `register-api-handlers` registers SOURCE and SAVE_PAGE once during application initialization; JSON responses use the same Core and Storage path.
+- Latest implementation commit: `0b7e90d feat: generate JSON page operations from API handlers`.
+- Core migration is incomplete. The remaining Perl Wiki.pm responsibilities are tracked in `memory-bank/core-port-todo.md`.
+- Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
+- Next slice: investigate authentication and authorization boundaries before implementing handlers.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
-- Keep this file limited to current state and next step.
 
 ## Verification
 
-- `make raku-test` passes.
+- `make raku-test` passes after the Storage contract extension.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
-
-## Next
-
-- Add structured API error responses and permission enforcement when the authentication model is introduced.
-- Extend metadata-driven route generation beyond the two page operations only after the registration contract is stable.
 
 ## Known legacy documents
 

@@ -13,13 +13,14 @@
 - API metadata登録時に`SOURCE`と`SAVE_PAGE`のJSON routeを生成。
 - `GET /api/source?page=<page>`と`POST /api/page/<page>`を同じCore/Storage処理へ接続。
 - 実機HTTPでJSON取得とJSON保存を確認。
+- Core全体の未移植範囲を`memory-bank/core-port-todo.md`へ整理。
 
 ## Next
 
-1. APIエラー形式と権限エラーを定義する。
-2. 認証モデル導入後にpublic/user/admin権限をJSON経路へ適用する。
-3. 2つのページ操作でAPI登録契約を安定させる。
-4. 複数Pluginで重複が確認できた場合だけRoleまたはProxy共通実装を追加する。
+1. 認証・認可とpublic/user/admin handler権限を設計・テストする。
+2. ページ権限・凍結を設計・テストする。
+3. Plugin lifecycle、Parser/Format Plugin、URL/config、WikiFarmを順に移植する。
+4. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
 
 ## Deferred
 
