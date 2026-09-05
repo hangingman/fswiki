@@ -23,7 +23,8 @@
 - Runtime WikiFarm child registry、safe name validation、create/remove/list/prefix searchを追加。
 - JSON API schema validation、統一エラー、permission enforcement、HTML/JSON共通Core handler経路を追加。
 - Wiki ProcessorをHTML表示経路へ接続し、公開Wiki記法、ページリンク、可視性、HTMLエスケープをブラウザ表示経路で確認。
-- HTTP編集画面、保存、権限/凍結拒否、ページ作成・削除・差分・一覧・Raw/Pre/Blockquote表示を追加。
+- HTTP編集画面、保存、権限/凍結拒否、保存失敗時の本文保持、ページ作成・削除・差分・一覧・Raw/Pre/Blockquote表示を追加。
+- JSON APIにページ一覧`GET /api/pages`とページ取得`GET /api/page/{page}`を追加し、実HTTPで確認。
 
 ## Next
 

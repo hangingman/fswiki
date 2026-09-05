@@ -4,7 +4,7 @@
 - Raku implementation provides Core hooks, handlers, Memory/File Storage, and Cro HTTP routes.
 - Current routes: `GET /health`, `GET /source/<page>`, `POST /page/<page>`, `GET /api/source?page=<page>`, `POST /api/page/<page>`.
 - Cro development runner is configured by `.cro.yml` and `make raku-dev`.
-- Latest implementation commit: `a62ada9 feat: render Wiki pages through processor`.
+- Latest implementation commit: `ca07c1d feat: add JSON page listing and retrieval`.
 - Core runtime MVP is complete. Plugin移植と画面/AJAX milestones are tracked in `memory-bank/plugin-port-todo.md`.
 - Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
 - Core now provides runtime-only users, login state, and public/user/admin handler authorization.
@@ -33,7 +33,7 @@
 ## Next milestone
 
 - M0: browser verification of `/source/Home` and `/api/source?page=Home` is complete.
-- M1: Wiki Processor is connected to the HTML display path; M2 is next.
+- M1: Wiki Processor and M2 HTTP editing are complete; M3 JSON pages/page retrieval is implemented and verified.
 
 ## Known legacy documents
 
