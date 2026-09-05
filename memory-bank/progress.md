@@ -25,9 +25,8 @@
 
 ## Next
 
-1. M0: 開発サーバーとブラウザ表示を確認する。
-2. M1: Wiki ProcessorをHTML表示経路へ接続する。
-3. M2: HTTP編集、M3: AJAX編集へ進む。
+1. M1: Wiki ProcessorをHTML表示経路へ接続する。
+2. M2: HTTP編集、M3: AJAX編集へ進む。
 
 ## Deferred
 

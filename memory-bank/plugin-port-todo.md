@@ -86,11 +86,11 @@ AJAXでは、HTML redirectを返さず、成功時のデータとエラーコー
 
 **目的**: 現在のRaku実装をブラウザで確認できる状態に固定する。
 
-- [ ] `GET /source/<page>` をブラウザで確認する。
-- [ ] `GET /api/source?page=<page>` をブラウザまたはcurlで確認する。
-- [ ] HTML表示とJSON表示が同じStorage/Core結果を使うことを確認する。
-- [ ] 開発サーバー起動、停止、ログ、dataディレクトリの扱いを確認する。
-- [ ] 画面確認用の最小FrontPage fixtureを用意する。ただし本番dataは変更しない。
+- [x] `GET /source/<page>` をブラウザで確認する。
+- [x] `GET /api/source?page=<page>` をブラウザまたはcurlで確認する。
+- [x] HTML表示とJSON表示が同じStorage/Core結果を使うことを確認する。
+- [x] 開発サーバー起動、停止、ログ、dataディレクトリの扱いを確認する。
+- [x] 画面確認用の最小FrontPage fixtureを用意する。ただし本番dataは変更しない。
 
 **検証**:
 
