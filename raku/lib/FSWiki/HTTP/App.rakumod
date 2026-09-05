@@ -75,6 +75,18 @@ sub edit-page-response(Str:D $page, FSWiki::Core:D :$core = FSWiki::Core.new -->
     '<form method="post" action="/page/' ~ escape-html($page) ~ '"><textarea name="source">' ~ $source ~ '</textarea><button type="submit">Save</button></form>'
 }
 
+sub edit-save-error-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    my $error;
+    try {
+        die 'page name is required' if $page eq '';
+        die 'page cannot be edited' unless $core.can-modify-page($page);
+        $core.save-page($page, $source);
+        return source-response($page, :$core);
+        CATCH { default { $error = .message } }
+    }
+    '<form method="post" action="/page/' ~ escape-html($page) ~ '"><p class="error">' ~ escape-html($error // 'save failed') ~ '</p><textarea name="source">' ~ escape-html($source) ~ '</textarea><button type="submit">Save</button></form>'
+}
+
 sub edit-save-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
     die 'page name is required' if $page eq '';
     die 'page cannot be edited' unless $core.can-modify-page($page);
@@ -196,7 +208,7 @@ sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
         }
         post -> 'page', $page {
             request-body -> %form {
-                content 'text/html; charset=UTF-8', edit-save-response($page, %form<source> // '', :$core);
+                content 'text/html; charset=UTF-8', edit-save-error-response($page, %form<source> // '', :$core);
             }
         }
         include api-routes($core);

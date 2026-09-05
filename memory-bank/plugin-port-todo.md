@@ -126,7 +126,7 @@ browser: heading / list / link / escaped text
 - [x] `POST`保存を既存`SAVE_PAGE` handlerへ接続する。
 - [x] ページ権限・凍結・認証の拒否を画面で確認する。
 - [x] 成功後に表示画面へ戻り、保存結果を読み戻す。
-- [ ] 保存失敗時に本文を失わずエラーを表示する。
+- [x] 保存失敗時に本文を失わずエラーを表示する。
 
 **検証**:
 
@@ -212,7 +212,6 @@ AJAX permission error
 
 ## 次の一手
 
-1. M0として開発サーバーを起動し、ブラウザで`/source/Home`と`/api/source?page=Home`を確認する。
-2. M1としてWiki ProcessorをHTML表示経路へ接続する。
-3. M2でHTTP編集、M3でAJAX編集へ進む。
-4. M4でPlugin SDK最小形を固定してから、M5の順序で移植する。
+1. M3としてAJAX APIの一覧・取得・保存境界を固定する。
+2. M4でPlugin SDK最小形を固定する。
+3. M5の検索・参照系へ進む。

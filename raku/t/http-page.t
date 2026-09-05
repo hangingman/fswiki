@@ -35,6 +35,10 @@ $core.freeze-page('Draft');
 throws-like { edit-save-response('Draft', 'blocked', :$core) }, Exception,
     'edit save rejects frozen pages';
 
+is edit-save-error-response('Draft', 'blocked', :$core),
+    "<form method=\"post\" action=\"/page/Draft\"><p class=\"error\">page cannot be edited</p><textarea name=\"source\">blocked</textarea><button type=\"submit\">Save</button></form>",
+    'failed edit preserves the submitted source in the error form';
+
 is create-page-response('Created', 'new source', :$core),
     '<p>new source</p>',
     'create page saves and renders a new page';

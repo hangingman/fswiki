@@ -27,7 +27,7 @@
 
 ## Next
 
-1. M2: HTTP編集、M3: AJAX編集へ進む。
+1. M3: AJAX編集へ進む。
 
 ## Deferred
 
