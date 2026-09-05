@@ -108,6 +108,16 @@ sub register-api-handlers(FSWiki::Core:D $core --> FSWiki::Core:D) is export {
         method => 'GET', path => '/api/source',
         schema => { page => { required => True, type => 'Str' } }
     });
+    $core.add-handler('PAGES', -> $wiki, %input {
+        { pages => $wiki.storage.get-page-list.grep({ $wiki.can-show($_) }).Array }
+    }, api => { method => 'GET', path => '/api/pages', schema => {} });
+    $core.add-handler('PAGE', -> $wiki, %input {
+        die 'Page not found' unless $wiki.page-exists(%input<page>) && $wiki.can-show(%input<page>);
+        { page => %input<page>, source => $wiki.get-page(%input<page>), visible => True, frozen => $wiki.is-freeze(%input<page>) }
+    }, api => {
+        method => 'GET', path => '/api/page/{page}',
+        schema => { page => { required => True, type => 'Str' } }
+    });
     $core.add-handler('SAVE_PAGE', -> $wiki, %input {
         die 'page name is required' if (%input<page> // '') eq '';
         $wiki.save-page(%input<page>, %input<source> // '');
@@ -127,6 +137,7 @@ sub api-error($exception --> Str:D) {
     my ($code, $safe-message) = do given $message {
         when /'Unknown action'/       { 'unknown-action', 'Unknown API action' }
         when /'Invalid API input'/    { 'validation-error', $message }
+        when /'Page not found'/       { 'not-found', 'Page not found' }
         when /'Login required'|'Admin permission required'/ {
             'permission-denied', 'Permission denied'
         }
@@ -144,6 +155,16 @@ sub api-call-response(Str:D $action, %input, FSWiki::Core:D :$core --> Str:D) {
     $response
 }
 
+sub api-pages-response(FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    to-json({ pages => $core.storage.get-page-list.grep({ $core.can-show($_) }).Array })
+}
+
+sub api-page-response(Mu $page, FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    return to-json({ error => { code => 'not-found', message => 'Page not found' } })
+        unless $page ~~ Str && $page ne '' && $core.page-exists($page) && $core.can-show($page);
+    to-json({ page => $page, source => $core.get-page($page), visible => True, frozen => $core.is-freeze($page) })
+}
+
 sub api-source-response(Mu $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
     register-api-handlers($core) unless $core.api-info('SOURCE');
@@ -157,6 +178,12 @@ sub api-save-page-response(Mu $page = Nil, Mu $source = Nil, FSWiki::Core:D :$co
 
 sub api-routes(FSWiki::Core:D $core) {
     return route {
+        get -> 'api', 'pages' {
+            content 'application/json', api-pages-response(:$core);
+        }
+        get -> 'api', 'page', $page {
+            content 'application/json', api-page-response($page, :$core);
+        }
         get -> 'api', 'source', :$page = 'Home' {
             content 'application/json', api-source-response($page, :$core);
         }

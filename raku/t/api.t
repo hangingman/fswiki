@@ -15,6 +15,28 @@ is-deeply $core.api-info('SOURCE'), {
     schema => { page => { required => True, type => 'Str' } },
 }, 'handler exposes explicit API metadata';
 
+$core.save-page('Draft', 'json source');
+is-deeply from-json(api-pages-response(:$core)),
+    { pages => ['Draft', 'Home'] },
+    'pages API returns sorted page names';
+
+is-deeply from-json(api-page-response('Home', :$core)),
+    { page => 'Home', source => 'Welcome to FSWiki.', visible => True, frozen => False },
+    'page API returns source and metadata';
+
+is-deeply from-json(api-page-response('Missing', :$core)),
+    { error => { code => 'not-found', message => 'Page not found' } },
+    'page API reports missing pages';
+
+is-deeply $core.api-info('PAGES'), {
+    method => 'GET', path => '/api/pages', schema => {}
+}, 'pages API has explicit metadata';
+
+is-deeply $core.api-info('PAGE'), {
+    method => 'GET', path => '/api/page/{page}',
+    schema => { page => { required => True, type => 'Str' } }
+}, 'page API has explicit metadata';
+
 is-deeply $core.call-handler('SOURCE', { page => 'Home' }),
     { page => 'Home', source => 'Welcome to FSWiki.' },
     'API handler receives input through Core';
