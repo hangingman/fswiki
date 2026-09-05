@@ -38,6 +38,25 @@ subtest 'plugin metadata has a type and normalized format' => {
         { CLASS => &plugin, TYPE => 'block', FORMAT => 'HTML' };
 };
 
+subtest 'plugin descriptor installs display and handler capabilities' => {
+    my $core = FSWiki::Core.new;
+    my %descriptor := {
+        name => 'notice',
+        kind => 'inline',
+        permission => 'public',
+        html => -> $text { '<mark>' ~ $text ~ '</mark>' },
+        api => {
+            action => 'NOTICE', method => 'POST', path => '/api/plugin/notice',
+            schema => { text => { required => True, type => 'Str' } }
+        },
+        handler => -> $wiki, %input { { text => %input<text>, html => '<mark>' ~ %input<text> ~ '</mark>' } }
+    };
+    ok $core.install-plugin-descriptor(%descriptor), 'descriptor installs';
+    is $core.plugin-info('notice')<TYPE>, 'inline', 'descriptor records kind';
+    is $core.call-handler('NOTICE', { text => 'hello' })<html>, '<mark>hello</mark>', 'descriptor handler is callable';
+    is-deeply $core.api-info('NOTICE'), %descriptor<api>, 'descriptor publishes explicit API metadata';
+};
+
 subtest 'action handlers retain permission and return handler result' => {
     my $core = FSWiki::Core.new;
     $core.add-user('admin', 'admin-pass', 0);

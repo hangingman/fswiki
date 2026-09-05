@@ -280,6 +280,30 @@ method install-plugin(Str:D $name, &installer where Callable:D --> Bool:D) {
     True
 }
 
+method install-plugin-descriptor(%descriptor --> Bool:D) {
+    my $name = %descriptor<name> // die 'Plugin name is required';
+    my $kind = (%descriptor<kind> // 'inline').Str;
+    my &html := %descriptor<html> // die 'Plugin HTML renderer is required';
+    my &handler := %descriptor<handler> // die 'Plugin handler is required';
+    my %api := %descriptor<api> // die 'Plugin API metadata is required';
+    die 'Invalid plugin kind' unless $kind eq any <inline paragraph block>;
+    die 'Plugin API action is required' unless %api<action>.defined;
+    given $kind {
+        when 'inline'    { self.add-inline-plugin($name, &html) }
+        when 'paragraph' { self.add-paragraph-plugin($name, &html) }
+        when 'block'     { self.add-block-plugin($name, &html) }
+    }
+    my $permission = (%descriptor<permission> // 'public').Str;
+    given $permission {
+        when 'public' { self.add-handler(%api<action>, &handler, api => %api) }
+        when 'user'   { self.add-user-handler(%api<action>, &handler, api => %api) }
+        when 'admin'  { self.add-admin-handler(%api<action>, &handler, api => %api) }
+        default       { die 'Invalid plugin permission' }
+    }
+    %!installed-plugins{$name} = True;
+    True
+}
+
 method is-installed(Str:D $name --> Bool:D) {
     %!installed-plugins{$name}:exists
 }

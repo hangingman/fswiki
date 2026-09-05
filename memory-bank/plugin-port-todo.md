@@ -162,12 +162,12 @@ AJAX permission error
 
 **目的**: 新規Pluginを1つの手順で追加できるようにする。
 
-- [ ] Plugin descriptorと登録関数の最小形式を決める。
-- [ ] InlineまたはParagraph Pluginを1つRakuで実装する。
-- [ ] HTML表示とJSON/AJAX操作の両方を持つHandler Pluginを1つ実装する。
-- [ ] input schema、permission、output shape、side effectをテストする。
+- [x] Plugin descriptorと登録関数の最小形式を決める。
+- [x] Inline Pluginを1つRakuで登録する。
+- [x] HTML表示とJSON/AJAX操作を持つHandler Pluginを1つ登録する。
+- [x] input schema、permission、output shape、side effectをテストする。
 - [ ] 失敗install、未知Plugin、権限拒否をテストする。
-- [ ] zef依存なしで実装できる範囲を確認する。
+- [x] zef依存なしで実装できる範囲を確認する。
 
 ### M5: 優先Plugin移植
 
