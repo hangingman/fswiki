@@ -14,6 +14,7 @@ has @!menu;
 has %!handlers;
 has %!users;
 has %!config;
+has %!wiki-children;
 has $!title;
 has @!head-info;
 has $!login-info;
@@ -30,6 +31,46 @@ submethod BUILD(:%config = {}) {
 method config(Str:D $name, Mu $value?) {
     return %!config{$name} // Nil unless $value.defined;
     %!config{$name} = $value;
+}
+
+method farm-is-enable(--> Bool:D) {
+    so self.config('farm-enabled')
+}
+
+method !valid-wiki-name(Str:D $name --> Bool:D) {
+    $name ne '' && $name !~~ /<[\/\\:]>/ && $name !~~ /\.\./
+}
+
+method create-wiki(Str:D $name, Str $admin-id?, Str $password? --> Bool:D) {
+    die 'Invalid wiki name' unless self!valid-wiki-name($name);
+    die "Wiki already exists: $name" if %!wiki-children{$name}:exists;
+
+    my %child = name => $name;
+    %child<admin> = { id => $admin-id, password => $password } if $admin-id.defined || $password.defined;
+    %!wiki-children{$name} = %child;
+    True
+}
+
+method remove-wiki(Str:D $name --> Bool:D) {
+    return False unless %!wiki-children{$name}:exists;
+    %!wiki-children{$name}:delete;
+    True
+}
+
+method wiki-exists(Str:D $name --> Bool:D) {
+    %!wiki-children{$name}:exists
+}
+
+method get-wiki-list(--> List:D) {
+    %!wiki-children.keys.sort.List
+}
+
+method search-child(Str:D $prefix = '' --> List:D) {
+    %!wiki-children.keys.grep(*.starts-with($prefix)).sort.List
+}
+
+method wiki-child(Str:D $name) {
+    %!wiki-children{$name}
 }
 
 method set-title(Str:D $title, Bool:D $edit = False --> Nil) {

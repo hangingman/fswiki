@@ -12,7 +12,8 @@
 - Core now delegates Wiki processing through an explicit processor registry. The default Wiki processor uses a block state machine and inline cursor scanner.
 - Core now provides an explicit Format Plugin registry and bidirectional conversion API.
 - Core now provides runtime config/title/URL/redirect/head-info helpers.
-- Next slice: investigate the minimal WikiFarm registry boundary.
+- Core now provides a minimal runtime WikiFarm child registry with safe names and prefix search.
+- Next slice: harden JSON API schemas, errors, permissions, and shared HTML/JSON handler flow.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
@@ -23,6 +24,7 @@
 - `raku -I raku/lib raku/t/parser.t` and `make raku-test` pass after the Wiki processor extension.
 - `make raku-test` passes after the Format Plugin API extension.
 - `make raku-test` passes after the Core helper API extension.
+- `make raku-test` passes after the WikiFarm API extension.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
 

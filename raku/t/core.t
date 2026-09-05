@@ -230,6 +230,37 @@ subtest 'configuration values can be read and updated' => {
     is $core.config('site-name'), 'FSWiki', 'configuration round-trips';
 };
 
+subtest 'runtime WikiFarm tracks safe child wikis and admin credentials' => {
+    my $core = FSWiki::Core.new;
+
+    nok $core.farm-is-enable, 'farm is disabled by default';
+    $core.config('farm-enabled', True);
+    ok $core.farm-is-enable, 'farm enable flag is configurable';
+
+    for '', '/wiki', 'wiki/name', 'wiki\\name', 'wiki:name', '..', 'a..b' -> $name {
+        throws-like { $core.create-wiki($name) }, Exception,
+            "invalid wiki name '$name' is rejected";
+    }
+
+    ok $core.create-wiki('zeta', 'admin', 'secret'), 'wiki with admin credentials is created';
+    ok $core.create-wiki('alpha'), 'wiki without admin credentials is created';
+    throws-like { $core.create-wiki('zeta') }, Exception,
+        'duplicate wiki names are rejected';
+    is-deeply $core.get-wiki-list, ('alpha', 'zeta').List,
+        'wiki list contains sorted direct children';
+    is-deeply $core.search-child, ('alpha', 'zeta').List,
+        'empty prefix finds all direct children';
+    is-deeply $core.search-child('ze'), ('zeta',).List,
+        'prefix search returns sorted matching children';
+    is-deeply $core.wiki-child('zeta'),
+        { name => 'zeta', admin => { id => 'admin', password => 'secret' } },
+        'admin credentials are kept in the child record';
+
+    ok $core.remove-wiki('zeta'), 'existing wiki is removed';
+    nok $core.wiki-exists('zeta'), 'removed wiki no longer exists';
+    nok $core.remove-wiki('missing'), 'removing an unknown wiki returns false';
+};
+
 subtest 'title state stores the title without generating metadata' => {
     my $core = FSWiki::Core.new;
 

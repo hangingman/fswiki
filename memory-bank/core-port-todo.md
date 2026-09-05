@@ -13,7 +13,7 @@ FSWiki Coreの移植は未完了。現在のRaku Coreは、フック、基本Han
 - [x] Wiki処理境界を移植する: `process_wiki`、`process_plugin`、`parse_inline_plugin`、Parser/Format Plugin契約（Processor registryとWiki state-machine parserを実装。legacy plugin処理は後続）
 - [x] Format Plugin APIを移植する: `add_format_plugin`、`get_format_names`、`convert_to_fswiki`、`convert_from_fswiki`、`get_edit_format`（明示Callable/object registry。動的module loadingとHTTP/Cookie設定は後続）
 - [x] Core補助APIを移植する: `config`、`set_title/get_title`、`create_page_url/create_url`、`redirect`、head-info（runtime Core API。HTTP response化は後続）
-- [ ] WikiFarm APIを移植する: `farm_is_enable`、`create_wiki`、`remove_wiki`、`wiki_exists`、`get_wiki_list`、`search_child`
+- [x] WikiFarm APIを移植する: `farm_is_enable`、`create_wiki`、`remove_wiki`、`wiki_exists`、`get_wiki_list`、`search_child`（runtime child registry。filesystem Farmは後続）
 - [ ] JSON API基盤を固める: 入力スキーマ、統一エラー、権限適用、HTML/JSON共通handler経路
 
 ## 実装順
