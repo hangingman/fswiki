@@ -9,7 +9,8 @@
 - Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
 - Core now provides runtime-only users, login state, and public/user/admin handler authorization.
 - Core now provides page visibility levels, freeze state, runtime plugin lifecycle, and menu registration.
-- Next slice: investigate Wiki processing and Parser/Format Plugin boundaries.
+- Core now delegates Wiki processing through an explicit processor registry. The default Wiki processor uses a block state machine and inline cursor scanner.
+- Next slice: investigate Format Plugin API boundaries; Markdown processor remains an injected replacement contract, not an implementation.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
@@ -17,6 +18,7 @@
 
 - `make raku-test` passes after the authentication/authorization extension.
 - `make raku-test` passes after the page permission/freeze and plugin lifecycle extensions.
+- `raku -I raku/lib raku/t/parser.t` and `make raku-test` pass after the Wiki processor extension.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
 

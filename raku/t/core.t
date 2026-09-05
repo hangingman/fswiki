@@ -168,4 +168,15 @@ subtest 'plugin menus and editform plugins are ordered and menus update' => {
         'updated menu entry replaces its values';
 };
 
+subtest 'processor registry makes Wiki replaceable without Core changes' => {
+    my $core = FSWiki::Core.new;
+    is $core.current-processor, 'wiki', 'Wiki is the default processor';
+    ok $core.process-wiki('! Title').contains('<h3> Title</h3>'), 'default processor renders Wiki notation';
+
+    $core.register-processor('markdown', -> $source, %context { '# ' ~ $source ~ ' ' ~ (%context<suffix> // '') });
+    $core.select-processor('markdown');
+    is $core.process-wiki('hello', suffix => 'ok'), '# hello ok', 'a callable processor receives source and context';
+    is $core.process-wiki('hello', processor => 'wiki'), '<p>hello</p>', 'a named processor can be selected per call';
+};
+
 done-testing;

@@ -20,6 +20,8 @@ FSWiki::Storage
 
 CoreはHTTPフレームワークとStorage実装を直接結合しない。HTTP層は入力をCoreのリクエスト形式へ変換し、Coreの結果をHTMLまたはJSONへ変換する。
 
+Wiki本文の処理もCoreから分離する。Coreは名前付きProcessorを明示登録し、`process-wiki`で選択したProcessorへ委譲する。標準Processorは`FSWiki::Parser::Wiki`であり、Markdown等は同じ`render(source, context)`契約のCallableまたはRendererオブジェクトとして登録する。Wiki構文の解釈はProcessor内部の行状態機械とインラインカーソル処理が担当し、CoreとHTTPは構文を知らない。
+
 ## 2. Perl版FSWikiから引き継ぐ契約
 
 Perl版`Wiki.pm`の以下の責務をリファレンスとする。
@@ -156,7 +158,7 @@ POST /page/<page>
 
 - 認証・セッション・CSRF。
 - 履歴世代API。
-- Wiki本文の構文解析。
+- Markdown Processorの実装。
 - OpenAPIドキュメントの自動生成。
 - DB StorageとFly.io向けデプロイ構成。
 

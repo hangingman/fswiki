@@ -1,6 +1,7 @@
 unit class FSWiki::Core;
 
 use FSWiki::Storage::Memory;
+use FSWiki::Parser::Wiki;
 
 has %!hooks;
 has %!plugins;
@@ -13,6 +14,36 @@ has %!handlers;
 has %!users;
 has $!login-info;
 has $.storage = FSWiki::Storage::Memory.new;
+has %!processors;
+has $!default-processor = 'wiki';
+
+submethod BUILD() {
+    %!processors<wiki> = FSWiki::Parser::Wiki.new;
+}
+
+method register-processor(Str:D $name, Mu:D $processor --> FSWiki::Core:D) {
+    die 'Processor name is required' if $name eq '';
+    die 'Processor must be callable or provide render' unless $processor.^can('render') || $processor ~~ Callable;
+    %!processors{$name} = $processor;
+    self
+}
+
+method select-processor(Str:D $name --> FSWiki::Core:D) {
+    die "Unknown processor: $name" unless %!processors{$name}:exists;
+    $!default-processor = $name;
+    self
+}
+
+method current-processor(--> Str:D) {
+    $!default-processor
+}
+
+method process-wiki(Str:D $source, Str:D :$processor = $!default-processor, *%context --> Str:D) {
+    my $renderer := %!processors{$processor} // die "Unknown processor: $processor";
+    $renderer.^can('render')
+        ?? $renderer.render($source, %context)
+        !! ($renderer.arity == 1 ?? $renderer($source) !! $renderer($source, %context))
+}
 
 method get-page(Str:D $page --> Str:D) {
     $!storage.get-page($page)

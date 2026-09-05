@@ -17,10 +17,11 @@
 - Runtime-onlyユーザー、ログイン状態、public/user/admin handler権限と拒否テストを追加。
 - ページ公開レベル、凍結、編集可否判定をCoreとFile/Memory Storageに追加。
 - 明示CallableによるPlugin install/instance cache、editform/menu/admin-menu登録を追加。
+- Wiki Processor契約、Wiki記法のstate-machine/cursor parser、Core Processor registryを追加。Markdownは同じ契約へ差し替え可能なCallableとして検証。
 
 ## Next
 
-1. Wiki処理境界とParser/Format Plugin契約を設計・テストする。
+1. Format Plugin API契約を設計・テストする。
 2. URL/config補助API、WikiFarmを順に移植する。
 3. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
 
