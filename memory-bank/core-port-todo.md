@@ -7,7 +7,7 @@ FSWiki Coreの移植は未完了。現在のRaku Coreは、フック、基本Han
 ## TODO
 
 - [x] Core/Storage契約を拡張する: ページ一覧、更新日時、バックアップ/履歴の必要性をPerl Wiki.pmとStorageから調査してRaku APIを決める（`get-page-list`、`get-last-modified`、`get-last-modified2`、backup API）
-- [ ] 認証・認可を移植する: `add_user`、`user_exists`、`login_check`、`get_login_info`、public/user/admin handler権限
+- [x] 認証・認可を移植する: `add_user`、`user_exists`、`login_check`、`get_login_info`、public/user/admin handler権限（Raku Core内のruntime-only実装。HTTP session、hashing、永続化は後続）
 - [ ] ページ権限・凍結を移植する: `freeze_page`、`un_freeze_page`、`is_freeze`、`can_modify_page`、`set_page_level`、`can_show`
 - [ ] Pluginライフサイクルを移植する: `install_plugin`、`is_installed`、`get_plugin_instance`、editform/menu/admin-menu登録
 - [ ] Wiki処理境界を移植する: `process_wiki`、`process_plugin`、`parse_inline_plugin`、Parser/Format Plugin契約

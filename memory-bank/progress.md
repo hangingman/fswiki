@@ -14,13 +14,13 @@
 - `GET /api/source?page=<page>`と`POST /api/page/<page>`を同じCore/Storage処理へ接続。
 - 実機HTTPでJSON取得とJSON保存を確認。
 - Core全体の未移植範囲を`memory-bank/core-port-todo.md`へ整理。
+- Runtime-onlyユーザー、ログイン状態、public/user/admin handler権限と拒否テストを追加。
 
 ## Next
 
-1. 認証・認可とpublic/user/admin handler権限を設計・テストする。
-2. ページ権限・凍結を設計・テストする。
-3. Plugin lifecycle、Parser/Format Plugin、URL/config、WikiFarmを順に移植する。
-4. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
+1. ページ権限・凍結を設計・テストする。
+2. Plugin lifecycle、Parser/Format Plugin、URL/config、WikiFarmを順に移植する。
+3. JSON APIの入力スキーマ、統一エラー、権限適用を固める。
 
 ## Deferred
 

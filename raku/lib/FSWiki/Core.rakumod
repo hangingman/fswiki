@@ -5,6 +5,8 @@ use FSWiki::Storage::Memory;
 has %!hooks;
 has %!plugins;
 has %!handlers;
+has %!users;
+has $!login-info;
 has $.storage = FSWiki::Storage::Memory.new;
 
 method get-page(Str:D $page --> Str:D) {
@@ -17,6 +19,35 @@ method save-page(Str:D $page, Str:D $source --> Nil) {
 
 method page-exists(Str:D $page --> Bool:D) {
     $!storage.page-exists($page)
+}
+
+method add-user(Str:D $id, Str:D $password, Int:D $type --> Nil) {
+    %!users{$id} = { pass => $password, type => $type };
+    Nil
+}
+
+method user-exists(Str:D $id --> Bool:D) {
+    %!users{$id}:exists
+}
+
+method login-check(Str:D $id, Str:D $password) {
+    my %user := %!users{$id} // return Nil;
+    return Nil unless %user<pass> eq $password;
+    { id => $id, pass => $password, type => %user<type> }
+}
+
+method set-login-info(%info --> Nil) {
+    $!login-info = %info.Hash;
+    Nil
+}
+
+method logout(--> Nil) {
+    $!login-info = Nil;
+    Nil
+}
+
+method get-login-info() {
+    $!login-info
 }
 
 method add-hook(Str:D $name, &callback where Callable:D) {
@@ -80,6 +111,16 @@ method add-admin-handler(Str:D $action, &handler where Callable:D) {
 
 method call-handler(Str:D $action, %input = {}) {
     my %record := %!handlers{$action} // die "Unknown action: $action";
+    my $login = self.get-login-info;
+    given %record<PERMISSION> {
+        when 'user' {
+            die "Login required for user action: $action" unless $login.defined;
+        }
+        when 'admin' {
+            die "Admin permission required for action: $action"
+                unless $login.defined && $login<type> == 0;
+        }
+    }
     %input ?? %record<HANDLER>(self, %input) !! %record<HANDLER>(self)
 }
 

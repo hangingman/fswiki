@@ -40,17 +40,71 @@ subtest 'plugin metadata has a type and normalized format' => {
 
 subtest 'action handlers retain permission and return handler result' => {
     my $core = FSWiki::Core.new;
+    $core.add-user('admin', 'admin-pass', 0);
 
     $core.add-handler('LIST', -> $wiki { 'list' });
     $core.add-user-handler('EDIT', -> $wiki { 'edit' });
     $core.add-admin-handler('ADMIN', -> $wiki { 'admin' });
 
     is $core.call-handler('LIST'), 'list';
+    $core.set-login-info($core.login-check('admin', 'admin-pass'));
     is $core.call-handler('EDIT'), 'edit';
     is $core.call-handler('ADMIN'), 'admin';
     is-deeply $core.handler-permission('LIST'), 'public';
     is-deeply $core.handler-permission('EDIT'), 'user';
     is-deeply $core.handler-permission('ADMIN'), 'admin';
+};
+
+subtest 'users can be registered and checked by exact credentials' => {
+    my $core = FSWiki::Core.new;
+
+    nok $core.user-exists('alice'), 'unknown user does not exist';
+    $core.add-user('alice', 'secret', 1);
+    ok $core.user-exists('alice'), 'registered user exists';
+    is-deeply $core.login-check('alice', 'secret'),
+        { id => 'alice', pass => 'secret', type => 1 },
+        'matching credentials return login info';
+    nok $core.login-check('alice', 'wrong'), 'wrong password is rejected';
+    nok $core.login-check('unknown', 'secret'), 'unknown user is rejected';
+};
+
+subtest 'login state can be set, read, and cleared' => {
+    my $core = FSWiki::Core.new;
+    my %login := { id => 'alice', type => 1 };
+
+    nok $core.get-login-info.defined, 'login state starts empty';
+    $core.set-login-info(%login);
+    is-deeply $core.get-login-info, %login, 'login state is available';
+    $core.logout;
+    nok $core.get-login-info.defined, 'logout clears login state';
+};
+
+subtest 'handler permissions deny before invocation and allow the right users' => {
+    my $core = FSWiki::Core.new;
+    my $user-calls = 0;
+    my $admin-calls = 0;
+
+    $core.add-handler('PUBLIC', -> $wiki { 'public' });
+    $core.add-user-handler('USER', -> $wiki { $user-calls++; 'user' });
+    $core.add-admin-handler('ADMIN', -> $wiki { $admin-calls++; 'admin' });
+
+    is $core.call-handler('PUBLIC'), 'public', 'public handler is available anonymously';
+    throws-like { $core.call-handler('USER') }, Exception,
+        'user handler rejects anonymous callers', message => /'Login required'/;
+    is $user-calls, 0, 'denied user handler was not invoked';
+    throws-like { $core.call-handler('ADMIN') }, Exception,
+        'admin handler rejects anonymous callers', message => /'Admin permission required'/;
+    is $admin-calls, 0, 'denied admin handler was not invoked';
+
+    $core.set-login-info({ id => 'alice', type => 1 });
+    is $core.call-handler('USER'), 'user', 'ordinary user can call user handler';
+    throws-like { $core.call-handler('ADMIN') }, Exception,
+        'ordinary user cannot call admin handler', message => /'Admin permission required'/;
+    is $admin-calls, 0, 'ordinary-user denial does not invoke admin handler';
+
+    $core.set-login-info({ id => 'admin', type => 0 });
+    is $core.call-handler('ADMIN'), 'admin', 'admin can call admin handler';
+    is $admin-calls, 1, 'admin handler is invoked once';
 };
 
 done-testing;

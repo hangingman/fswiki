@@ -7,13 +7,14 @@
 - Latest implementation commit: `0b7e90d feat: generate JSON page operations from API handlers`.
 - Core migration is incomplete. The remaining Perl Wiki.pm responsibilities are tracked in `memory-bank/core-port-todo.md`.
 - Storage contract now provides page listing, physical/logical timestamps, and single-generation backup primitives for File/Memory backends.
-- Next slice: investigate authentication and authorization boundaries before implementing handlers.
+- Core now provides runtime-only users, login state, and public/user/admin handler authorization.
+- Next slice: investigate page visibility levels and page freezing.
 - API exposure remains explicit; do not publish all Core methods automatically.
 - Base classes and Proxy/Adapter are deferred until multiple plugins demonstrate duplicated adaptation logic.
 
 ## Verification
 
-- `make raku-test` passes after the Storage contract extension.
+- `make raku-test` passes after the authentication/authorization extension.
 - `raku -c raku/dev-server.raku` passes.
 - Real HTTP GET `/api/source?page=FrontPage` and POST `/api/page/ApiDraft` were verified on the Cro development server.
 
