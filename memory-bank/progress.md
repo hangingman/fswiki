@@ -22,11 +22,11 @@
 - Core config/title/URL/redirect/head-info helper APIを追加。
 - Runtime WikiFarm child registry、safe name validation、create/remove/list/prefix searchを追加。
 - JSON API schema validation、統一エラー、permission enforcement、HTML/JSON共通Core handler経路を追加。
+- Wiki ProcessorをHTML表示経路へ接続し、公開Wiki記法、ページリンク、可視性、HTMLエスケープをブラウザ表示経路で確認。
 
 ## Next
 
-1. M1: Wiki ProcessorをHTML表示経路へ接続する。
-2. M2: HTTP編集、M3: AJAX編集へ進む。
+1. M2: HTTP編集、M3: AJAX編集へ進む。
 
 ## Deferred
 

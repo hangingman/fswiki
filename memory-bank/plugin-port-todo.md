@@ -104,10 +104,10 @@ raku -c raku/dev-server.raku
 
 **目的**: Wiki本文をHTMLとして画面表示する。
 
-- [ ] `FSWiki::Parser::Wiki`をHTTP表示経路へ接続する。
-- [ ] ページリンクのURL生成をCore callbackから提供する。
-- [ ] 可視性・凍結状態を表示経路へ適用する。
-- [ ] malformed markup、HTML escape、存在しないページリンクをブラウザで確認する。
+- [x] `FSWiki::Parser::Wiki`をHTTP表示経路へ接続する。
+- [x] ページリンクのURL生成をCore callbackから提供する。
+- [x] 可視性・凍結状態を表示経路へ適用する。
+- [x] malformed markup、HTML escape、存在しないページリンクをブラウザで確認する。
 - [ ] 表示専用の最小Pluginを1つ登録し、ProcessorとPlugin境界を確認する。
 
 **検証**:
