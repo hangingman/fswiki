@@ -122,10 +122,10 @@ browser: heading / list / link / escaped text
 
 **目的**: ブラウザからWikiページを編集・保存する。
 
-- [ ] `GET`編集画面を追加する。
-- [ ] `POST`保存を既存`SAVE_PAGE` handlerへ接続する。
-- [ ] ページ権限・凍結・認証の拒否を画面で確認する。
-- [ ] 成功後に表示画面へ戻り、保存結果を読み戻す。
+- [x] `GET`編集画面を追加する。
+- [x] `POST`保存を既存`SAVE_PAGE` handlerへ接続する。
+- [x] ページ権限・凍結・認証の拒否を画面で確認する。
+- [x] 成功後に表示画面へ戻り、保存結果を読み戻す。
 - [ ] 保存失敗時に本文を失わずエラーを表示する。
 
 **検証**:
@@ -173,8 +173,8 @@ AJAX permission error
 
 以下の順で、各Pluginごとに「調査→失敗テスト→Raku実装→HTTP QA→AJAX QA→コミット」を行う。
 
-1. **core表示系**: `ShowPage`, `Source`, `ListPage`, `NewPage`, `EditPage`, `Raw`, `Pre`, `Blockquote`
-2. **core操作系**: `Edit`, `Diff`, `RemoveWikiHandler`, `CreateWikiHandler`, `WikiList`
+1. **core表示系**: `ShowPage`, `Source`, `ListPage`, `NewPage`, `EditPage`, `Raw`, `Pre`, `Blockquote`（最小表示経路を実装）
+2. **core操作系**: `Edit`, `Diff`, `RemoveWikiHandler`, `CreateWikiHandler`, `WikiList`（最小HTTP操作を実装）
 3. **検索・参照系**: `SearchForm`, `SearchHandler`, `Category`, `CategoryList`, `Sitemap`
 4. **履歴・活動系**: `EditLog`, `LastEdit`, `Actives`, `Recent`, `RecentDays`
 5. **入力系**: `Comment`, `BBS`, `Vote`, `BugTrack`, `ToDo`
