@@ -57,31 +57,36 @@ method plugin-info(Str:D $name) {
     %!plugins{$name}
 }
 
-method !add-handler(Str:D $action, &handler where Callable:D, Str:D $permission) {
+method !add-handler(Str:D $action, &handler where Callable:D, Str:D $permission, %api) {
     %!handlers{$action} = {
         HANDLER    => &handler,
         PERMISSION => $permission,
+        API        => %api,
     };
     self
 }
 
-method add-handler(Str:D $action, &handler where Callable:D) {
-    self!add-handler($action, &handler, 'public')
+method add-handler(Str:D $action, &handler where Callable:D, :%api = {}) {
+    self!add-handler($action, &handler, 'public', %api)
 }
 
 method add-user-handler(Str:D $action, &handler where Callable:D) {
-    self!add-handler($action, &handler, 'user')
+    self!add-handler($action, &handler, 'user', {})
 }
 
 method add-admin-handler(Str:D $action, &handler where Callable:D) {
-    self!add-handler($action, &handler, 'admin')
+    self!add-handler($action, &handler, 'admin', {})
 }
 
-method call-handler(Str:D $action) {
+method call-handler(Str:D $action, %input = {}) {
     my %record := %!handlers{$action} // die "Unknown action: $action";
-    %record<HANDLER>(self)
+    %input ?? %record<HANDLER>(self, %input) !! %record<HANDLER>(self)
 }
 
 method handler-permission(Str:D $action) {
     %!handlers{$action}<PERMISSION>
+}
+
+method api-info(Str:D $action) {
+    %!handlers{$action}<API>
 }

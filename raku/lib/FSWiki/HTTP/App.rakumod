@@ -1,6 +1,7 @@
 unit module FSWiki::HTTP::App;
 
 use Cro::HTTP::Router;
+use JSON::Fast;
 use FSWiki::Core;
 use FSWiki::Storage::File;
 
@@ -28,6 +29,23 @@ sub save-page-response(Str:D $page, Str:D $source, FSWiki::Core:D :$core = FSWik
     "saved\n"
 }
 
+sub api-source-response(Str:D $page = 'Home', FSWiki::Core:D :$core = FSWiki::Core.new --> Str:D) is export {
+    $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
+    my &handler = -> $wiki, %input {
+        { page => %input<page>, source => $wiki.get-page(%input<page>) }
+    };
+    $core.add-handler('SOURCE', &handler, api => { method => 'GET', path => '/api/source' });
+    to-json($core.call-handler('SOURCE', { page => $page }))
+}
+
+sub api-routes(FSWiki::Core:D $core) {
+    return route {
+        get -> 'api', 'source', :$page = 'Home' {
+            content 'application/json', api-source-response($page, :$core);
+        }
+    }
+}
+
 sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
     my $core = FSWiki::Core.new(storage => FSWiki::Storage::File.new(dir => $data-dir));
     $core.save-page('Home', 'Welcome to FSWiki.') unless $core.page-exists('Home');
@@ -44,6 +62,7 @@ sub build-application(IO::Path:D :$data-dir = IO::Path.new('data')) is export {
                 content 'text/plain', save-page-response($page, %form<source> // '', :$core);
             }
         }
+        include api-routes($core);
     }
 }
 

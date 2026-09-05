@@ -8,6 +8,7 @@ raku-test:
 	raku -I raku/lib raku/t/http-health.t
 	raku -I raku/lib raku/t/http-source.t
 	raku -I raku/lib raku/t/http-page.t
+	raku -I raku/lib raku/t/api.t
 	raku -I raku/lib raku/t/storage-memory.t
 	raku -I raku/lib raku/t/storage-file.t
 
